@@ -1,194 +1,163 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { 
-  HeartPulse, 
-  TrendingUp, 
-  GraduationCap, 
-  Sparkles, 
-  Building2, 
-  UserCheck, 
-  ArrowRight, 
-  CheckCircle2, 
-  Eye, 
-  Compass, 
-  ShieldCheck
-} from 'lucide-react';
+import { Layers, ArrowRight, Sparkles, CheckCircle2, Eye } from 'lucide-react';
 import { SOLUTIONS_DATA } from '../data/solutions';
-import { useInquiry } from '../context/InquiryContext';
+import { SolutionCard } from '../components/common/SolutionCard';
+import { CTASection } from '../components/common/CTASection';
+import { MeetingSection } from '../components/home/MeetingSection';
 
 export const SolutionsPage: React.FC = () => {
-  const { openQuickModal } = useInquiry();
-
-  const iconMap: Record<string, any> = {
-    HeartPulse,
-    TrendingUp,
-    GraduationCap,
-    Sparkles,
-    Building2,
-    UserCheck,
-  };
-
   return (
-    <div className="pt-32 pb-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-20">
+    <div className="pt-32 pb-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-24">
       
-      {/* Page Header */}
+      {/* Header */}
       <div className="text-center max-w-3xl mx-auto space-y-4">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900 border border-indigo-500/30 text-indigo-300 text-xs font-semibold">
-          <Compass className="w-3.5 h-3.5 text-cyan-400" />
-          <span>Tailored Industry Architecture</span>
+          <Layers className="w-3.5 h-3.5 text-cyan-400" />
+          <span>Industry Solutions Directory</span>
         </div>
 
-        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight font-heading leading-tight">
-          Industry Solutions Built for <br />
+        <h1 className="text-4xl sm:text-6xl font-extrabold text-white tracking-tight font-heading leading-tight">
+          Intelligent Digital Frameworks for <br />
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-300 to-cyan-400">
-            Conversion & Authority.
+            Every Business Sector.
           </span>
         </h1>
 
-        <p className="text-base sm:text-lg text-slate-300 leading-relaxed font-normal">
-          Explore our specialized digital ecosystems engineered specifically for the distinct business models, client expectations, and trust dynamics of your sector.
+        <p className="text-base sm:text-lg text-slate-300 leading-relaxed">
+          Explore specialized AI workflows, customer acquisition funnels, and live website concepts designed around the specific conversion psychology of your industry.
         </p>
-      </div>
 
-      {/* Solutions Detailed Grid */}
-      <div className="space-y-12">
-        {SOLUTIONS_DATA.map((sol, index) => {
-          const IconComponent = iconMap[sol.iconName] || Sparkles;
-          const isEven = index % 2 === 0;
-
-          return (
-            <div
-              key={sol.id}
-              id={sol.id}
-              className="bg-slate-900/80 border border-slate-800 rounded-3xl p-6 sm:p-10 shadow-2xl relative overflow-hidden group hover:border-indigo-500/30 transition-all"
-            >
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-                
-                {/* Text Content */}
-                <div className={`lg:col-span-7 space-y-5 text-left ${isEven ? 'order-1' : 'order-1 lg:order-2'}`}>
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-2xl bg-indigo-600/20 text-indigo-400 flex items-center justify-center border border-indigo-500/30">
-                      <IconComponent className="w-6 h-6" />
-                    </div>
-                    <div>
-                      <h3 className="text-2xl sm:text-3xl font-bold text-white font-heading">
-                        {sol.title}
-                      </h3>
-                      <p className="text-xs text-indigo-300 font-mono">{sol.subtitle}</p>
-                    </div>
-                  </div>
-
-                  <p className="text-sm text-slate-300 leading-relaxed">
-                    {sol.description}
-                  </p>
-
-                  {/* Included Niches */}
-                  <div className="space-y-2 pt-2">
-                    <span className="text-xs font-mono uppercase text-slate-400 font-semibold block">
-                      Target Niches & Applications:
-                    </span>
-                    <div className="flex flex-wrap gap-2">
-                      {sol.niches.map((niche, i) => (
-                        <span
-                          key={i}
-                          className="px-3 py-1 rounded-lg text-xs bg-slate-950 text-slate-200 border border-slate-800"
-                        >
-                          {niche}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Key Features */}
-                  <div className="space-y-2 pt-3 border-t border-slate-800">
-                    <span className="text-xs font-semibold text-white block">
-                      Standard Included Architecture:
-                    </span>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                      {sol.features.map((feat, i) => (
-                        <div key={i} className="flex items-start gap-2 text-xs text-slate-300">
-                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
-                          <span>{feat}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Action CTAs */}
-                  <div className="pt-4 flex flex-wrap items-center gap-4">
-                    <Link
-                      to={`/demo/${sol.matchingDemoSlug}`}
-                      className="px-6 py-3 bg-gradient-to-r from-indigo-600 to-cyan-600 hover:from-indigo-500 hover:to-cyan-500 text-white text-xs font-bold rounded-xl shadow-lg shadow-indigo-600/30 flex items-center gap-2 transition-all hover:scale-105"
-                    >
-                      <Eye className="w-4 h-4" />
-                      <span>View Live Demo</span>
-                    </Link>
-
-                    <button
-                      onClick={() => openQuickModal(sol.matchingDemoSlug)}
-                      className="px-6 py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-xl border border-slate-700 transition-colors"
-                    >
-                      Customize for My Brand
-                    </button>
-                  </div>
-                </div>
-
-                {/* Visual Card Snapshot */}
-                <div className={`lg:col-span-5 ${isEven ? 'order-2' : 'order-2 lg:order-1'}`}>
-                  <div className="p-6 rounded-2xl bg-slate-950/90 border border-slate-800 space-y-4 shadow-xl">
-                    <div className="flex justify-between items-center pb-3 border-b border-slate-800">
-                      <span className="text-xs font-mono text-slate-400">Industry Performance Benchmark</span>
-                      <span className="text-xs font-bold text-emerald-400 font-mono">
-                        {sol.stats.label}: {sol.stats.value}
-                      </span>
-                    </div>
-
-                    <div className="space-y-3 text-xs text-slate-300">
-                      <div className="p-3 rounded-xl bg-slate-900/90 border border-slate-800 flex items-center justify-between">
-                        <span>Speed-to-Launch</span>
-                        <strong className="text-white font-mono">5–7 Business Days</strong>
-                      </div>
-                      <div className="p-3 rounded-xl bg-slate-900/90 border border-slate-800 flex items-center justify-between">
-                        <span>Mobile Viewport UX</span>
-                        <strong className="text-cyan-400 font-mono">100% Adaptive</strong>
-                      </div>
-                      <div className="p-3 rounded-xl bg-slate-900/90 border border-slate-800 flex items-center justify-between">
-                        <span>Custom Integrations</span>
-                        <strong className="text-indigo-300 font-mono">Stripe, CRM & Booking</strong>
-                      </div>
-                    </div>
-
-                    <div className="p-3 rounded-xl bg-indigo-950/40 border border-indigo-800/40 text-[11px] text-indigo-300 flex items-center gap-2">
-                      <ShieldCheck className="w-4 h-4 text-cyan-400 shrink-0" />
-                      <span>Includes full source code ownership & 30 days of launch warranty.</span>
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Consultation Banner */}
-      <div className="p-8 sm:p-12 rounded-3xl bg-slate-900 border border-slate-800 text-center space-y-4 max-w-4xl mx-auto shadow-2xl">
-        <h3 className="text-2xl sm:text-3xl font-bold text-white font-heading">
-          Don't See Your Exact Industry Listed?
-        </h3>
-        <p className="text-xs sm:text-sm text-slate-300 max-w-xl mx-auto leading-relaxed">
-          We build custom digital experiences across dozens of specialized verticals. Contact our architects for a bespoke concept review.
-        </p>
-        <div className="pt-2">
-          <Link
-            to="/contact"
-            className="inline-flex items-center gap-2 px-8 py-3.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold uppercase tracking-wider rounded-xl shadow-lg shadow-indigo-600/30 transition-all"
+        <div className="pt-2 flex flex-wrap items-center justify-center gap-3">
+          <a
+            href="#schedule-meeting"
+            className="px-6 py-3.5 rounded-xl bg-gradient-to-r from-indigo-600 to-cyan-500 hover:from-indigo-500 hover:to-cyan-400 text-white font-bold text-xs shadow-lg shadow-indigo-600/30 flex items-center gap-2 transition-all"
           >
-            <span>Request Custom Industry Consultation</span>
+            <span>Discuss Your Industry Strategy</span>
             <ArrowRight className="w-4 h-4" />
+          </a>
+          <Link
+            to="/demos"
+            className="px-6 py-3.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 font-semibold text-xs border border-slate-700 transition-colors"
+          >
+            Explore Live Demos
           </Link>
         </div>
       </div>
+
+      {/* 8 Industry Solutions Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {SOLUTIONS_DATA.map((sol) => (
+          <SolutionCard key={sol.id} solution={sol} />
+        ))}
+      </div>
+
+      {/* Deep-Dive Solution Explorer List */}
+      <div className="space-y-12 text-left">
+        <div className="border-b border-slate-800 pb-4">
+          <span className="text-xs font-mono uppercase text-indigo-400 font-semibold tracking-wider">
+            Sector Deep Dives
+          </span>
+          <h2 className="text-3xl font-bold text-white font-heading mt-1">
+            Explore Dedicated Industry Blueprints
+          </h2>
+        </div>
+
+        <div className="space-y-8">
+          {SOLUTIONS_DATA.map((sol) => (
+            <div
+              key={sol.id}
+              id={sol.slug}
+              className="p-6 sm:p-10 rounded-3xl bg-slate-900/80 border border-slate-800 hover:border-indigo-500/30 transition-all space-y-6 scroll-mt-28 shadow-xl"
+            >
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-800">
+                <div>
+                  <span className={`text-xs font-mono font-bold ${sol.accentColor} uppercase tracking-wider`}>
+                    {sol.stats.value} {sol.stats.label}
+                  </span>
+                  <h3 className="text-2xl font-bold text-white font-heading mt-0.5">
+                    {sol.title}
+                  </h3>
+                  <p className="text-xs sm:text-sm text-slate-300 mt-1">
+                    {sol.description}
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-3 self-start md:self-auto shrink-0">
+                  <Link
+                    to={`/solutions/${sol.slug}`}
+                    className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl shadow-md shadow-indigo-600/30 flex items-center gap-1.5 transition-all"
+                  >
+                    <span>Full Industry Guide</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
+
+                  {sol.matchingDemoSlug && (
+                    <Link
+                      to={`/demo/${sol.matchingDemoSlug}`}
+                      className="px-4 py-2 bg-slate-950 hover:bg-slate-800 text-slate-200 text-xs font-semibold rounded-xl border border-slate-800 flex items-center gap-1.5 transition-colors"
+                    >
+                      <Eye className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>Live Demo</span>
+                    </Link>
+                  )}
+                </div>
+              </div>
+
+              {/* 3 Columns: Challenges, AI Solutions, Marketing */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs">
+                <div className="p-4 rounded-2xl bg-slate-950/70 border border-slate-800/80 space-y-2">
+                  <h4 className="font-bold text-rose-300 uppercase tracking-wider text-[11px] font-mono">
+                    Common Industry Pain Points
+                  </h4>
+                  <ul className="space-y-1.5 text-slate-400">
+                    {sol.challenges.map((c, i) => (
+                      <li key={i}>• {c}</li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-slate-950/70 border border-slate-800/80 space-y-2">
+                  <h4 className="font-bold text-cyan-300 uppercase tracking-wider text-[11px] font-mono">
+                    Intelligent AI Solutions
+                  </h4>
+                  <ul className="space-y-1.5 text-slate-300">
+                    {sol.aiSolutions.map((a, i) => (
+                      <li key={i} className="flex items-start gap-1.5">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400 shrink-0 mt-0.5" />
+                        <span>{a}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-slate-950/70 border border-slate-800/80 space-y-2">
+                  <h4 className="font-bold text-indigo-300 uppercase tracking-wider text-[11px] font-mono">
+                    Recommended Marketing
+                  </h4>
+                  <ul className="space-y-1.5 text-slate-300">
+                    {sol.marketingStrategy.map((m, i) => (
+                      <li key={i} className="flex items-start gap-1.5">
+                        <Sparkles className="w-3.5 h-3.5 text-indigo-400 shrink-0 mt-0.5" />
+                        <span>{m}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* CTA Section */}
+      <CTASection
+        headline="Need a Bespoke Solution for Your Industry?"
+        description="Schedule a 1-on-1 strategy call with our digital solution architects to tailor an automated system for your exact business model."
+      />
+
+      {/* Meeting Section */}
+      <MeetingSection />
 
     </div>
   );
