@@ -82,7 +82,7 @@ export const Navbar: React.FC = () => {
             </div>
             <div className="flex flex-col text-left">
               <span className="font-extrabold text-xl tracking-tight text-white flex items-center gap-1 font-heading">
-                Digital<span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-300 to-cyan-400">Flow</span>Hub
+                digitalsimplesolution
               </span>
               <span className="text-[10px] text-slate-400 tracking-wider font-mono uppercase -mt-1 font-medium">
                 AI & Digital Agency
