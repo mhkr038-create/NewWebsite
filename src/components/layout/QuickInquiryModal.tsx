@@ -251,7 +251,7 @@ export const QuickInquiryModal: React.FC = () => {
               onClick={handleClose}
               className="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-semibold shadow-md shadow-indigo-600/30"
             >
-              Continue Exploring DigitalFlowHub
+              Continue Exploring digitalsimplesolution
             </button>
           </div>
         )}

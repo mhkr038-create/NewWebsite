@@ -97,7 +97,7 @@ export const Hero: React.FC = () => {
                 </div>
                 <div className="h-4 w-[1px] bg-slate-800" />
                 <span className="text-xs font-mono text-slate-400 font-medium">
-                  DigitalFlowHub System Engine • AI + Automation + Growth Active
+                  digitalsimplesolution System Engine • AI + Automation + Growth Active
                 </span>
               </div>
               <div className="flex items-center gap-2 text-xs font-mono text-emerald-400 bg-emerald-950/60 px-3 py-1 rounded-full border border-emerald-800/40">

@@ -25,7 +25,7 @@ export interface SiteConfig {
 }
 
 export const SITE_CONFIG: SiteConfig = {
-  brandName: 'DigitalFlowHub',
+  brandName: 'digitalsimplesolution',
   brandTagline: 'Grow Smarter with AI, Automation & Digital Marketing',
   headline: 'Transform Your Business with AI & Digital Growth',
   subheadline: 'We help businesses save time, automate repetitive work, attract more customers, and grow their digital presence with intelligent solutions.',

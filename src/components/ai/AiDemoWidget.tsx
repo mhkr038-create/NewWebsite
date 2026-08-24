@@ -30,7 +30,7 @@ const PRESETS: PromptPreset[] = [
     prompt: 'Customer asks: "How do I connect my Stripe webhook to sync newly enrolled students into our private Slack channel automatically?"',
     response: `✅ Knowledge Base Match Found:
 "To connect Stripe to Slack:
-1. In your DigitalFlowHub Admin, navigate to Integrations > Webhooks.
+1. In your digitalsimplesolution Admin, navigate to Integrations > Webhooks.
 2. Select 'Stripe Checkout Completed' trigger.
 3. Choose destination: '#alumni-students' Slack channel.
 4. Test the payload & enable toggle. Done in 60 seconds!"

@@ -120,7 +120,7 @@ export const ContactPage: React.FC = () => {
           <div className="p-6 rounded-3xl bg-slate-950 border border-indigo-500/30 space-y-3">
             <div className="flex items-center gap-2 text-indigo-400 font-semibold text-xs">
               <ShieldCheck className="w-4 h-4 text-cyan-400" />
-              <span>DigitalFlowHub Transparency Guarantee</span>
+              <span>digitalsimplesolution Transparency Guarantee</span>
             </div>
             <p className="text-xs text-slate-300 leading-relaxed">
               Every project comes with clear fixed deliverables, 100% full source code ownership, zero monthly agency vendor locks, and a 30-day post-launch warranty.

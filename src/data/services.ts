@@ -17,7 +17,7 @@ export const SERVICES_REGISTRY: ServiceItem[] = [
     id: 'custom-dev',
     title: 'Custom Website Development',
     shortDesc: 'Choose an existing demo and customize it from the ground up for your specific brand identity, domain, and unique business workflow.',
-    fullDesc: 'We take the proven high-converting structure of any DigitalFlowHub demo and turn it into a bespoke, pixel-perfect production website tailored entirely to your brand colors, assets, copy, and backend integrations.',
+    fullDesc: 'We take the proven high-converting structure of any digitalsimplesolution demo and turn it into a bespoke, pixel-perfect production website tailored entirely to your brand colors, assets, copy, and backend integrations.',
     iconName: 'LayoutTemplate',
     tag: 'Flagship Service',
     benefits: [

@@ -35,7 +35,7 @@ export const WhyChooseUsSection: React.FC = () => {
             <span>Why Founders Partner With Us</span>
           </div>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white font-heading tracking-tight">
-            Why Choose DigitalFlowHub
+            Why Choose digitalsimplesolution
           </h2>
           <p className="text-xs sm:text-sm text-slate-400">
             We are not an old-school agency that bills endless hourly retainers. We are an agile, AI-native growth and engineering studio.

@@ -29,12 +29,12 @@ export const ServicesPage: React.FC = () => {
 
   const faqs = [
     {
-      q: 'How does the DigitalFlowHub demo customization work?',
+      q: 'How does the digitalsimplesolution demo customization work?',
       a: 'You simply select any website demo from our gallery that matches your preferred layout and industry flow. Our engineering team replaces all sample text, media, branding assets, colors, and integrates your custom booking links, CRM, and payment processors. We launch the complete site on your custom domain in 5–7 business days.',
     },
     {
       q: 'Do I own the full source code and domain?',
-      a: 'Yes, 100%. Unlike proprietary SaaS website builders that lock you into monthly recurring platform fees forever, with DigitalFlowHub you receive complete ownership of your React / Next.js codebase, assets, and DNS configuration.',
+      a: 'Yes, 100%. Unlike proprietary SaaS website builders that lock you into monthly recurring platform fees forever, with digitalsimplesolution you receive complete ownership of your React / Next.js codebase, assets, and DNS configuration.',
     },
     {
       q: 'Can you build custom features not shown in the live demos?',
