@@ -1,10 +1,12 @@
 export interface SiteConfig {
+  siteUrl: string;
   brandName: string;
   brandTagline: string;
   headline: string;
   subheadline: string;
   mainMessage: string;
   supportingMessage: string;
+
   contact: {
     email: string;
     phone: string;
@@ -28,8 +30,10 @@ export interface SiteConfig {
 }
 
 export const SITE_CONFIG: SiteConfig = {
+  siteUrl: 'https://digitalsimplesolution.com',
   brandName: 'digitalsimplesolution',
   brandTagline: 'Build Your Digital Presence. Generate More Leads. Automate Your Growth.',
+
   headline: 'Grow Your Business with Digital Marketing & Automation',
   subheadline: 'We help businesses attract customers, generate leads, and automate growth using landing pages, paid advertising, content marketing, digital products, and WhatsApp automation.',
   mainMessage: 'Build Your Digital Presence. Generate More Leads. Automate Your Growth.',

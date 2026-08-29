@@ -8,7 +8,25 @@
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://digitalsimplesolution.com/digital-products</loc>
+    <loc>https://digitalsimplesolution.com/services</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://digitalsimplesolution.com/ai-services</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://digitalsimplesolution.com/digital-marketing</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://digitalsimplesolution.com/automation</loc>
     <lastmod>2026-08-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
@@ -38,39 +56,157 @@
     <priority>0.9</priority>
   </url>
   <url>
+    <loc>https://digitalsimplesolution.com/digital-products</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://digitalsimplesolution.com/solutions</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://digitalsimplesolution.com/demos</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
     <loc>https://digitalsimplesolution.com/blog</loc>
     <lastmod>2026-08-29</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
 
+  <!-- Industry Solutions -->
+  <url>
+    <loc>https://digitalsimplesolution.com/solutions/health</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://digitalsimplesolution.com/solutions/finance</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://digitalsimplesolution.com/solutions/education</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://digitalsimplesolution.com/solutions/real-estate</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://digitalsimplesolution.com/solutions/restaurant</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://digitalsimplesolution.com/solutions/fitness</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://digitalsimplesolution.com/solutions/ecommerce</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://digitalsimplesolution.com/solutions/agency</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Live Website Demos -->
+  <url>
+    <loc>https://digitalsimplesolution.com/demo/health-clinic</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://digitalsimplesolution.com/demo/wealth-advisor</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://digitalsimplesolution.com/demo/education-academy</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://digitalsimplesolution.com/demo/real-estate</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://digitalsimplesolution.com/demo/restaurant-cafe</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://digitalsimplesolution.com/demo/fitness-gym</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://digitalsimplesolution.com/demo/ecommerce-store</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://digitalsimplesolution.com/demo/creative-agency</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
   <!-- Blog Articles -->
   <url>
-    <loc>https://digitalsimplesolution.com/blog/high-converting-landing-page-anatomy</loc>
+    <loc>https://digitalsimplesolution.com/blog/how-landing-pages-increase-conversion-rates</loc>
     <lastmod>2026-08-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://digitalsimplesolution.com/blog/meta-ads-vs-google-ads-roi-framework</loc>
+    <loc>https://digitalsimplesolution.com/blog/meta-ads-vs-google-ads</loc>
     <lastmod>2026-08-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://digitalsimplesolution.com/blog/whatsapp-automation-lead-conversion-playbook</loc>
+    <loc>https://digitalsimplesolution.com/blog/how-whatsapp-automation-improves-lead-follow-up</loc>
     <lastmod>2026-08-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://digitalsimplesolution.com/blog/building-profitable-digital-products</loc>
+    <loc>https://digitalsimplesolution.com/blog/building-digital-products-for-business-growth</loc>
     <lastmod>2026-08-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://digitalsimplesolution.com/blog/seo-topic-clusters-organic-traffic-guide</loc>
+    <loc>https://digitalsimplesolution.com/blog/seo-and-content-marketing-strategy</loc>
     <lastmod>2026-08-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -87,13 +223,13 @@
     <loc>https://digitalsimplesolution.com/contact</loc>
     <lastmod>2026-08-29</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://digitalsimplesolution.com/schedule-meeting</loc>
     <lastmod>2026-08-29</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://digitalsimplesolution.com/privacy-policy</loc>
@@ -108,3 +244,4 @@
     <priority>0.3</priority>
   </url>
 </urlset>
+
