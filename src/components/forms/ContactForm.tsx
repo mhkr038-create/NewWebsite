@@ -1,7 +1,10 @@
+'use client';
+
 import React, { useState } from 'react';
 import { Send, CheckCircle2, AlertCircle, Sparkles, Mail, Phone } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { SITE_CONFIG } from '../../config/siteConfig';
+import { adminStore } from '../../services/adminStore';
 
 const SERVICE_OPTIONS = [
   'AI Automation',
@@ -50,7 +53,17 @@ export const ContactForm: React.FC<ContactFormProps> = ({ initialService, onSucc
     setIsSubmitting(true);
     setErrorMessage('');
 
-    // Simulate secure transmission to backend/email API without exposing private keys
+    // Save to admin store
+    adminStore.addInquiry({
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone || 'Not Provided',
+      serviceOrDemo: formData.serviceRequired,
+      message: `${formData.businessName ? `[Company: ${formData.businessName}] ` : ''}${formData.message}`,
+      source: 'Contact Form',
+    });
+
+    // Simulate secure transmission
     setTimeout(() => {
       setIsSubmitting(false);
       setIsSubmitted(true);
@@ -64,8 +77,9 @@ export const ContactForm: React.FC<ContactFormProps> = ({ initialService, onSucc
         console.error(err);
       }
       if (onSuccess) onSuccess();
-    }, 800);
+    }, 700);
   };
+
 
   if (isSubmitted) {
     return (

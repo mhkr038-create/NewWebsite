@@ -1,7 +1,10 @@
+'use client';
+
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { Calendar, Clock, CheckCircle2, User, Mail, Phone, Building, ArrowRight, ShieldCheck, Sparkles } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import { adminStore } from '../../services/adminStore';
 
 const TIME_SLOTS = [
   '09:00 AM - 09:30 AM',
@@ -55,6 +58,19 @@ export const MeetingForm: React.FC<MeetingFormProps> = ({ onScheduled, className
     e.preventDefault();
     setIsSubmitting(true);
 
+    // Save to admin store
+    adminStore.addAppointment({
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone,
+      businessName: formData.businessName,
+      serviceInterestedIn: formData.serviceInterestedIn,
+      preferredDate: formData.preferredDate,
+      preferredTime: formData.preferredTime,
+      message: formData.message,
+      source: 'Website Meeting Scheduler',
+    });
+
     // Simulate calendar appointment reservation
     setTimeout(() => {
       setIsSubmitting(false);
@@ -69,8 +85,9 @@ export const MeetingForm: React.FC<MeetingFormProps> = ({ onScheduled, className
         console.error(err);
       }
       if (onScheduled) onScheduled();
-    }, 900);
+    }, 700);
   };
+
 
   if (isBooked) {
     return (
@@ -129,7 +146,7 @@ export const MeetingForm: React.FC<MeetingFormProps> = ({ onScheduled, className
             Book Another Slot
           </button>
           <Link
-            to="/ai-services"
+            href="/#services"
             className="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-semibold shadow-md shadow-indigo-600/30 transition-colors flex items-center gap-2"
           >
             <span>Explore Services in the Meantime</span>
@@ -327,7 +344,7 @@ export const MeetingForm: React.FC<MeetingFormProps> = ({ onScheduled, className
           </div>
           <div>
             <Link
-              to="/contact"
+              href="/contact"
               className="text-cyan-400 hover:text-cyan-300 font-semibold underline underline-offset-2 transition-colors"
             >
               Prefer email? Send us a message.

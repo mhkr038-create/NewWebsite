@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState } from 'react';
 import { 
   X, 
@@ -9,6 +11,7 @@ import {
 } from 'lucide-react';
 import { useInquiry } from '../../context/InquiryContext';
 import { DEMO_REGISTRY } from '../../data/demos';
+import { adminStore } from '../../services/adminStore';
 import confetti from 'canvas-confetti';
 
 export const QuickInquiryModal: React.FC = () => {
@@ -32,6 +35,18 @@ export const QuickInquiryModal: React.FC = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
+    // Save to admin store
+    adminStore.addInquiry({
+      name: fullName,
+      email: email,
+      phone: phone || 'Not Provided',
+      serviceOrDemo: `${currentDemo.name} (${currentDemo.categoryLabel})`,
+      message: `${businessName ? `[Business: ${businessName}] ` : ''}${notes || 'Quick Launch Request'} [Timeline: ${timeline}]`,
+      source: 'Quick Modal',
+      budget: budget,
+    });
+
+
     setTimeout(() => {
       setIsSubmitting(false);
       setIsSuccess(true);
@@ -44,8 +59,9 @@ export const QuickInquiryModal: React.FC = () => {
       } catch (err) {
         console.log(err);
       }
-    }, 800);
+    }, 700);
   };
+
 
   const handleClose = () => {
     setIsSuccess(false);

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { 
   HeartPulse, 
   TrendingUp, 
@@ -14,7 +14,7 @@ import {
 } from 'lucide-react';
 import type { IndustrySolution } from '../../data/solutions';
 
-const ICON_MAP: Record<string, any> = {
+const ICON_MAP: Record<string, React.ElementType> = {
   HeartPulse,
   TrendingUp,
   GraduationCap,
@@ -87,7 +87,7 @@ export const SolutionCard: React.FC<SolutionCardProps> = ({ solution, className 
       {/* Footer Actions: Explore Solutions & Live Demo */}
       <div className="pt-5 mt-5 border-t border-slate-800/80 flex items-center justify-between relative z-10">
         <Link
-          to={`/solutions/${solution.slug}`}
+          href={`/solutions/${solution.slug}`}
           className="inline-flex items-center gap-1.5 text-xs font-bold text-indigo-400 hover:text-cyan-300 transition-colors group/link"
         >
           <span>Explore Solutions</span>
@@ -96,7 +96,7 @@ export const SolutionCard: React.FC<SolutionCardProps> = ({ solution, className 
 
         {solution.matchingDemoSlug && (
           <Link
-            to={`/demo/${solution.matchingDemoSlug}`}
+            href={`/demo/${solution.matchingDemoSlug}`}
             className="text-[11px] font-medium text-slate-400 hover:text-white flex items-center gap-1 transition-colors"
             title="View Live Interactive Demo"
           >
@@ -108,3 +108,4 @@ export const SolutionCard: React.FC<SolutionCardProps> = ({ solution, className 
     </div>
   );
 };
+

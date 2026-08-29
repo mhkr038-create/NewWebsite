@@ -1,62 +1,62 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { Bot, Zap, TrendingUp, Compass, ArrowRight, CheckCircle2, Sparkles } from 'lucide-react';
 
 const VALUE_CARDS = [
   {
     id: 'ai-powered-solutions',
-    title: 'AI-Powered Solutions',
-    description: 'Use AI tools and intelligent systems to improve productivity and business operations.',
+    title: 'Digital Products & Tools',
+    description: 'Monetize your expertise with custom templates, software, calculators, and digital asset portals.',
     icon: Bot,
     gradient: 'from-indigo-600 to-cyan-500',
     borderGlow: 'hover:border-indigo-500/50',
-    link: '/ai-services',
+    link: '/digital-products',
     points: [
-      'Custom LLM agent integration',
-      '24/7 intelligent customer triage',
-      'Automated knowledge retrieval',
+      'Instant checkout integration',
+      'Automated license key & asset delivery',
+      'Scalable recurring subscription models',
     ],
   },
   {
     id: 'business-automation',
-    title: 'Business Automation',
-    description: 'Automate repetitive tasks and workflows to save time and reduce manual work.',
+    title: 'WhatsApp Automation',
+    description: 'Automate repetitive conversation tasks and convert leads within 30 seconds 24/7.',
     icon: Zap,
     gradient: 'from-purple-600 to-indigo-500',
     borderGlow: 'hover:border-purple-500/50',
-    link: '/automation',
+    link: '/whatsapp-automation',
     points: [
       'Zero-touch lead intake & CRM sync',
-      'Automated invoicing & proposal generation',
-      'Cross-platform webhook architecture',
+      'Automated appointment qualification',
+      'Multi-day smart re-engagement drips',
     ],
   },
   {
     id: 'digital-marketing',
-    title: 'Digital Marketing',
-    description: 'Reach the right audience with strategic digital marketing and content solutions.',
+    title: 'Meta & Google Ads',
+    description: 'Reach high-intent buyers with laser targeting, scroll-stopping creatives, and high-ROAS bidding.',
     icon: TrendingUp,
     gradient: 'from-cyan-600 to-blue-500',
     borderGlow: 'hover:border-cyan-500/50',
-    link: '/digital-marketing',
+    link: '/meta-ads',
     points: [
       'Targeted high-intent paid acquisition',
-      'SEO & modern AI search visibility',
-      'Multi-channel content distribution',
+      'High-converting ad copy & video hooks',
+      'Conversions API & server-side tracking',
     ],
   },
   {
     id: 'digital-growth-strategy',
-    title: 'Digital Growth Strategy',
-    description: 'Build a clear digital roadmap to improve your online presence and grow your business.',
+    title: 'Landing Pages & CRO',
+    description: 'Sub-second fast, mobile-first landing pages engineered for maximum lead conversion velocity.',
     icon: Compass,
     gradient: 'from-emerald-600 to-teal-500',
     borderGlow: 'hover:border-emerald-500/50',
-    link: '/solutions',
+    link: '/landing-pages',
     points: [
-      'Full technical & operational audits',
-      'High-converting landing page funnels',
-      'Long-term scalable infrastructure',
+      '1:1 Attention ratio funnels',
+      'Direct CRM & WhatsApp lead routing',
+      'Continuous conversion rate optimization',
     ],
   },
 ];
@@ -74,7 +74,7 @@ export const TrustValueSection: React.FC = () => {
           Everything You Need to Grow Digitally
         </h2>
         <p className="text-sm sm:text-base text-slate-400 max-w-2xl mx-auto leading-relaxed">
-          We combine cutting-edge artificial intelligence, robust automation engines, and high-converting marketing frameworks into a single unified growth partner.
+          We combine cutting-edge landing page architecture, targeted advertising, digital products, and WhatsApp automation into a single growth partner.
         </p>
       </div>
 
@@ -122,7 +122,7 @@ export const TrustValueSection: React.FC = () => {
               {/* Link CTA */}
               <div className="pt-4 border-t border-slate-800/80 relative z-10">
                 <Link
-                  to={card.link}
+                  href={card.link}
                   className="inline-flex items-center gap-1.5 text-xs font-bold text-indigo-400 hover:text-cyan-300 transition-colors group/btn"
                 >
                   <span>Explore Capabilities</span>
@@ -136,3 +136,4 @@ export const TrustValueSection: React.FC = () => {
     </section>
   );
 };
+

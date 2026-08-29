@@ -1,3 +1,5 @@
+'use client';
+
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { DEMO_REGISTRY, type DemoItem } from '../data/demos';
 

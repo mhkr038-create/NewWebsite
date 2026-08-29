@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { ArrowRight, LayoutTemplate } from 'lucide-react';
 import { DEMO_REGISTRY } from '../../data/demos';
 import { DemoCard } from '../common/DemoCard';
@@ -26,13 +26,14 @@ export const DemoShowcaseSection: React.FC = () => {
         </div>
 
         <Link
-          to="/demos"
+          href="/demos"
           className="px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 font-semibold text-xs border border-slate-700 flex items-center gap-2 transition-colors self-start md:self-auto shrink-0"
         >
           <span>View All 8+ Live Demos</span>
           <ArrowRight className="w-4 h-4" />
         </Link>
       </div>
+
 
       {/* Demos Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

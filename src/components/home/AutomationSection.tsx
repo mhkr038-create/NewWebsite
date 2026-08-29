@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { Zap, ArrowRight } from 'lucide-react';
 import { WORKFLOWS_DATA } from '../../data/workflows';
 import { WorkflowCard } from '../common/WorkflowCard';
@@ -46,13 +46,14 @@ export const AutomationSection: React.FC = () => {
         </div>
 
         <Link
-          to="/automation"
+          href="/whatsapp-automation"
           className="px-6 py-3.5 bg-gradient-to-r from-indigo-600 to-cyan-600 hover:from-indigo-500 hover:to-cyan-500 text-white text-xs font-bold rounded-xl shadow-lg shadow-indigo-600/30 flex items-center gap-2 whitespace-nowrap transition-all hover:scale-105"
         >
-          <span>Calculate Your Automation ROI</span>
+          <span>Explore WhatsApp Automation</span>
           <ArrowRight className="w-4 h-4" />
         </Link>
       </div>
+
 
     </section>
   );

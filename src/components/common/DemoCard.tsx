@@ -1,5 +1,7 @@
+'use client';
+
 import React from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { Eye, Star, Sparkles } from 'lucide-react';
 import type { DemoItem } from '../../data/demos';
 import { useInquiry } from '../../context/InquiryContext';
@@ -57,7 +59,7 @@ export const DemoCard: React.FC<DemoCardProps> = ({ demo, className = '' }) => {
 
           <div className="grid grid-cols-2 gap-2 pt-1">
             <Link
-              to={demo.route}
+              href={demo.route}
               className="py-2.5 px-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl shadow-md shadow-indigo-600/20 flex items-center justify-center gap-1.5 transition-all"
             >
               <Eye className="w-3.5 h-3.5" />

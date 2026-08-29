@@ -1,5 +1,8 @@
+'use client';
+
 import React, { useState } from 'react';
 import { Bot, Sparkles, CheckCircle2, CornerDownLeft, RefreshCw } from 'lucide-react';
+
 
 interface PromptPreset {
   id: string;

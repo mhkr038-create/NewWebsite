@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { Layers, ArrowRight } from 'lucide-react';
 import { SOLUTIONS_DATA } from '../../data/solutions';
 import { SolutionCard } from '../common/SolutionCard';
@@ -24,13 +24,14 @@ export const SolutionsSection: React.FC = () => {
         </div>
 
         <Link
-          to="/solutions"
+          href="/solutions"
           className="px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 font-semibold text-xs border border-slate-700 flex items-center gap-2 transition-colors self-start md:self-auto shrink-0"
         >
           <span>View All 8 Industry Portals</span>
           <ArrowRight className="w-4 h-4" />
         </Link>
       </div>
+
 
       {/* 8 Industry Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">

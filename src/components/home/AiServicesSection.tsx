@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { Bot, ArrowRight } from 'lucide-react';
 import { AI_SERVICES_DATA } from '../../data/aiServices';
 import { ServiceCard } from '../common/ServiceCard';
@@ -25,13 +25,14 @@ export const AiServicesSection: React.FC = () => {
         </div>
 
         <Link
-          to="/ai-services"
+          href="/solutions"
           className="px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 font-semibold text-xs border border-slate-700 flex items-center gap-2 transition-colors self-start md:self-auto shrink-0"
         >
           <span>View All AI Capabilities</span>
           <ArrowRight className="w-4 h-4" />
         </Link>
       </div>
+
 
       {/* Interactive AI Agent Simulator Preview */}
       <div className="space-y-3 text-left">
