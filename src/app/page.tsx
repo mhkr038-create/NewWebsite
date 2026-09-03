@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     'custom digital marketing workflows',
   ],
   alternates: {
-    canonical: `${SITE_CONFIG.siteUrl}`,
+    canonical: `${SITE_CONFIG.siteUrl}/`,
   },
   openGraph: {
     title: 'Digital Simple Solution | Digital Marketing & AI Agency',
