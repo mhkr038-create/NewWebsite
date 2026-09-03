@@ -1,48 +1,28 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ArrowUpRight, Check, Copy } from 'lucide-react';
+import Link from 'next/link';
+import { ArrowUpRight, ShieldCheck } from 'lucide-react';
 import { useInquiry } from '../context/InquiryContext';
 import { SITE_CONFIG } from '../config/siteConfig';
 
 export default function HomePage() {
   const { openQuickModal } = useInquiry();
-  const [copied, setCopied] = useState(false);
-
-  const copyEmail = () => {
-    navigator.clipboard.writeText(SITE_CONFIG.contact.email);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
 
   return (
-    <div className="min-h-screen lg:h-screen w-full bg-black text-white flex flex-col justify-between p-6 sm:p-10 lg:p-16 select-none font-sans">
-      {/* 1. Header */}
-      <header className="flex items-center justify-between w-full max-w-5xl mx-auto">
-        <span className="font-mono text-sm sm:text-base tracking-tight font-semibold">
-          {SITE_CONFIG.brandName}
-        </span>
-
-        <div className="flex items-center gap-5 sm:gap-8 text-xs font-mono text-neutral-400">
-          <span className="hidden sm:inline-flex items-center gap-2 text-neutral-500">
-            <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+    <div className="w-full bg-black text-white flex flex-col justify-center min-h-[calc(100vh-80px)] pt-28 pb-20 sm:pt-36 sm:pb-24 px-6 sm:px-10 lg:px-16 font-sans">
+      {/* Main Hero Content */}
+      <main className="w-full max-w-5xl mx-auto my-auto flex flex-col items-start text-left">
+        <div className="flex items-center gap-3 mb-4">
+          <span className="text-xs font-mono uppercase tracking-widest text-neutral-500">
+            Digital Studio & Systems
+          </span>
+          <span className="text-neutral-700">•</span>
+          <span className="inline-flex items-center gap-1.5 text-xs font-mono text-neutral-400">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
             Available for projects
           </span>
-
-          <button
-            onClick={() => openQuickModal()}
-            className="text-white hover:text-neutral-400 underline underline-offset-4 cursor-pointer transition-colors"
-          >
-            Inquire
-          </button>
         </div>
-      </header>
-
-      {/* 2. Main Hero Content */}
-      <main className="w-full max-w-5xl mx-auto my-auto py-8 sm:py-12 flex flex-col items-start text-left">
-        <span className="text-xs font-mono uppercase tracking-widest text-neutral-500 mb-4">
-          Digital Studio & Systems
-        </span>
 
         <h1 className="text-3xl sm:text-5xl lg:text-6xl font-normal tracking-tight text-white leading-[1.15] mb-6">
           We design websites and systems that grow your business.
@@ -100,34 +80,16 @@ export default function HomePage() {
             <span>Chat on WhatsApp</span>
             <ArrowUpRight className="w-3.5 h-3.5" />
           </a>
+
+          <Link
+            href="/admin"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-xs font-mono uppercase tracking-wider text-neutral-300 hover:text-cyan-400 border border-neutral-800 hover:border-cyan-500/50 transition-colors"
+          >
+            <ShieldCheck className="w-3.5 h-3.5 text-cyan-400" />
+            <span>Admin Portal</span>
+          </Link>
         </div>
       </main>
-
-      {/* 3. Minimal Footer */}
-      <footer className="w-full max-w-5xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-6 border-t border-neutral-900 text-xs font-mono text-neutral-500">
-        <div className="flex flex-wrap items-center gap-6">
-          <button
-            onClick={copyEmail}
-            className="hover:text-white transition-colors cursor-pointer flex items-center gap-1.5"
-          >
-            <span>{SITE_CONFIG.contact.email}</span>
-            {copied ? <Check className="w-3 h-3 text-white" /> : <Copy className="w-3 h-3 text-neutral-600" />}
-          </button>
-
-          <a
-            href={`tel:${SITE_CONFIG.contact.phone}`}
-            className="hover:text-white transition-colors"
-          >
-            {SITE_CONFIG.contact.displayPhone}
-          </a>
-        </div>
-
-        <div className="flex items-center gap-4">
-          <span>{SITE_CONFIG.contact.responseSla}</span>
-          <span>•</span>
-          <span>© {new Date().getFullYear()} {SITE_CONFIG.brandName}</span>
-        </div>
-      </footer>
     </div>
   );
 }
