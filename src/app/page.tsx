@@ -4,7 +4,9 @@ import { HomeContent } from './HomeContent';
 import { SITE_CONFIG } from '../config/siteConfig';
 
 export const metadata: Metadata = {
-  title: `${SITE_CONFIG.brandName} | AI Automation & Digital Marketing Agency`,
+  title: {
+    absolute: 'Digital Simple Solution | Digital Marketing & AI Agency',
+  },
   description: 'Scale your business with cutting-edge AI agency solutions, programmatic SEO, and custom digital marketing workflows that drive organic growth.',
   keywords: [
     'AI marketing agency',
@@ -21,16 +23,25 @@ export const metadata: Metadata = {
     canonical: `${SITE_CONFIG.siteUrl}`,
   },
   openGraph: {
-    title: `${SITE_CONFIG.brandName} | AI Automation & Digital Marketing Agency`,
+    title: 'Digital Simple Solution | Digital Marketing & AI Agency',
     description: 'Scale your business with cutting-edge AI agency solutions, programmatic SEO, and custom digital marketing workflows that drive organic growth.',
     url: `${SITE_CONFIG.siteUrl}`,
-    siteName: SITE_CONFIG.brandName,
+    siteName: 'Digital Simple Solution',
     type: 'website',
+    images: [
+      {
+        url: '/opengraph-image',
+        width: 1200,
+        height: 630,
+        alt: 'Digital Simple Solution - Digital Marketing & AI Automation',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: `${SITE_CONFIG.brandName} | AI Automation & Digital Marketing Agency`,
-    description: 'Transform your marketing workflows using custom-built AI solutions and high-converting systems.',
+    title: 'Digital Simple Solution | Digital Marketing & AI Agency',
+    description: 'Scale your business with cutting-edge AI agency solutions, programmatic SEO, and custom digital marketing workflows.',
+    images: ['/twitter-image'],
   },
 };
 

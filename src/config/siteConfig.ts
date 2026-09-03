@@ -35,7 +35,7 @@ export const SITE_CONFIG: SiteConfig = {
   brandTagline: 'Build Your Digital Presence. Generate More Leads. Automate Your Growth.',
 
   headline: 'Grow Your Business with Digital Marketing & Automation',
-  subheadline: 'We help businesses attract customers, generate leads, and automate growth using landing pages, paid advertising, content marketing, digital products, and WhatsApp automation.',
+  subheadline: 'We build high-converting landing pages, targeted Google & Meta ads, and WhatsApp automations to help businesses capture leads and scale revenue.',
   mainMessage: 'Build Your Digital Presence. Generate More Leads. Automate Your Growth.',
   supportingMessage: 'We help businesses create high-converting landing pages, run effective Meta and Google Ads, build digital products, create SEO-focused content, and automate customer conversations with WhatsApp.',
   contact: {

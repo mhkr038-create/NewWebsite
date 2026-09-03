@@ -10,8 +10,8 @@ import { SITE_CONFIG } from '../config/siteConfig';
 export const metadata: Metadata = {
   metadataBase: new URL('https://digitalsimplesolution.com'),
   title: {
-    default: `${SITE_CONFIG.brandName} | Grow Your Business with Digital Marketing & Automation`,
-    template: `%s | ${SITE_CONFIG.brandName}`,
+    default: 'Digital Simple Solution | Web & AI Automation',
+    template: '%s | Digital Simple Solution',
   },
   description: SITE_CONFIG.subheadline,
   keywords: [
@@ -36,14 +36,23 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'en_US',
     url: 'https://digitalsimplesolution.com',
-    siteName: SITE_CONFIG.brandName,
-    title: `${SITE_CONFIG.brandName} | Grow Your Business with Digital Marketing & Automation`,
+    siteName: 'Digital Simple Solution',
+    title: 'Digital Simple Solution | Web & AI Automation',
     description: SITE_CONFIG.subheadline,
+    images: [
+      {
+        url: '/opengraph-image',
+        width: 1200,
+        height: 630,
+        alt: 'Digital Simple Solution - Digital Marketing & AI Automation',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: `${SITE_CONFIG.brandName} | Digital Growth Partner`,
+    title: 'Digital Simple Solution | Web & AI Automation',
     description: SITE_CONFIG.subheadline,
+    images: ['/twitter-image'],
   },
   robots: {
     index: true,
