@@ -18,6 +18,17 @@ export const SiteChrome: React.FC<SiteChromeProps> = ({ children }) => {
     return <div className="flex-1 w-full min-h-screen">{children}</div>;
   }
 
+  const isHome = pathname === '/';
+
+  if (isHome) {
+    return (
+      <>
+        <main className="w-full min-h-screen">{children}</main>
+        <QuickInquiryModal />
+      </>
+    );
+  }
+
   return (
     <>
       <Navbar />

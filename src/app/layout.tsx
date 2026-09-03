@@ -100,7 +100,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdSchema) }}
         />
       </head>
-      <body className="min-h-screen flex flex-col bg-slate-950 text-slate-100 selection:bg-indigo-500 selection:text-white antialiased">
+      <body className="min-h-screen flex flex-col bg-black text-white selection:bg-white selection:text-black antialiased">
         {/* Next.js Script: Google Tag Manager (Non-blocking afterInteractive) */}
         <Script
           id="google-tag-manager"
