@@ -268,6 +268,25 @@ export const FreeSchoolSoftwareView: React.FC = () => {
             </a>
           </div>
 
+          {/* Centerpiece Showcase Image */}
+          <div className="pt-8 max-w-4xl mx-auto">
+            <div className="relative rounded-3xl overflow-hidden border-2 border-amber-500/40 shadow-2xl shadow-amber-500/20 bg-slate-950 group">
+              <img
+                src="/images/free-school-management-software.jpg"
+                alt="Free School Management Software - Complete Solution for a Smarter School"
+                className="w-full h-auto object-cover transform group-hover:scale-[1.01] transition-transform duration-500"
+              />
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent p-4 sm:p-6 flex items-center justify-between pointer-events-none">
+                <span className="text-xs font-mono text-amber-300 font-semibold bg-slate-950/90 px-3 py-1 rounded-full border border-amber-500/30">
+                  ✨ Real-time Student, Teacher & Fee Dashboard
+                </span>
+                <span className="text-[11px] font-mono text-emerald-400 font-bold bg-slate-950/90 px-3 py-1 rounded-full border border-emerald-500/30">
+                  Worth ₹30,000 • 100% Free Core ERP
+                </span>
+              </div>
+            </div>
+          </div>
+
         </div>
       </section>
 

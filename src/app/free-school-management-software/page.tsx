@@ -25,11 +25,20 @@ export const metadata: Metadata = {
     url: `${SITE_CONFIG.siteUrl}/free-school-management-software`,
     siteName: SITE_CONFIG.brandName,
     type: 'website',
+    images: [
+      {
+        url: '/images/free-school-management-software.jpg',
+        width: 1200,
+        height: 800,
+        alt: 'Free School Management Software - Smart School ERP',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Free School Management Software (Worth ₹30,000) | School ERP',
     description: 'Claim free school management software. Automated admissions, fees, daily attendance & WhatsApp parent alerts.',
+    images: ['/images/free-school-management-software.jpg'],
   },
 };
 
