@@ -48,7 +48,9 @@ export const InquiriesManager: React.FC<InquiriesManagerProps> = ({
         item.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
         item.phone.toLowerCase().includes(searchQuery.toLowerCase()) ||
         item.serviceOrDemo.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.message.toLowerCase().includes(searchQuery.toLowerCase());
+        item.message.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (item.city ? item.city.toLowerCase().includes(searchQuery.toLowerCase()) : false) ||
+        (item.requirement ? item.requirement.toLowerCase().includes(searchQuery.toLowerCase()) : false);
 
       const matchesStatus = statusFilter === 'all' || item.status === statusFilter;
 
@@ -78,44 +80,28 @@ export const InquiriesManager: React.FC<InquiriesManagerProps> = ({
   const getStatusBadge = (status: Inquiry['status']) => {
     switch (status) {
       case 'new':
-        return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-bold bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 animate-pulse">
-            <span>● New Lead</span>
-          </span>
-        );
+        return <span className="text-xs font-mono text-cyan-400 bg-cyan-950/80 px-2.5 py-1 rounded-full border border-cyan-800/60 font-semibold animate-pulse">New Lead</span>;
       case 'contacted':
-        return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-bold bg-indigo-500/10 border border-indigo-500/30 text-indigo-300">
-            <span>Contacted</span>
-          </span>
-        );
+        return <span className="text-xs font-mono text-amber-400 bg-amber-950/80 px-2.5 py-1 rounded-full border border-amber-800/60 font-semibold">Contacted</span>;
       case 'qualified':
-        return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-bold bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">
-            <span>Qualified</span>
-          </span>
-        );
+        return <span className="text-xs font-mono text-purple-400 bg-purple-950/80 px-2.5 py-1 rounded-full border border-purple-800/60 font-semibold">Qualified</span>;
       case 'converted':
-        return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-bold bg-purple-500/10 border border-purple-500/30 text-purple-300">
-            <span>Converted</span>
-          </span>
-        );
+        return <span className="text-xs font-mono text-emerald-400 bg-emerald-950/80 px-2.5 py-1 rounded-full border border-emerald-800/60 font-semibold">Converted</span>;
       case 'closed':
-        return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-bold bg-slate-800 text-slate-400">
-            <span>Closed</span>
-          </span>
-        );
+        return <span className="text-xs font-mono text-slate-400 bg-slate-950/80 px-2.5 py-1 rounded-full border border-slate-800/60">Closed</span>;
     }
   };
 
   const getSourceBadge = (source: Inquiry['source']) => {
     switch (source) {
+      case 'Intake Form':
+        return <span className="text-[10px] font-mono text-cyan-300 bg-cyan-950/80 px-2 py-0.5 rounded border border-cyan-700/60 font-semibold">Intake Form</span>;
+      case 'Google Form':
+        return <span className="text-[10px] font-mono text-emerald-400 bg-emerald-950/80 px-2 py-0.5 rounded border border-emerald-700/60 font-semibold">Google Form</span>;
       case 'Quick Modal':
-        return <span className="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 px-2 py-0.5 rounded border border-cyan-800/40">Quick Modal</span>;
+        return <span className="text-[10px] font-mono text-indigo-400 bg-indigo-950/60 px-2 py-0.5 rounded border border-indigo-800/40">Quick Modal</span>;
       case 'Contact Form':
-        return <span className="text-[10px] font-mono text-indigo-400 bg-indigo-950/60 px-2 py-0.5 rounded border border-indigo-800/40">Contact Form</span>;
+        return <span className="text-[10px] font-mono text-slate-300 bg-slate-800 px-2 py-0.5 rounded border border-slate-700">Contact Page</span>;
       case 'Demo Page':
         return <span className="text-[10px] font-mono text-purple-400 bg-purple-950/60 px-2 py-0.5 rounded border border-purple-800/40">Demo Showcase</span>;
       case 'WhatsApp Direct':
@@ -228,10 +214,22 @@ export const InquiriesManager: React.FC<InquiriesManagerProps> = ({
                     </div>
                   </div>
 
-                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-400 font-mono">
-                    <span>{item.phone}</span>
+                  <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-400 font-mono">
+                    <span className="text-cyan-300 font-bold">{item.phone}</span>
+                    {item.age && (
+                      <>
+                        <span>•</span>
+                        <span className="text-white bg-slate-800 px-1.5 py-0.5 rounded text-[11px]">Age: {item.age}</span>
+                      </>
+                    )}
+                    {item.city && (
+                      <>
+                        <span>•</span>
+                        <span className="text-slate-300">📍 {item.city}</span>
+                      </>
+                    )}
                     <span>•</span>
-                    <span className="truncate max-w-[200px]">{item.email}</span>
+                    <span className="truncate max-w-[180px]">{item.email}</span>
                     {item.budget && (
                       <>
                         <span>•</span>
