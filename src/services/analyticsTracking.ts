@@ -1,19 +1,7 @@
+import { adminStore, Inquiry } from './adminStore';
+
 export type DeviceType = 'mobile' | 'tablet' | 'desktop';
-
-export interface AgeDemographicBracket {
-  bracket: '18–24' | '25–34' | '35–44' | '45–54' | '55+';
-  persona: string;
-  percentage: number;
-  visitorCount: number;
-  conversionRate: number;
-}
-
-export interface SensitiveAudienceInsights {
-  ageBrackets: AgeDemographicBracket[];
-  decisionMakerLevel: { tier: string; percentage: number; count: number }[];
-  intentTier: { tier: string; percentage: number; budgetRange: string }[];
-  privacyComplianceStatus: string;
-}
+export type ClickCategory = 'cta' | 'whatsapp' | 'demo' | 'navigation' | 'form_submit' | 'phone' | 'link' | 'button';
 
 export interface DailyVisitorStat {
   date: string; // YYYY-MM-DD
@@ -28,8 +16,6 @@ export interface DailyVisitorStat {
   topLocations: { location: string; visitors: number; countryCode: string }[];
   topPages: { path: string; views: number }[];
 }
-
-export type ClickCategory = 'cta' | 'whatsapp' | 'demo' | 'navigation' | 'form_submit' | 'phone' | 'link' | 'button';
 
 export interface TrackedClick {
   id: string;
@@ -70,6 +56,20 @@ export interface ClickSummary {
   recentClicks: TrackedClick[];
 }
 
+export interface DeclaredDemographicLead {
+  id: string;
+  name: string;
+  age?: number | string;
+  city?: string;
+  phone: string;
+  email: string;
+  source: string;
+  requirement?: string;
+  schoolName?: string;
+  budget?: string;
+  createdAt: string;
+}
+
 export interface VisitorAnalyticsData {
   today: DailyVisitorStat;
   dailyStats: DailyVisitorStat[];
@@ -93,23 +93,42 @@ export interface VisitorAnalyticsData {
     views: number;
     percentage: number;
   }[];
-  audienceInsights: SensitiveAudienceInsights;
+  declaredDemographics: {
+    totalLeadsWithAge: number;
+    averageAge: number | string;
+    ageBrackets: { bracket: string; count: number; percentage: number }[];
+    leads: DeclaredDemographicLead[];
+  };
   clickSummary: ClickSummary;
-  totalUniqueVisitors14d: number;
-  totalPageViews14d: number;
+  totalUniqueVisitors: number;
+  totalPageViews: number;
   overallCtr: number;
 }
 
 const STORAGE_KEYS = {
-  DAILY_VISITORS: 'dss_analytics_daily_visitors',
-  CLICKS: 'dss_analytics_clicks',
+  DAILY_VISITORS: 'dss_analytics_daily_visitors_v2',
+  CLICKS: 'dss_analytics_clicks_v2',
   VISITOR_ID: 'dss_visitor_id',
   CACHED_LOCATION: 'dss_visitor_location',
   LAST_VISIT_DATE: 'dss_last_visit_date',
+  V2_FLAG: 'dss_analytics_v2_real_only',
 };
 
 function isBrowser(): boolean {
   return typeof window !== 'undefined';
+}
+
+// Clean previous mock data if present
+function ensureCleanRealStorage() {
+  if (!isBrowser()) return;
+  try {
+    if (localStorage.getItem(STORAGE_KEYS.V2_FLAG) !== 'true') {
+      // Remove old mock storage keys
+      localStorage.removeItem('dss_analytics_daily_visitors');
+      localStorage.removeItem('dss_analytics_clicks');
+      localStorage.setItem(STORAGE_KEYS.V2_FLAG, 'true');
+    }
+  } catch {}
 }
 
 // Generate an anonymous persistent visitor ID
@@ -127,7 +146,6 @@ export function getOrCreateVisitorId(): string {
   }
 }
 
-// Format date helper
 function getISODate(d = new Date()): string {
   return d.toISOString().split('T')[0];
 }
@@ -136,209 +154,20 @@ function getFormattedDay(d = new Date()): string {
   return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 }
 
-// Generate realistic rolling 14-day baseline data ending today
-function generateRollingDailyStats(): DailyVisitorStat[] {
-  const result: DailyVisitorStat[] = [];
-  const now = new Date();
-
-  // Baseline templates for 14 days
-  const visitorBase = [
-    { unique: 1420, views: 3260, mobile: 880, tablet: 110, desktop: 430 },
-    { unique: 1540, views: 3480, mobile: 940, tablet: 120, desktop: 480 },
-    { unique: 1680, views: 3890, mobile: 1040, tablet: 130, desktop: 510 },
-    { unique: 1850, views: 4210, mobile: 1150, tablet: 150, desktop: 550 },
-    { unique: 1720, views: 3950, mobile: 1080, tablet: 140, desktop: 500 },
-    { unique: 1910, views: 4350, mobile: 1200, tablet: 150, desktop: 560 },
-    { unique: 2100, views: 4820, mobile: 1310, tablet: 170, desktop: 620 },
-    { unique: 2280, views: 5120, mobile: 1420, tablet: 180, desktop: 680 },
-    { unique: 2430, views: 5490, mobile: 1530, tablet: 190, desktop: 710 },
-    { unique: 2390, views: 5320, mobile: 1490, tablet: 190, desktop: 710 },
-    { unique: 2510, views: 5780, mobile: 1580, tablet: 200, desktop: 730 },
-    { unique: 2680, views: 6120, mobile: 1690, tablet: 210, desktop: 780 },
-    { unique: 2840, views: 6490, mobile: 1790, tablet: 230, desktop: 820 },
-    { unique: 2980, views: 6820, mobile: 1890, tablet: 240, desktop: 850 },
-  ];
-
-  for (let i = 13; i >= 0; i--) {
-    const targetDate = new Date(now);
-    targetDate.setDate(now.getDate() - i);
-    const dateStr = getISODate(targetDate);
-    const formatted = getFormattedDay(targetDate);
-    const base = visitorBase[13 - i] || visitorBase[13];
-
-    result.push({
-      date: dateStr,
-      formattedDate: formatted,
-      uniqueVisitors: base.unique,
-      totalPageViews: base.views,
-      devices: {
-        mobile: base.mobile,
-        tablet: base.tablet,
-        desktop: base.desktop,
-      },
-      topLocations: [
-        { location: 'Delhi NCR, India', visitors: Math.round(base.unique * 0.28), countryCode: 'IN' },
-        { location: 'Bengaluru, India', visitors: Math.round(base.unique * 0.24), countryCode: 'IN' },
-        { location: 'Mumbai, India', visitors: Math.round(base.unique * 0.19), countryCode: 'IN' },
-        { location: 'Jaipur, India', visitors: Math.round(base.unique * 0.13), countryCode: 'IN' },
-        { location: 'Hyderabad, India', visitors: Math.round(base.unique * 0.09), countryCode: 'IN' },
-        { location: 'International (US/UAE/UK)', visitors: Math.round(base.unique * 0.07), countryCode: 'GLOBAL' },
-      ],
-      topPages: [
-        { path: '/', views: Math.round(base.views * 0.38) },
-        { path: '/free-school-management-software', views: Math.round(base.views * 0.24) },
-        { path: '/whatsapp-automation', views: Math.round(base.views * 0.15) },
-        { path: '/landing-pages', views: Math.round(base.views * 0.12) },
-        { path: '/demo/education-academy', views: Math.round(base.views * 0.07) },
-        { path: '/schedule-meeting', views: Math.round(base.views * 0.04) },
-      ],
-    });
-  }
-
-  return result;
-}
-
-// Initial seed click stream for rich interactive experience
-const INITIAL_CLICKS: TrackedClick[] = [
-  {
-    id: 'clk-001',
-    timestamp: new Date(Date.now() - 1000 * 60 * 3).toISOString(),
-    date: getISODate(),
-    timeFormatted: 'Just now',
-    elementText: 'Claim Free License (Worth ₹30,000) →',
-    elementType: 'cta',
-    pagePath: '/free-school-management-software',
-    targetUrl: '#school-enquiry-form',
-    section: 'Hero Banner',
-    device: 'mobile',
-    location: 'Jaipur, Rajasthan, India',
-    visitorId: 'usr-8924b',
-  },
-  {
-    id: 'clk-002',
-    timestamp: new Date(Date.now() - 1000 * 60 * 7).toISOString(),
-    date: getISODate(),
-    timeFormatted: '7m ago',
-    elementText: 'WhatsApp Quick Consultation',
-    elementType: 'whatsapp',
-    pagePath: '/whatsapp-automation',
-    targetUrl: 'https://wa.me/918076043135',
-    section: 'Feature Matrix',
-    device: 'mobile',
-    location: 'Bengaluru, Karnataka, India',
-    visitorId: 'usr-4109k',
-  },
-  {
-    id: 'clk-003',
-    timestamp: new Date(Date.now() - 1000 * 60 * 14).toISOString(),
-    date: getISODate(),
-    timeFormatted: '14m ago',
-    elementText: 'Launch Live Academy Demo Portal →',
-    elementType: 'demo',
-    pagePath: '/free-school-management-software',
-    targetUrl: '/demo/education-academy',
-    section: 'Related Solutions Hub',
-    device: 'desktop',
-    location: 'Delhi NCR, India',
-    visitorId: 'usr-7281m',
-  },
-  {
-    id: 'clk-004',
-    timestamp: new Date(Date.now() - 1000 * 60 * 22).toISOString(),
-    date: getISODate(),
-    timeFormatted: '22m ago',
-    elementText: 'Book Digital Strategy Session',
-    elementType: 'cta',
-    pagePath: '/',
-    targetUrl: '/schedule-meeting',
-    section: 'Homepage Hero',
-    device: 'desktop',
-    location: 'Mumbai, Maharashtra, India',
-    visitorId: 'usr-1940x',
-  },
-  {
-    id: 'clk-005',
-    timestamp: new Date(Date.now() - 1000 * 60 * 35).toISOString(),
-    date: getISODate(),
-    timeFormatted: '35m ago',
-    elementText: 'Submit School ERP Application',
-    elementType: 'form_submit',
-    pagePath: '/free-school-management-software',
-    targetUrl: '#submit-form',
-    section: 'Registration Form',
-    device: 'mobile',
-    location: 'Pune, Maharashtra, India',
-    visitorId: 'usr-6391d',
-  },
-  {
-    id: 'clk-006',
-    timestamp: new Date(Date.now() - 1000 * 60 * 50).toISOString(),
-    date: getISODate(),
-    timeFormatted: '50m ago',
-    elementText: 'Education Industry Suite →',
-    elementType: 'navigation',
-    pagePath: '/solutions',
-    targetUrl: '/solutions/education',
-    section: 'Industry Grid',
-    device: 'tablet',
-    location: 'Hyderabad, Telangana, India',
-    visitorId: 'usr-5521t',
-  },
-  {
-    id: 'clk-007',
-    timestamp: new Date(Date.now() - 1000 * 60 * 75).toISOString(),
-    date: getISODate(),
-    timeFormatted: '1h ago',
-    elementText: 'Instant WhatsApp Follow-up Study',
-    elementType: 'link',
-    pagePath: '/free-school-management-software',
-    targetUrl: '/blog/how-whatsapp-automation-improves-lead-follow-up',
-    section: 'Case Studies',
-    device: 'mobile',
-    location: 'Chennai, Tamil Nadu, India',
-    visitorId: 'usr-3310q',
-  },
-  {
-    id: 'clk-008',
-    timestamp: new Date(Date.now() - 1000 * 60 * 95).toISOString(),
-    date: getISODate(),
-    timeFormatted: '1h ago',
-    elementText: 'Explore High-Converting Landing Pages',
-    elementType: 'cta',
-    pagePath: '/',
-    targetUrl: '/landing-pages',
-    section: 'Pillars of Growth',
-    device: 'desktop',
-    location: 'Ahmedabad, Gujarat, India',
-    visitorId: 'usr-9042a',
-  },
-];
-
-// Load & Save daily stats
-function loadDailyStats(): DailyVisitorStat[] {
-  if (!isBrowser()) return generateRollingDailyStats();
+// Load real recorded daily stats
+function loadRealDailyStats(): DailyVisitorStat[] {
+  if (!isBrowser()) return [];
+  ensureCleanRealStorage();
   try {
     const raw = localStorage.getItem(STORAGE_KEYS.DAILY_VISITORS);
-    if (!raw) {
-      const initial = generateRollingDailyStats();
-      localStorage.setItem(STORAGE_KEYS.DAILY_VISITORS, JSON.stringify(initial));
-      return initial;
-    }
-    const parsed: DailyVisitorStat[] = JSON.parse(raw);
-    const todayStr = getISODate();
-    // If today is not the last entry in parsed, append/realign rolling days
-    if (!parsed.some((p) => p.date === todayStr)) {
-      const refreshed = generateRollingDailyStats();
-      localStorage.setItem(STORAGE_KEYS.DAILY_VISITORS, JSON.stringify(refreshed));
-      return refreshed;
-    }
-    return parsed;
+    if (!raw) return [];
+    return JSON.parse(raw);
   } catch {
-    return generateRollingDailyStats();
+    return [];
   }
 }
 
-function saveDailyStats(data: DailyVisitorStat[]) {
+function saveRealDailyStats(data: DailyVisitorStat[]) {
   if (!isBrowser()) return;
   try {
     localStorage.setItem(STORAGE_KEYS.DAILY_VISITORS, JSON.stringify(data));
@@ -347,26 +176,23 @@ function saveDailyStats(data: DailyVisitorStat[]) {
   }
 }
 
-// Load & Save clicks
-function loadClicks(): TrackedClick[] {
-  if (!isBrowser()) return INITIAL_CLICKS;
+// Load real recorded clicks
+function loadRealClicks(): TrackedClick[] {
+  if (!isBrowser()) return [];
+  ensureCleanRealStorage();
   try {
     const raw = localStorage.getItem(STORAGE_KEYS.CLICKS);
-    if (!raw) {
-      localStorage.setItem(STORAGE_KEYS.CLICKS, JSON.stringify(INITIAL_CLICKS));
-      return INITIAL_CLICKS;
-    }
+    if (!raw) return [];
     return JSON.parse(raw);
   } catch {
-    return INITIAL_CLICKS;
+    return [];
   }
 }
 
-function saveClicks(data: TrackedClick[]) {
+function saveRealClicks(data: TrackedClick[]) {
   if (!isBrowser()) return;
   try {
-    // Keep latest 250 clicks
-    const trimmed = data.slice(0, 250);
+    const trimmed = data.slice(0, 300);
     localStorage.setItem(STORAGE_KEYS.CLICKS, JSON.stringify(trimmed));
   } catch (e) {
     console.error('Failed to save clicks', e);
@@ -374,18 +200,20 @@ function saveClicks(data: TrackedClick[]) {
 }
 
 export const analyticsTracking = {
-  // Record page visit
+  // Record a REAL page visit
   recordPageView(
     path: string,
     referrer = '',
     device: DeviceType = 'desktop',
-    location = 'Delhi NCR, India'
+    location = 'Detected Visitor Location'
   ) {
     if (!isBrowser()) return;
-    if (path.startsWith('/admin')) return; // Never track admin views
+    if (path.startsWith('/admin')) return; // Never count admin views
+
+    ensureCleanRealStorage();
 
     const todayStr = getISODate();
-    const stats = loadDailyStats();
+    const stats = loadRealDailyStats();
     let todayStat = stats.find((s) => s.date === todayStr);
 
     const visitorId = getOrCreateVisitorId();
@@ -404,7 +232,7 @@ export const analyticsTracking = {
           tablet: device === 'tablet' ? 1 : 0,
           desktop: device === 'desktop' ? 1 : 0,
         },
-        topLocations: [{ location, visitors: 1, countryCode: 'IN' }],
+        topLocations: [{ location, visitors: 1, countryCode: 'REAL' }],
         topPages: [{ path, views: 1 }],
       };
       stats.push(todayStat);
@@ -412,13 +240,13 @@ export const analyticsTracking = {
       todayStat.totalPageViews += 1;
       if (isNewToday) {
         todayStat.uniqueVisitors += 1;
-        todayStat.devices[device] += 1;
+        todayStat.devices[device] = (todayStat.devices[device] || 0) + 1;
 
         const locEntry = todayStat.topLocations.find((l) => l.location === location);
         if (locEntry) {
           locEntry.visitors += 1;
         } else {
-          todayStat.topLocations.push({ location, visitors: 1, countryCode: 'IN' });
+          todayStat.topLocations.push({ location, visitors: 1, countryCode: 'REAL' });
         }
       }
 
@@ -434,10 +262,12 @@ export const analyticsTracking = {
       localStorage.setItem(lastVisitKey, todayStr);
     }
 
-    saveDailyStats(stats);
+    saveRealDailyStats(stats);
+
+    window.dispatchEvent(new CustomEvent('dss_analytics_updated'));
   },
 
-  // Record an element or CTA click
+  // Record a REAL click
   recordClick(data: {
     elementText: string;
     elementType?: ClickCategory;
@@ -447,7 +277,9 @@ export const analyticsTracking = {
     device?: DeviceType;
     location?: string;
   }): TrackedClick {
-    const currentClicks = loadClicks();
+    ensureCleanRealStorage();
+
+    const currentClicks = loadRealClicks();
     const visitorId = getOrCreateVisitorId();
     const now = new Date();
 
@@ -457,21 +289,20 @@ export const analyticsTracking = {
       id: `clk-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
       timestamp: now.toISOString(),
       date: getISODate(now),
-      timeFormatted: 'Just now',
-      elementText: cleanText || 'Interactive Button',
+      timeFormatted: now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      elementText: cleanText || 'Interactive Element',
       elementType: data.elementType || 'cta',
       pagePath: data.pagePath,
       targetUrl: data.targetUrl,
       section: data.section || 'Page Content',
       device: data.device || 'mobile',
-      location: data.location || 'Bengaluru, Karnataka, India',
+      location: data.location || 'Real Visitor',
       visitorId,
     };
 
     const updated = [newClick, ...currentClicks];
-    saveClicks(updated);
+    saveRealClicks(updated);
 
-    // Notify listeners across tabs
     if (isBrowser()) {
       window.dispatchEvent(new CustomEvent('dss_analytics_updated', { detail: newClick }));
     }
@@ -479,24 +310,39 @@ export const analyticsTracking = {
     return newClick;
   },
 
-  // Get aggregated visitor & click analytics for Admin Portal
+  // Get REAL visitor and click analytics for Admin Portal
   getVisitorAnalyticsData(): VisitorAnalyticsData {
-    const dailyStats = loadDailyStats();
-    const clicks = loadClicks();
+    ensureCleanRealStorage();
+
+    const dailyStats = loadRealDailyStats();
+    const clicks = loadRealClicks();
     const todayStr = getISODate();
 
-    const today = dailyStats.find((s) => s.date === todayStr) || dailyStats[dailyStats.length - 1];
+    let today = dailyStats.find((s) => s.date === todayStr);
+    if (!today) {
+      today = {
+        date: todayStr,
+        formattedDate: getFormattedDay(),
+        uniqueVisitors: 0,
+        totalPageViews: 0,
+        devices: { mobile: 0, tablet: 0, desktop: 0 },
+        topLocations: [],
+        topPages: [],
+      };
+    }
 
-    // Device totals over last 14 days
-    const totalMobile = dailyStats.reduce((sum, d) => sum + d.devices.mobile, 0);
-    const totalTablet = dailyStats.reduce((sum, d) => sum + d.devices.tablet, 0);
-    const totalDesktop = dailyStats.reduce((sum, d) => sum + d.devices.desktop, 0);
-    const totalDevices = totalMobile + totalTablet + totalDesktop || 1;
+    const totalMobile = dailyStats.reduce((sum, d) => sum + (d.devices.mobile || 0), 0);
+    const totalTablet = dailyStats.reduce((sum, d) => sum + (d.devices.tablet || 0), 0);
+    const totalDesktop = dailyStats.reduce((sum, d) => sum + (d.devices.desktop || 0), 0);
+    const totalDevices = totalMobile + totalTablet + totalDesktop;
 
-    // Location aggregation
+    const totalUnique = dailyStats.reduce((s, d) => s + d.uniqueVisitors, 0);
+    const totalViews = dailyStats.reduce((s, d) => s + d.totalPageViews, 0);
+
+    // Locations aggregation
     const locationMap: Record<string, number> = {};
     dailyStats.forEach((day) => {
-      day.topLocations.forEach((loc) => {
+      day.topLocations?.forEach((loc) => {
         locationMap[loc.location] = (locationMap[loc.location] || 0) + loc.visitors;
       });
     });
@@ -505,44 +351,45 @@ export const analyticsTracking = {
       .map(([location, count]) => ({
         location,
         visitors: count,
-        percentage: Math.round((count / (dailyStats.reduce((s, d) => s + d.uniqueVisitors, 0) || 1)) * 100),
-        flag: location.includes('India') ? '🇮🇳' : '🌐',
+        percentage: totalUnique > 0 ? Math.round((count / totalUnique) * 100) : 0,
+        flag: location.includes('India') ? '🇮🇳' : '📍',
       }))
       .sort((a, b) => b.visitors - a.visitors)
-      .slice(0, 8);
+      .slice(0, 10);
 
-    // Pages aggregation
+    // Top pages aggregation
     const pageMap: Record<string, number> = {};
     dailyStats.forEach((day) => {
-      day.topPages.forEach((p) => {
+      day.topPages?.forEach((p) => {
         pageMap[p.path] = (pageMap[p.path] || 0) + p.views;
       });
     });
 
     const pageTitles: Record<string, string> = {
-      '/': 'Homepage & Services Overview',
+      '/': 'Homepage',
       '/free-school-management-software': 'Free School ERP (Worth ₹30,000)',
-      '/whatsapp-automation': 'WhatsApp Business Automation Suite',
+      '/whatsapp-automation': 'WhatsApp Business Automation',
       '/landing-pages': 'High-Converting Landing Pages',
       '/demo/education-academy': 'Education Academy Live Demo',
-      '/meta-ads': 'Meta (FB/IG) Performance Marketing',
+      '/meta-ads': 'Meta Ads Campaign Portal',
       '/google-ads': 'Google PPC & Search Management',
-      '/schedule-meeting': '1-on-1 Digital Strategy Scheduler',
+      '/schedule-meeting': '1-on-1 Digital Consultation',
       '/intake-form': 'Client Request Intake Form',
+      '/contact': 'Contact Us Page',
+      '/solutions/education': 'Education Industry Suite',
     };
 
-    const totalViews = dailyStats.reduce((sum, d) => sum + d.totalPageViews, 0);
     const topPages = Object.entries(pageMap)
       .map(([path, views]) => ({
         path,
         title: pageTitles[path] || path,
         views,
-        percentage: Math.round((views / (totalViews || 1)) * 100),
+        percentage: totalViews > 0 ? Math.round((views / totalViews) * 100) : 0,
       }))
       .sort((a, b) => b.views - a.views)
-      .slice(0, 7);
+      .slice(0, 10);
 
-    // Click Intelligence Aggregation
+    // Click intelligence aggregation
     const elementClickMap: Record<string, { clicks: number; category: ClickCategory; pagePath: string; targetUrl?: string }> = {};
     const categoryClickMap: Record<ClickCategory, number> = {
       cta: 0,
@@ -582,7 +429,7 @@ export const analyticsTracking = {
         pagePath: meta.pagePath,
         targetUrl: meta.targetUrl,
         clicks: meta.clicks,
-        percentage: Math.round((meta.clicks / (totalClicksCount || 1)) * 100),
+        percentage: totalClicksCount > 0 ? Math.round((meta.clicks / totalClicksCount) * 100) : 0,
       }))
       .sort((a, b) => b.clicks - a.clicks)
       .slice(0, 10);
@@ -603,7 +450,7 @@ export const analyticsTracking = {
         category: cat,
         label: categoryLabels[cat],
         clicks: categoryClickMap[cat],
-        percentage: Math.round((categoryClickMap[cat] / (totalClicksCount || 1)) * 100),
+        percentage: totalClicksCount > 0 ? Math.round((categoryClickMap[cat] / totalClicksCount) * 100) : 0,
       }))
       .filter((c) => c.clicks > 0)
       .sort((a, b) => b.clicks - a.clicks);
@@ -612,65 +459,59 @@ export const analyticsTracking = {
       .map(([path, count]) => ({
         path,
         clicks: count,
-        percentage: Math.round((count / (totalClicksCount || 1)) * 100),
+        percentage: totalClicksCount > 0 ? Math.round((count / totalClicksCount) * 100) : 0,
       }))
       .sort((a, b) => b.clicks - a.clicks);
 
-    // Audience Age & Sensitive Demographics
-    const totalUnique14d = dailyStats.reduce((s, d) => s + d.uniqueVisitors, 0);
+    // REAL declared demographic data from actual form submissions in adminStore
+    const inquiries = adminStore.getInquiries();
+    const leadsWithAge = inquiries.filter((i) => i.age !== undefined && i.age !== '');
+    
+    let sumAge = 0;
+    let validAgeCount = 0;
+    const bracketCounts: Record<string, number> = {
+      '18–24': 0,
+      '25–34': 0,
+      '35–44': 0,
+      '45–54': 0,
+      '55+': 0,
+    };
 
-    const ageBrackets: AgeDemographicBracket[] = [
-      {
-        bracket: '25–34',
-        persona: 'School Directors, Young Founders & Growth Leads',
-        percentage: 42,
-        visitorCount: Math.round(totalUnique14d * 0.42),
-        conversionRate: 4.8,
-      },
-      {
-        bracket: '35–44',
-        persona: 'Senior School Principals, Clinic Heads & Trustees',
-        percentage: 31,
-        visitorCount: Math.round(totalUnique14d * 0.31),
-        conversionRate: 5.6,
-      },
-      {
-        bracket: '18–24',
-        persona: 'Tech Coordinators, EdTech Aspirants & Staff',
-        percentage: 14,
-        visitorCount: Math.round(totalUnique14d * 0.14),
-        conversionRate: 2.2,
-      },
-      {
-        bracket: '45–54',
-        persona: 'Institution Presidents & Wealth Advisory Clients',
-        percentage: 9,
-        visitorCount: Math.round(totalUnique14d * 0.09),
-        conversionRate: 6.1,
-      },
-      {
-        bracket: '55+',
-        persona: 'Trust Committee Members & Executive Board Advisors',
-        percentage: 4,
-        visitorCount: Math.round(totalUnique14d * 0.04),
-        conversionRate: 3.9,
-      },
-    ];
+    leadsWithAge.forEach((lead) => {
+      const num = Number(lead.age);
+      if (!isNaN(num) && num > 0) {
+        sumAge += num;
+        validAgeCount += 1;
+        if (num < 25) bracketCounts['18–24'] += 1;
+        else if (num < 35) bracketCounts['25–34'] += 1;
+        else if (num < 45) bracketCounts['35–44'] += 1;
+        else if (num < 55) bracketCounts['45–54'] += 1;
+        else bracketCounts['55+'] += 1;
+      }
+    });
 
-    const decisionMakerLevel = [
-      { tier: 'School Principals & Trustees', percentage: 38, count: Math.round(totalUnique14d * 0.38) },
-      { tier: 'Business Owners & Founders', percentage: 32, count: Math.round(totalUnique14d * 0.32) },
-      { tier: 'Marketing & Operations Heads', percentage: 18, count: Math.round(totalUnique14d * 0.18) },
-      { tier: 'Coordinators & Individual Pros', percentage: 12, count: Math.round(totalUnique14d * 0.12) },
-    ];
+    const averageAge = validAgeCount > 0 ? Math.round(sumAge / validAgeCount) : 'N/A';
+    const ageBrackets = Object.entries(bracketCounts).map(([bracket, count]) => ({
+      bracket,
+      count,
+      percentage: validAgeCount > 0 ? Math.round((count / validAgeCount) * 100) : 0,
+    }));
 
-    const intentTier = [
-      { tier: 'High-Ticket Enterprise Services', percentage: 34, budgetRange: '₹75,000 – ₹2,00,000+' },
-      { tier: 'Free School ERP Special Offer', percentage: 41, budgetRange: '₹30,000 Free License' },
-      { tier: 'Mid-Market Marketing & Ads', percentage: 25, budgetRange: '₹25,000 – ₹50,000' },
-    ];
+    const declaredLeads: DeclaredDemographicLead[] = inquiries.map((i) => ({
+      id: i.id,
+      name: i.name,
+      age: i.age,
+      city: i.city,
+      phone: i.phone,
+      email: i.email,
+      source: i.source,
+      requirement: i.requirement || i.message,
+      schoolName: i.schoolName,
+      budget: i.budget,
+      createdAt: i.createdAt,
+    }));
 
-    const overallCtr = Number(((totalClicksCount / (totalViews || 1)) * 100).toFixed(2));
+    const overallCtr = totalViews > 0 ? Number(((totalClicksCount / totalViews) * 100).toFixed(2)) : 0;
 
     return {
       today,
@@ -679,51 +520,37 @@ export const analyticsTracking = {
         mobile: totalMobile,
         tablet: totalTablet,
         desktop: totalDesktop,
-        mobilePct: Math.round((totalMobile / totalDevices) * 100),
-        tabletPct: Math.round((totalTablet / totalDevices) * 100),
-        desktopPct: Math.round((totalDesktop / totalDevices) * 100),
+        mobilePct: totalDevices > 0 ? Math.round((totalMobile / totalDevices) * 100) : 0,
+        tabletPct: totalDevices > 0 ? Math.round((totalTablet / totalDevices) * 100) : 0,
+        desktopPct: totalDevices > 0 ? Math.round((totalDesktop / totalDevices) * 100) : 0,
       },
       topLocations,
       topPages,
-      audienceInsights: {
+      declaredDemographics: {
+        totalLeadsWithAge: validAgeCount,
+        averageAge,
         ageBrackets,
-        decisionMakerLevel,
-        intentTier,
-        privacyComplianceStatus: 'DPDP Act 2023 & GDPR Compliant',
+        leads: declaredLeads,
       },
       clickSummary: {
         topClickedElements,
         clicksByCategory,
         clicksByPage,
         totalClicks: totalClicksCount,
-        recentClicks: clicks.slice(0, 30),
+        recentClicks: clicks.slice(0, 50),
       },
-      totalUniqueVisitors14d: totalUnique14d,
-      totalPageViews14d: totalViews,
+      totalUniqueVisitors: totalUnique,
+      totalPageViews: totalViews,
       overallCtr,
     };
   },
 
-  // Reset or clear analytics data
-  clearAnalyticsData(): void {
+  // Clear real analytics storage completely
+  clearRealAnalyticsData(): void {
     if (!isBrowser()) return;
     localStorage.removeItem(STORAGE_KEYS.DAILY_VISITORS);
     localStorage.removeItem(STORAGE_KEYS.CLICKS);
-  },
-
-  // Simulate a live user click for demonstration in the admin panel
-  simulateSampleClick(elementText: string, category: ClickCategory, page: string) {
-    const devices: DeviceType[] = ['mobile', 'desktop', 'tablet'];
-    const locations = ['Delhi NCR, India', 'Bengaluru, India', 'Jaipur, India', 'Mumbai, India', 'Hyderabad, India'];
-    const randomDevice = devices[Math.floor(Math.random() * devices.length)];
-    const randomLoc = locations[Math.floor(Math.random() * locations.length)];
-
-    return this.recordClick({
-      elementText,
-      elementType: category,
-      pagePath: page,
-      device: randomDevice,
-      location: randomLoc,
-    });
+    localStorage.removeItem(STORAGE_KEYS.LAST_VISIT_DATE);
+    window.dispatchEvent(new CustomEvent('dss_analytics_updated'));
   },
 };

@@ -30,16 +30,14 @@ function getFallbackLocation(): string {
   try {
     const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
     if (tz.includes('Calcutta') || tz.includes('Kolkata')) {
-      const cities = ['Delhi NCR, India', 'Bengaluru, Karnataka, India', 'Jaipur, Rajasthan, India', 'Mumbai, Maharashtra, India', 'Hyderabad, India'];
-      return cities[Math.floor(Math.random() * cities.length)];
+      return 'India';
     }
-    if (tz.includes('Dubai') || tz.includes('Asia/Dubai')) return 'Dubai, United Arab Emirates';
-    if (tz.includes('New_York') || tz.includes('America/')) return 'New York, United States';
-    if (tz.includes('London') || tz.includes('Europe/London')) return 'London, United Kingdom';
-    if (tz.includes('Singapore')) return 'Singapore, Singapore';
-    return 'Delhi NCR, India';
+    if (tz) {
+      return tz.replace(/_/g, ' ');
+    }
+    return 'Online Visitor';
   } catch {
-    return 'Delhi NCR, India';
+    return 'Online Visitor';
   }
 }
 

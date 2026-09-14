@@ -180,7 +180,7 @@ export const AnalyticsOverview: React.FC<AnalyticsOverviewProps> = ({
                 </span>
               </div>
               <p className="text-xs text-slate-300 mt-0.5">
-                Monitoring <strong>Daily Visitors</strong>, <strong>Mobile vs Desktop Ratio (64% Mobile)</strong>, <strong>Top Cities (Delhi NCR, Bengaluru, Jaipur)</strong>, and <strong>Interactive Click Feeds</strong>.
+                Monitoring <strong>Real Daily Visitors</strong>, <strong>Actual Device Ratios (Mobile / Desktop / Tablet)</strong>, <strong>Detected Inbound Locations</strong>, and <strong>Live User Clicks</strong>.
               </p>
             </div>
           </div>
