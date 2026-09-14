@@ -262,6 +262,24 @@ export const analyticsTracking = {
 
     saveRealDailyStats(stats);
 
+    // Dispatch to Server for Central Cross-Device Tracking
+    if (isBrowser()) {
+      try {
+        fetch('/api/analytics/track', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            type: 'pageview',
+            path,
+            device,
+            location,
+            visitorId,
+          }),
+          keepalive: true,
+        }).catch(() => {});
+      } catch {}
+    }
+
     window.dispatchEvent(new CustomEvent('dss_analytics_updated'));
   },
 
@@ -300,6 +318,27 @@ export const analyticsTracking = {
 
     const updated = [newClick, ...currentClicks];
     saveRealClicks(updated);
+
+    // Dispatch to Server for Central Cross-Device Tracking
+    if (isBrowser()) {
+      try {
+        fetch('/api/analytics/track', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            type: 'click',
+            elementText: newClick.elementText,
+            elementType: newClick.elementType,
+            pagePath: newClick.pagePath,
+            targetUrl: newClick.targetUrl,
+            device: newClick.device,
+            location: newClick.location,
+            visitorId,
+          }),
+          keepalive: true,
+        }).catch(() => {});
+      } catch {}
+    }
 
     if (isBrowser()) {
       window.dispatchEvent(new CustomEvent('dss_analytics_updated', { detail: newClick }));
@@ -553,12 +592,95 @@ export const analyticsTracking = {
     };
   },
 
+  // Fetch real consolidated telemetry from central server
+  async fetchVisitorAnalyticsData(): Promise<VisitorAnalyticsData> {
+    if (isBrowser()) {
+      try {
+        const res = await fetch('/api/analytics/data', { cache: 'no-store' });
+        if (res.ok) {
+          const serverData = await res.json();
+
+          // Merge with real inquiries for declared demographics
+          let inquiries: any[] = [];
+          try {
+            const raw = localStorage.getItem('dss_admin_inquiries');
+            if (raw) {
+              const parsed = JSON.parse(raw);
+              inquiries = Array.isArray(parsed) ? parsed.filter((item: any) => !/^inq-20\d$/.test(item.id)) : [];
+            }
+          } catch {}
+
+          const leadsWithAge = inquiries.filter((i) => i.age !== undefined && i.age !== '');
+          let sumAge = 0;
+          let validAgeCount = 0;
+          const bracketCounts: Record<string, number> = {
+            '18–24': 0,
+            '25–34': 0,
+            '35–44': 0,
+            '45–54': 0,
+            '55+': 0,
+          };
+
+          leadsWithAge.forEach((lead) => {
+            const num = Number(lead.age);
+            if (!isNaN(num) && num > 0) {
+              sumAge += num;
+              validAgeCount += 1;
+              if (num < 25) bracketCounts['18–24'] += 1;
+              else if (num < 35) bracketCounts['25–34'] += 1;
+              else if (num < 45) bracketCounts['35–44'] += 1;
+              else if (num < 55) bracketCounts['45–54'] += 1;
+              else bracketCounts['55+'] += 1;
+            }
+          });
+
+          const averageAge = validAgeCount > 0 ? Math.round(sumAge / validAgeCount) : 'N/A';
+          const ageBrackets = Object.entries(bracketCounts).map(([bracket, count]) => ({
+            bracket,
+            count,
+            percentage: validAgeCount > 0 ? Math.round((count / validAgeCount) * 100) : 0,
+          }));
+
+          const declaredLeads: DeclaredDemographicLead[] = inquiries.map((i) => ({
+            id: i.id,
+            name: i.name,
+            age: i.age,
+            city: i.city,
+            phone: i.phone,
+            email: i.email,
+            source: i.source,
+            requirement: i.requirement || i.message,
+            schoolName: i.schoolName,
+            budget: i.budget,
+            createdAt: i.createdAt,
+          }));
+
+          return {
+            ...serverData,
+            declaredDemographics: {
+              totalLeadsWithAge: validAgeCount,
+              averageAge,
+              ageBrackets,
+              leads: declaredLeads,
+            },
+          };
+        }
+      } catch (e) {
+        console.warn('Failed to load server analytics, falling back to local', e);
+      }
+    }
+    return this.getVisitorAnalyticsData();
+  },
+
   // Clear real analytics storage completely
   clearRealAnalyticsData(): void {
     if (!isBrowser()) return;
     localStorage.removeItem(STORAGE_KEYS.DAILY_VISITORS);
     localStorage.removeItem(STORAGE_KEYS.CLICKS);
     localStorage.removeItem(STORAGE_KEYS.LAST_VISIT_DATE);
+    try {
+      fetch('/api/analytics/clear', { method: 'POST' }).catch(() => {});
+    } catch {}
     window.dispatchEvent(new CustomEvent('dss_analytics_updated'));
   },
 };

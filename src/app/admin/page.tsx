@@ -21,7 +21,7 @@ export default function AdminDashboardPage() {
   const [inquiries, setInquiries] = useState<Inquiry[]>([]);
   const [summary, setSummary] = useState<AnalyticsSummary | null>(null);
 
-  const loadData = useCallback(() => {
+  const loadData = useCallback(async () => {
     const apts = adminStore.getAppointments();
     const inqs = adminStore.getInquiries();
     const sum = adminStore.getAnalyticsSummary();
@@ -29,15 +29,29 @@ export default function AdminDashboardPage() {
     setAppointments(apts);
     setInquiries(inqs);
     setSummary(sum);
+
+    try {
+      const serverSum = await adminStore.fetchAnalyticsSummary();
+      setSummary(serverSum);
+    } catch {}
   }, []);
 
   useEffect(() => {
     loadData();
 
+    // Auto-sync every 10 seconds for cross-device mobile events
+    const syncInterval = setInterval(loadData, 10000);
+
     // Listen for storage events (e.g. if new submission occurs in another tab)
     const handleStorage = () => loadData();
     window.addEventListener('storage', handleStorage);
-    return () => window.removeEventListener('storage', handleStorage);
+    window.addEventListener('dss_analytics_updated', handleStorage);
+
+    return () => {
+      clearInterval(syncInterval);
+      window.removeEventListener('storage', handleStorage);
+      window.removeEventListener('dss_analytics_updated', handleStorage);
+    };
   }, [loadData]);
 
   const handleConvertToAppointment = (inquiry: Inquiry) => {

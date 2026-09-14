@@ -343,6 +343,84 @@ export const adminStore = {
     };
   },
 
+  // Async Analytics Computation from Server Telemetry
+  async fetchAnalyticsSummary(): Promise<AnalyticsSummary> {
+    const appointments = loadAppointments();
+    const inquiries = loadInquiries();
+
+    const confirmedCount = appointments.filter((a) => a.status === 'confirmed' || a.status === 'completed').length;
+    const totalPipeline = appointments.reduce((sum, a) => sum + (a.status !== 'cancelled' ? a.estimatedValue : 0), 0);
+
+    const telemetry = await analyticsTracking.fetchVisitorAnalyticsData();
+
+    // Group real inquiries by source
+    const sourceCount: Record<string, number> = {};
+    inquiries.forEach((inq) => {
+      sourceCount[inq.source] = (sourceCount[inq.source] || 0) + 1;
+    });
+
+    const trafficChannels = Object.entries(sourceCount).map(([channel, leads]) => ({
+      channel,
+      visitors: Math.max(leads, telemetry.totalUniqueVisitors),
+      leads,
+      conversionRate: telemetry.totalUniqueVisitors > 0 ? Number(((leads / telemetry.totalUniqueVisitors) * 100).toFixed(1)) : 0,
+    }));
+
+    if (trafficChannels.length === 0) {
+      trafficChannels.push({
+        channel: 'Direct Website Visitors',
+        visitors: telemetry.totalUniqueVisitors,
+        leads: 0,
+        conversionRate: 0,
+      });
+    }
+
+    // Group real inquiries by service
+    const serviceCount: Record<string, number> = {};
+    inquiries.forEach((inq) => {
+      const s = inq.serviceOrDemo || 'General Inquiry';
+      serviceCount[s] = (serviceCount[s] || 0) + 1;
+    });
+
+    const totalInq = inquiries.length || 1;
+    const serviceDemand = Object.entries(serviceCount).map(([service, count]) => ({
+      service,
+      inquiriesCount: count,
+      percentage: Math.round((count / totalInq) * 100),
+    }));
+
+    // Real daily stats from telemetry days
+    const dailyStats = telemetry.dailyStats.map((d) => {
+      const dayInquiries = inquiries.filter((i) => i.createdAt && i.createdAt.startsWith(d.date)).length;
+      const dayApts = appointments.filter((a) => a.createdAt && a.createdAt.startsWith(d.date)).length;
+      return {
+        date: d.formattedDate,
+        visitors: d.uniqueVisitors,
+        leads: dayInquiries,
+        appointments: dayApts,
+      };
+    });
+
+    const conversionRate = telemetry.totalPageViews > 0
+      ? Number((((appointments.length + inquiries.length) / telemetry.totalPageViews) * 100).toFixed(2))
+      : 0;
+
+    return {
+      totalAppointments: appointments.length,
+      confirmedAppointments: confirmedCount,
+      totalInquiries: inquiries.length,
+      totalPipelineValue: totalPipeline,
+      totalVisitors: telemetry.totalUniqueVisitors,
+      totalPageViews: telemetry.totalPageViews,
+      totalClicks: telemetry.clickSummary.totalClicks,
+      conversionRate,
+      avgResponseTime: inquiries.length > 0 ? '< 45s' : 'Ready',
+      trafficChannels,
+      serviceDemand,
+      dailyStats,
+    };
+  },
+
   // Reset to Factory Defaults
   resetStoreToDefaults(): void {
     if (!isBrowser()) return;

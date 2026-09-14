@@ -37,35 +37,43 @@ export const VisitorAnalyticsView: React.FC = () => {
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
   const [feedbackMessage, setFeedbackMessage] = useState<string>('');
 
-  const refreshData = () => {
+  const refreshData = async () => {
     setIsRefreshing(true);
-    const fresh = analyticsTracking.getVisitorAnalyticsData();
-    setData(fresh);
-    setTimeout(() => setIsRefreshing(false), 250);
+    try {
+      const fresh = await analyticsTracking.fetchVisitorAnalyticsData();
+      setData(fresh);
+    } catch {
+      setData(analyticsTracking.getVisitorAnalyticsData());
+    } finally {
+      setIsRefreshing(false);
+    }
   };
 
   useEffect(() => {
     refreshData();
 
+    // Auto-sync every 8 seconds so visits and clicks from other devices (e.g. mobile) appear in real time
+    const pollInterval = setInterval(refreshData, 8000);
+
     // Listen for real-time updates from live user visits and clicks
     const handleUpdate = () => {
-      const fresh = analyticsTracking.getVisitorAnalyticsData();
-      setData(fresh);
+      refreshData();
     };
 
     window.addEventListener('dss_analytics_updated', handleUpdate);
     window.addEventListener('storage', handleUpdate);
 
     return () => {
+      clearInterval(pollInterval);
       window.removeEventListener('dss_analytics_updated', handleUpdate);
       window.removeEventListener('storage', handleUpdate);
     };
   }, []);
 
-  const handleClearData = () => {
+  const handleClearData = async () => {
     if (confirm('Are you sure you want to reset all recorded real visitor and click tracking metrics back to 0?')) {
       analyticsTracking.clearRealAnalyticsData();
-      refreshData();
+      await refreshData();
       setFeedbackMessage('Real tracking data reset to 0.');
       setTimeout(() => setFeedbackMessage(''), 3000);
     }
