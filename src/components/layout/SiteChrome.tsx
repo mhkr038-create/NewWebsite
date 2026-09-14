@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { Navbar } from './Navbar';
 import { Footer } from './Footer';
 import { QuickInquiryModal } from './QuickInquiryModal';
+import { CookieConsent } from './CookieConsent';
 
 interface SiteChromeProps {
   children: React.ReactNode;
@@ -24,6 +25,7 @@ export const SiteChrome: React.FC<SiteChromeProps> = ({ children }) => {
       <main className="flex-1">{children}</main>
       <Footer />
       <QuickInquiryModal />
+      <CookieConsent />
     </>
   );
 };
