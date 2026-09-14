@@ -68,7 +68,7 @@ export function HomeContent() {
             href="/intake-form"
             className="px-6 py-3 rounded-full text-xs font-mono uppercase tracking-wider bg-white text-black font-semibold hover:bg-neutral-200 transition-colors cursor-pointer inline-flex items-center gap-2 shadow-lg"
           >
-            <span>Submit Requirement</span>
+            <span>Submit Request</span>
             <ArrowUpRight className="w-3.5 h-3.5" />
           </Link>
 

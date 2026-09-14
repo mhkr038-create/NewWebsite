@@ -4,11 +4,12 @@ import { IntakeFormView } from '../../views/IntakeFormView';
 import { SITE_CONFIG } from '../../config/siteConfig';
 
 export const metadata: Metadata = {
-  title: 'Client Intake & Project Requirements Form',
-  description: 'Submit your project requirements, contact information, and business goals to get an instant tailored digital growth proposal.',
+  title: 'Submit Project Request',
+  description: 'Submit your project request, contact information, and business goals to get an instant tailored digital growth proposal.',
   keywords: [
+    'submit request',
+    'project request form',
     'client intake form',
-    'project requirement form',
     'digital marketing consultation',
     'website requirement submission',
     'whatsapp automation inquiry',
@@ -17,8 +18,8 @@ export const metadata: Metadata = {
     canonical: `${SITE_CONFIG.siteUrl}/intake-form`,
   },
   openGraph: {
-    title: 'Client Intake & Project Requirements Form',
-    description: 'Submit your project requirements, contact information, and business goals to get an instant tailored digital growth proposal.',
+    title: 'Submit Project Request',
+    description: 'Submit your project request, contact information, and business goals to get an instant tailored digital growth proposal.',
     url: `${SITE_CONFIG.siteUrl}/intake-form`,
     siteName: 'Digital Simple Solution',
     type: 'website',

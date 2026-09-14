@@ -59,7 +59,7 @@ export const Navbar: React.FC = () => {
     { name: 'Home', path: '/' },
     { name: 'Services', path: '/services', hasDropdown: 'services' },
     { name: 'Solutions', path: '/solutions', hasDropdown: 'solutions' },
-    { name: 'Intake Form', path: '/intake-form' },
+    { name: 'Submit Request', path: '/intake-form' },
     { name: 'Demos', path: '/demos' },
     { name: 'Products', path: '/digital-products' },
     { name: 'Blog', path: '/blog' },

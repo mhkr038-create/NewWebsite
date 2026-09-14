@@ -22,6 +22,11 @@ const nextConfig = {
         destination: '/digital-products',
         permanent: true,
       },
+      {
+        source: '/submit-request',
+        destination: '/intake-form',
+        permanent: true,
+      },
     ];
   },
 };

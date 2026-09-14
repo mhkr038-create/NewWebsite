@@ -102,7 +102,7 @@ export const IntakeFormView: React.FC = () => {
       phone: phone,
       serviceOrDemo: requirement,
       message: fullMessage,
-      source: 'Intake Form',
+      source: 'Submit Request',
       age: age,
       requirement: requirement,
       city: city || 'Not Specified',
@@ -161,22 +161,22 @@ export const IntakeFormView: React.FC = () => {
           <div className="flex items-center gap-2 text-neutral-400">
             <Link href="/" className="hover:text-white transition-colors">Home</Link>
             <span>/</span>
-            <span className="text-white">Client Intake Form</span>
+            <span className="text-white">Submit Request</span>
           </div>
 
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-neutral-900 border border-neutral-800 text-neutral-300">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            Live Client Intake
+            Submit Request
           </span>
         </div>
 
         {/* Section Header */}
         <div className="mb-10 text-left">
           <span className="text-xs font-mono uppercase tracking-widest text-cyan-400 font-semibold mb-2 block">
-            Project Intake &amp; Requirements
+            Project Request &amp; Requirements
           </span>
           <h1 className="text-3xl sm:text-5xl font-normal tracking-tight text-white mb-4 leading-tight">
-            Tell Us About Your Project &amp; Requirement
+            Submit Your Project Request
           </h1>
           <p className="text-sm sm:text-base text-neutral-400 max-w-2xl leading-relaxed font-light">
             Share your contact details, age, and specific requirement below. Our team reviews submissions within 2 hours to provide a tailored blueprint and budget estimate.
@@ -428,7 +428,7 @@ export const IntakeFormView: React.FC = () => {
                     className="w-full sm:w-auto px-8 py-4 rounded-xl bg-white text-black font-semibold text-xs font-mono uppercase tracking-wider hover:bg-neutral-200 transition-colors cursor-pointer flex items-center justify-center gap-2 shadow-xl disabled:opacity-50"
                   >
                     <Send className="w-4 h-4" />
-                    <span>{isSubmitting ? 'Submitting...' : 'Submit Requirement'}</span>
+                    <span>{isSubmitting ? 'Submitting...' : 'Submit Request'}</span>
                   </button>
 
                   <button
@@ -454,11 +454,11 @@ export const IntakeFormView: React.FC = () => {
                 </div>
 
                 <h3 className="text-2xl font-normal text-white">
-                  Requirement Received Successfully!
+                  Request Received Successfully!
                 </h3>
 
                 <p className="text-sm text-neutral-400 leading-relaxed font-light">
-                  Thank you, <span className="text-white font-medium">{fullName}</span>. We have logged your requirement for <span className="text-cyan-400 font-medium">{requirement}</span>. Our growth team is reviewing your details and will get in touch via WhatsApp / Phone (<span className="text-white font-mono">{phone}</span>).
+                  Thank you, <span className="text-white font-medium">{fullName}</span>. We have logged your request for <span className="text-cyan-400 font-medium">{requirement}</span>. Our growth team is reviewing your details and will get in touch via WhatsApp / Phone (<span className="text-white font-mono">{phone}</span>).
                 </p>
 
                 <div className="pt-4 flex flex-col sm:flex-row gap-3 justify-center">
@@ -474,7 +474,7 @@ export const IntakeFormView: React.FC = () => {
                     onClick={handleReset}
                     className="px-6 py-3 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-neutral-300 text-xs font-mono uppercase tracking-wider transition-colors cursor-pointer"
                   >
-                    <span>Submit Another Requirement</span>
+                    <span>Submit Another Request</span>
                   </button>
                 </div>
               </div>

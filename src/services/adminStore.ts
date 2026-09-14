@@ -22,7 +22,7 @@ export interface Inquiry {
   phone: string;
   serviceOrDemo: string;
   message: string;
-  source: 'Quick Modal' | 'Contact Form' | 'Demo Page' | 'WhatsApp Direct' | 'Intake Form' | 'Google Form';
+  source: 'Quick Modal' | 'Contact Form' | 'Demo Page' | 'WhatsApp Direct' | 'Intake Form' | 'Submit Request' | 'Google Form';
   status: 'new' | 'contacted' | 'qualified' | 'converted' | 'closed';
   createdAt: string;
   age?: number | string;
