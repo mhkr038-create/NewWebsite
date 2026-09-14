@@ -164,7 +164,7 @@ export const Navbar: React.FC = () => {
                   {link.isFlash && (
                     <span className="px-1.5 py-0.5 bg-red-600 text-white text-[9px] font-extrabold rounded-full font-mono uppercase tracking-wider animate-blink-flash flex items-center gap-0.5 shadow-sm">
                       <Zap className="w-2.5 h-2.5 fill-yellow-300 text-yellow-300" />
-                      FLASH
+                      LIMITED OFFER
                     </span>
                   )}
                   {link.hasDropdown && (
@@ -332,7 +332,7 @@ export const Navbar: React.FC = () => {
                   {link.isFlash && (
                     <span className="px-2 py-0.5 bg-red-600 text-white text-[9px] font-extrabold rounded-full font-mono uppercase tracking-wider animate-blink-flash flex items-center gap-0.5 shadow-sm">
                       <Zap className="w-2.5 h-2.5 fill-yellow-300 text-yellow-300" />
-                      FLASH • ₹30K FREE
+                      LIMITED SLOTS • ₹30K FREE
                     </span>
                   )}
                 </span>
