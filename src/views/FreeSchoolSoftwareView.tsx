@@ -208,10 +208,19 @@ export const FreeSchoolSoftwareView: React.FC = () => {
 
         <div className="text-center max-w-3xl mx-auto space-y-6 relative z-10">
           
-          {/* Main Free Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-amber-500/20 via-yellow-500/15 to-emerald-500/20 border border-amber-500/40 text-amber-300 text-xs font-mono font-bold uppercase tracking-widest shadow-lg shadow-amber-500/10">
-            <Sparkles className="w-4 h-4 text-amber-400 shrink-0" />
-            <span>SPECIAL OFFER: WORTH ₹30,000 — 100% FREE SETUP</span>
+          {/* Main Free Badge with Blinking Flash */}
+          <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-slate-900/90 border border-amber-500/50 shadow-xl shadow-amber-500/10 flex-wrap justify-center">
+            <span className="inline-flex items-center gap-1.5 bg-red-600 text-white px-2.5 py-0.5 rounded-full text-[10px] font-mono font-extrabold uppercase tracking-wider animate-blink-flash">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-200 opacity-90" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-yellow-300" />
+              </span>
+              <span>⚡ FLASH OFFER</span>
+            </span>
+            <span className="inline-flex items-center gap-1.5 text-amber-300 text-xs font-mono font-bold uppercase tracking-wider">
+              <Sparkles className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+              <span>WORTH ₹30,000 — 100% FREE SETUP</span>
+            </span>
           </div>
 
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-[1.15] font-heading">

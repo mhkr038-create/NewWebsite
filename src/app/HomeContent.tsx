@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { ArrowUpRight, ShieldCheck } from 'lucide-react';
+import { ArrowUpRight, ShieldCheck, Zap } from 'lucide-react';
 import { useInquiry } from '../context/InquiryContext';
 import { SITE_CONFIG } from '../config/siteConfig';
 
@@ -24,28 +24,25 @@ export function HomeContent() {
           </span>
         </div>
 
-        <h1 className="text-3xl sm:text-5xl lg:text-6xl font-normal tracking-tight text-white leading-[1.15] mb-6">
-          We design websites and systems that grow your business.
+        {/* Big Bold Statement */}
+        <h1 className="text-3xl sm:text-5xl md:text-6xl font-normal tracking-tight leading-[1.1] mb-6 font-heading">
+          We engineer high-converting digital platforms, landing pages & automated marketing systems.
         </h1>
 
-        <p className="text-base sm:text-lg text-neutral-400 max-w-2xl font-light leading-relaxed mb-10">
-          High-converting landing pages, targeted Google & Meta ads, and automated WhatsApp workflows. Fast, straightforward, and built for results.
-        </p>
-
-        {/* 3 Simple Pillars */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 w-full pt-8 pb-10 border-t border-neutral-900 text-sm">
+        {/* 3 Core Pillars */}
+        <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-6 pt-6 pb-6 border-t border-neutral-900">
           <div>
             <h2 className="font-mono text-white text-xs uppercase tracking-wider mb-2">
-              01 / Websites
+              01 / Engineering
             </h2>
             <p className="text-neutral-400 text-xs leading-relaxed font-light">
-              High-speed Next.js landing pages tuned for conversions and mobile devices.
+              High-performance Next.js web applications, client portals, and e-commerce architectures.
             </p>
           </div>
 
           <div>
             <h2 className="font-mono text-white text-xs uppercase tracking-wider mb-2">
-              02 / Paid Ads
+              02 / Acquisition
             </h2>
             <p className="text-neutral-400 text-xs leading-relaxed font-light">
               Targeted Meta & Google ad campaigns engineered for measurable ROAS.
@@ -67,9 +64,16 @@ export function HomeContent() {
           <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/10 rounded-full blur-2xl pointer-events-none" />
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center relative z-10">
             <div className="lg:col-span-8 space-y-3 text-left">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-red-600 text-white text-[10px] font-mono font-extrabold uppercase tracking-wider animate-blink-flash shadow-md">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-200 opacity-90" />
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-yellow-300" />
+                  </span>
+                  <span>⚡ FLASH OFFER</span>
+                </span>
                 <span className="px-2.5 py-0.5 rounded-full bg-amber-400 text-slate-950 text-[10px] font-mono font-extrabold uppercase tracking-wider">
-                  SPECIAL OFFER • WORTH ₹30,000
+                  WORTH ₹30,000 FREE
                 </span>
                 <span className="text-xs text-emerald-400 font-mono font-semibold">100% Free Core ERP</span>
               </div>

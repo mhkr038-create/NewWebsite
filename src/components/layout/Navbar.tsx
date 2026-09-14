@@ -16,7 +16,8 @@ import {
   Share2,
   Search,
   FileText,
-  MessageSquare
+  MessageSquare,
+  ShieldCheck
 } from 'lucide-react';
 import { useInquiry } from '../../context/InquiryContext';
 import { GROWTH_SERVICES } from '../../data/growthServices';
@@ -56,18 +57,23 @@ export const Navbar: React.FC = () => {
     setSolutionsDropdownOpen(false);
   }, [pathname]);
 
-  const navLinks = [
+  interface NavLinkItem {
+    name: string;
+    path: string;
+    hasDropdown?: 'services' | 'solutions';
+    isFlash?: boolean;
+  }
+
+  const navLinks: NavLinkItem[] = [
     { name: 'Home', path: '/' },
-    { name: '🏫 Free School ERP', path: '/free-school-management-software', isSpecial: true },
     { name: 'Services', path: '/services', hasDropdown: 'services' },
     { name: 'Solutions', path: '/solutions', hasDropdown: 'solutions' },
-    { name: 'Submit Request', path: '/intake-form' },
+    { name: 'Free School ERP', path: '/free-school-management-software', isFlash: true },
     { name: 'Demos', path: '/demos' },
     { name: 'Products', path: '/digital-products' },
+    { name: 'Submit Request', path: '/intake-form' },
     { name: 'Blog', path: '/blog' },
-    { name: 'About', path: '/about' },
     { name: 'Contact', path: '/contact' },
-    { name: 'Admin', path: '/admin' },
   ];
 
 
@@ -140,18 +146,25 @@ export const Navbar: React.FC = () => {
                 <Link
                   href={link.path}
                   onClick={(e) => handleNavClick(link.path, e)}
-                  className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition-all duration-200 flex items-center gap-1.5 ${
-                    link.isSpecial
-                      ? 'bg-gradient-to-r from-amber-500/20 via-yellow-500/25 to-amber-500/20 text-amber-300 border border-amber-500/40 hover:border-amber-400 font-bold shadow-md shadow-amber-500/10'
+                  className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-200 flex items-center gap-1.5 ${
+                    link.isFlash
+                      ? 'bg-gradient-to-r from-amber-500/20 via-red-500/20 to-amber-500/20 text-amber-300 border border-amber-500/50 hover:border-amber-400 font-bold shadow-md shadow-amber-500/10'
                       : isActive(link.path)
                       ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30 font-semibold'
                       : 'text-slate-300 hover:text-white hover:bg-slate-800/70'
                   }`}
                 >
-                  {link.name}
-                  {link.isSpecial && (
-                    <span className="px-1.5 py-0.2 bg-amber-400 text-slate-950 text-[9px] font-extrabold rounded font-mono uppercase">
-                      FREE
+                  {link.isFlash && (
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-90" />
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-400" />
+                    </span>
+                  )}
+                  <span>{link.name}</span>
+                  {link.isFlash && (
+                    <span className="px-1.5 py-0.5 bg-red-600 text-white text-[9px] font-extrabold rounded-full font-mono uppercase tracking-wider animate-blink-flash flex items-center gap-0.5 shadow-sm">
+                      <Zap className="w-2.5 h-2.5 fill-yellow-300 text-yellow-300" />
+                      FLASH
                     </span>
                   )}
                   {link.hasDropdown && (
@@ -245,11 +258,21 @@ export const Navbar: React.FC = () => {
           </nav>
 
           {/* Action CTAs */}
-          <div className="hidden sm:flex items-center gap-2.5">
+          <div className="hidden sm:flex items-center gap-2">
+            {/* Admin Portal link */}
+            <Link
+              href="/admin"
+              title="Admin Portal"
+              className="p-2 rounded-xl bg-slate-900/80 hover:bg-slate-800 text-slate-400 hover:text-cyan-400 border border-slate-800 hover:border-slate-700 transition-all flex items-center justify-center cursor-pointer group"
+            >
+              <ShieldCheck className="w-4 h-4 group-hover:scale-110 transition-transform" />
+              <span className="sr-only">Admin Portal</span>
+            </Link>
+
             {/* CTA 1: Get Started */}
             <button
               onClick={() => openQuickModal()}
-              className="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 text-xs font-semibold border border-slate-700/80 shadow-md transition-all hover:border-slate-600 flex items-center gap-1.5 cursor-pointer"
+              className="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 text-xs font-semibold border border-slate-700/80 shadow-md transition-all hover:border-slate-600 flex items-center gap-1.5 cursor-pointer"
             >
               <Zap className="w-3.5 h-3.5 text-amber-400" />
               <span>Get Started</span>
@@ -291,18 +314,25 @@ export const Navbar: React.FC = () => {
                   handleNavClick(link.path, e);
                 }}
                 className={`px-4 py-2.5 rounded-xl text-sm font-medium flex items-center justify-between ${
-                  link.isSpecial
-                    ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40 font-bold'
+                  link.isFlash
+                    ? 'bg-amber-500/15 text-amber-300 border border-amber-500/40 font-bold'
                     : isActive(link.path)
                     ? 'bg-indigo-600/20 text-indigo-300 border border-indigo-500/30'
                     : 'text-slate-300 hover:bg-slate-900'
                 }`}
               >
                 <span className="flex items-center gap-2">
+                  {link.isFlash && (
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-90" />
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-400" />
+                    </span>
+                  )}
                   <span>{link.name}</span>
-                  {link.isSpecial && (
-                    <span className="px-1.5 py-0.5 bg-amber-400 text-slate-950 text-[10px] font-bold rounded font-mono uppercase">
-                      WORTH ₹30K FREE
+                  {link.isFlash && (
+                    <span className="px-2 py-0.5 bg-red-600 text-white text-[9px] font-extrabold rounded-full font-mono uppercase tracking-wider animate-blink-flash flex items-center gap-0.5 shadow-sm">
+                      <Zap className="w-2.5 h-2.5 fill-yellow-300 text-yellow-300" />
+                      FLASH • ₹30K FREE
                     </span>
                   )}
                 </span>
@@ -329,6 +359,14 @@ export const Navbar: React.FC = () => {
             >
               <Calendar className="w-4 h-4" />
               <span>Book Consultation</span>
+            </Link>
+            <Link
+              href="/admin"
+              onClick={() => setMobileMenuOpen(false)}
+              className="w-full py-2 text-slate-400 hover:text-slate-200 text-center rounded-xl font-medium text-xs flex items-center justify-center gap-1.5 transition-colors"
+            >
+              <ShieldCheck className="w-3.5 h-3.5 text-cyan-400" />
+              <span>Admin Management Dashboard</span>
             </Link>
           </div>
         </div>

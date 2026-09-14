@@ -153,6 +153,15 @@ export const Footer: React.FC = () => {
               <li>
                 <Link href="/whatsapp-automation" className="hover:text-cyan-400 transition-colors">WhatsApp Automation</Link>
               </li>
+              <li>
+                <Link href="/free-school-management-software" className="text-amber-300 hover:text-amber-200 transition-colors font-medium flex items-center gap-1.5">
+                  <span className="relative flex h-1.5 w-1.5">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-80" />
+                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-amber-400" />
+                  </span>
+                  <span>Free School ERP (₹30K Free)</span>
+                </Link>
+              </li>
             </ul>
           </div>
 
