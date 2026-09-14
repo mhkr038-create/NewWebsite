@@ -23,7 +23,9 @@ import {
   Send, 
   Award,
   Zap,
-  Flame
+  Flame,
+  ChevronDown,
+  HelpCircle
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { adminStore } from '../services/adminStore';
@@ -195,6 +197,35 @@ export const FreeSchoolSoftwareView: React.FC = () => {
       desc: 'Barcode-enabled cataloging, issue and return logs, late fine tracking, and real-time book availability search.',
       icon: BookOpen,
       badge: 'Organized',
+    },
+  ];
+
+  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
+
+  const faqs = [
+    {
+      q: 'Is the Free School Management Software really 100% free?',
+      a: 'Yes. The complete core ERP software license (valued at ₹30,000) is provided at ₹0 software fee for the first 25 registered educational institutions with zero recurring per-student software charges.',
+    },
+    {
+      q: 'What education boards are supported by the software?',
+      a: 'It fully supports CBSE Affiliated schools, ICSE / ISC Boards, State Education Boards, IB / Cambridge International curricula, pre-schools, coaching academies, and degree colleges with customizable rubrics.',
+    },
+    {
+      q: 'Can we import our existing student data from Excel or spreadsheets?',
+      a: 'Yes! Our onboarding team provides an easy 1-click Excel/CSV import template to bulk upload all your student bios, class sections, parent contact numbers, and past fee dues in minutes without manual re-typing.',
+    },
+    {
+      q: 'How does the automated WhatsApp notification system work?',
+      a: 'The ERP connects directly with the WhatsApp Business Cloud API to send automated fee payment receipts, absentee alerts, homework updates, and emergency holiday broadcasts directly to parents.',
+    },
+    {
+      q: 'How long does complete school setup and onboarding take?',
+      a: 'Onboarding takes 24 to 48 hours. Once you submit the enquiry form, our engineering team provisions your cloud database, sets up your administrative logins, and conducts a live staff walkthrough.',
+    },
+    {
+      q: 'Is our student bio-data and fee collection secure?',
+      a: 'Absolutely. Your school database is secured with enterprise 256-bit SSL encryption, automated daily offsite cloud backups, and granular role-based permissions for accountants, teachers, and admins.',
     },
   ];
 
@@ -450,6 +481,62 @@ export const FreeSchoolSoftwareView: React.FC = () => {
               </ul>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Frequently Asked Questions (FAQ) Section - High SEO Impact */}
+      <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto border-t border-slate-800/80">
+        <div className="text-center max-w-2xl mx-auto space-y-3 mb-10">
+          <span className="text-xs font-mono uppercase text-amber-400 tracking-widest font-semibold flex items-center justify-center gap-1.5">
+            <HelpCircle className="w-4 h-4 text-amber-400" />
+            <span>Got Questions? We Have Answers</span>
+          </span>
+          <h2 className="text-2xl sm:text-4xl font-bold text-white font-heading">
+            Frequently Asked Questions
+          </h2>
+          <p className="text-xs sm:text-sm text-slate-400">
+            Everything you need to know about our Free ₹30,000 School ERP license, modules, data security, and setup.
+          </p>
+        </div>
+
+        <div className="space-y-3 text-left">
+          {faqs.map((faq, idx) => {
+            const isOpen = openFaqIndex === idx;
+            return (
+              <div
+                key={idx}
+                className={`rounded-2xl border transition-all duration-200 overflow-hidden ${
+                  isOpen
+                    ? 'bg-slate-900/90 border-amber-500/50 shadow-lg shadow-amber-950/20'
+                    : 'bg-[#0b1022] border-slate-800 hover:border-slate-700'
+                }`}
+              >
+                <button
+                  onClick={() => setOpenFaqIndex(isOpen ? null : idx)}
+                  className="w-full p-4 sm:p-5 flex items-center justify-between text-left gap-4 cursor-pointer"
+                  aria-expanded={isOpen}
+                >
+                  <span className="text-sm sm:text-base font-semibold text-white font-heading">
+                    {faq.q}
+                  </span>
+                  <div
+                    className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 transition-transform duration-200 ${
+                      isOpen
+                        ? 'bg-amber-400 text-slate-950 rotate-180'
+                        : 'bg-slate-800 text-slate-400'
+                    }`}
+                  >
+                    <ChevronDown className="w-4 h-4" />
+                  </div>
+                </button>
+                {isOpen && (
+                  <div className="px-4 pb-5 sm:px-5 sm:pb-5 pt-0 text-xs sm:text-sm text-slate-300 leading-relaxed border-t border-slate-800/80 mt-1">
+                    {faq.a}
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       </section>
 

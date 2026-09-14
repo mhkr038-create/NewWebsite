@@ -65,6 +65,13 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || '',
+    yandex: process.env.NEXT_PUBLIC_YANDEX_VERIFICATION || '',
+    other: {
+      'msvalidate.01': process.env.NEXT_PUBLIC_BING_VERIFICATION || '',
+    },
+  },
   icons: {
     icon: '/favicon.svg',
   },
@@ -75,22 +82,35 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const jsonLdSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'ProfessionalService',
-    name: SITE_CONFIG.brandName,
-    description: SITE_CONFIG.subheadline,
-    url: 'https://digitalsimplesolution.com',
-    telephone: SITE_CONFIG.contact.phone,
-    email: SITE_CONFIG.contact.email,
-    address: {
-      '@type': 'PostalAddress',
-      addressCountry: 'IN',
-      streetAddress: SITE_CONFIG.contact.address,
+  const jsonLdSchema = [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'ProfessionalService',
+      name: SITE_CONFIG.brandName,
+      description: SITE_CONFIG.subheadline,
+      url: 'https://digitalsimplesolution.com',
+      telephone: SITE_CONFIG.contact.phone,
+      email: SITE_CONFIG.contact.email,
+      address: {
+        '@type': 'PostalAddress',
+        addressCountry: 'IN',
+        streetAddress: SITE_CONFIG.contact.address,
+      },
+      openingHours: 'Mo-Sa 09:00-19:00',
+      priceRange: '$$',
     },
-    openingHours: 'Mo-Sa 09:00-19:00',
-    priceRange: '$$',
-  };
+    {
+      '@context': 'https://schema.org',
+      '@type': 'WebSite',
+      name: 'Digital Simple Solution',
+      url: 'https://digitalsimplesolution.com',
+      potentialAction: {
+        '@type': 'SearchAction',
+        target: 'https://digitalsimplesolution.com/blog?q={search_term_string}',
+        'query-input': 'required name=search_term_string',
+      },
+    },
+  ];
 
   return (
     <html lang="en" className="dark">
@@ -110,6 +130,26 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen flex flex-col bg-black text-white selection:bg-white selection:text-black antialiased">
+        {/* Google Analytics 4 Script (Conditional via NEXT_PUBLIC_GA_MEASUREMENT_ID) */}
+        {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
+          <>
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}`}
+              strategy="afterInteractive"
+            />
+            <Script id="google-analytics-init" strategy="afterInteractive">
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}', {
+                  page_path: window.location.pathname,
+                });
+              `}
+            </Script>
+          </>
+        )}
+
         {/* Next.js Script: Google Tag Manager (Non-blocking afterInteractive) */}
         <Script
           id="google-tag-manager"

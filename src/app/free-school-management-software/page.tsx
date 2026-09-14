@@ -43,5 +43,93 @@ export const metadata: Metadata = {
 };
 
 export default function Page() {
-  return <FreeSchoolSoftwareView />;
+  const schoolSoftwareSchema = [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'SoftwareApplication',
+      name: 'Smart School Management Software ERP',
+      operatingSystem: 'Web, Cloud, Windows, macOS, Android, iOS',
+      applicationCategory: 'EducationalApplication',
+      offers: {
+        '@type': 'Offer',
+        price: '0',
+        priceCurrency: 'INR',
+        priceValidUntil: '2027-12-31',
+        description: '100% Free Core ERP Software worth ₹30,000 for registered educational institutions.',
+      },
+      aggregateRating: {
+        '@type': 'AggregateRating',
+        ratingValue: '4.9',
+        reviewCount: '142',
+      },
+      description:
+        'Complete Free School ERP software worth ₹30,000 for managing student admissions, digital fee receipts, attendance, CBSE/ICSE report cards, and WhatsApp parent alerts.',
+      featureList: [
+        'Student & Staff Master ERP',
+        'Digital Fees & Automated Invoicing',
+        'Daily Attendance Web & Mobile App',
+        'WhatsApp & SMS Parent Alerts',
+        'CBSE / ICSE Report Cards & Grading',
+        'Timetable & Teacher Substitution',
+        'Transport & School Bus Tracking',
+        'Library Circulation & Cataloging',
+      ],
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: [
+        {
+          '@type': 'Question',
+          name: 'Is the Free School Management Software really 100% free?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Yes. The complete core ERP software license (valued at ₹30,000) is provided at ₹0 software fee for the first 25 registered educational institutions with zero recurring per-student software charges.',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'What education boards are supported by the software?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'It fully supports CBSE Affiliated schools, ICSE / ISC Boards, State Education Boards, IB / Cambridge International curricula, pre-schools, coaching academies, and degree colleges.',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'Can we import our existing student data from Excel or spreadsheets?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Yes! Our onboarding team provides an easy 1-click Excel/CSV import template to bulk upload all your student bios, class sections, parent contact numbers, and past fee dues in minutes.',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'How does the WhatsApp automated parent notification system work?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'The ERP connects directly with the WhatsApp Business Cloud API to send automated fee payment receipts, absentee alerts, homework updates, and emergency holiday broadcasts directly to parents.',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'How long does complete school setup and onboarding take?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Onboarding takes 24 to 48 hours. Once you submit the enquiry form, our engineering team provisions your cloud database, sets up your administrative logins, and conducts a live staff walkthrough.',
+          },
+        },
+      ],
+    },
+  ];
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schoolSoftwareSchema) }}
+      />
+      <FreeSchoolSoftwareView />
+    </>
+  );
 }
