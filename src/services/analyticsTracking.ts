@@ -1,5 +1,3 @@
-import { adminStore, Inquiry } from './adminStore';
-
 export type DeviceType = 'mobile' | 'tablet' | 'desktop';
 export type ClickCategory = 'cta' | 'whatsapp' | 'demo' | 'navigation' | 'form_submit' | 'phone' | 'link' | 'button';
 
@@ -463,8 +461,18 @@ export const analyticsTracking = {
       }))
       .sort((a, b) => b.clicks - a.clicks);
 
-    // REAL declared demographic data from actual form submissions in adminStore
-    const inquiries = adminStore.getInquiries();
+    // REAL declared demographic data from actual form submissions
+    let inquiries: any[] = [];
+    if (isBrowser()) {
+      try {
+        const raw = localStorage.getItem('dss_admin_inquiries');
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          // Only real inquiries, ignore any initial artificial mock IDs
+          inquiries = Array.isArray(parsed) ? parsed.filter((item: any) => !/^inq-20\d$/.test(item.id)) : [];
+        }
+      } catch {}
+    }
     const leadsWithAge = inquiries.filter((i) => i.age !== undefined && i.age !== '');
     
     let sumAge = 0;
