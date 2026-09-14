@@ -50,7 +50,9 @@ export const InquiriesManager: React.FC<InquiriesManagerProps> = ({
         item.serviceOrDemo.toLowerCase().includes(searchQuery.toLowerCase()) ||
         item.message.toLowerCase().includes(searchQuery.toLowerCase()) ||
         (item.city ? item.city.toLowerCase().includes(searchQuery.toLowerCase()) : false) ||
-        (item.requirement ? item.requirement.toLowerCase().includes(searchQuery.toLowerCase()) : false);
+        (item.requirement ? item.requirement.toLowerCase().includes(searchQuery.toLowerCase()) : false) ||
+        (item.schoolName ? item.schoolName.toLowerCase().includes(searchQuery.toLowerCase()) : false) ||
+        (item.address ? item.address.toLowerCase().includes(searchQuery.toLowerCase()) : false);
 
       const matchesStatus = statusFilter === 'all' || item.status === statusFilter;
 
@@ -96,6 +98,10 @@ export const InquiriesManager: React.FC<InquiriesManagerProps> = ({
     switch (source) {
       case 'Intake Form':
         return <span className="text-[10px] font-mono text-cyan-300 bg-cyan-950/80 px-2 py-0.5 rounded border border-cyan-700/60 font-semibold">Intake Form</span>;
+      case 'Submit Request':
+        return <span className="text-[10px] font-mono text-cyan-300 bg-cyan-950/80 px-2 py-0.5 rounded border border-cyan-700/60 font-semibold">Submit Request</span>;
+      case 'School Software Enquiry':
+        return <span className="text-[10px] font-mono text-amber-300 bg-amber-950/80 px-2 py-0.5 rounded border border-amber-500/60 font-semibold flex items-center gap-1">🏫 Free School ERP</span>;
       case 'Google Form':
         return <span className="text-[10px] font-mono text-emerald-400 bg-emerald-950/80 px-2 py-0.5 rounded border border-emerald-700/60 font-semibold">Google Form</span>;
       case 'Quick Modal':
@@ -214,6 +220,22 @@ export const InquiriesManager: React.FC<InquiriesManagerProps> = ({
                     </div>
                   </div>
 
+                  {item.schoolName && (
+                    <div className="flex flex-wrap items-center gap-2 text-xs text-amber-300 bg-amber-950/40 px-3 py-1.5 rounded-xl border border-amber-500/30">
+                      <span className="font-bold">🏫 {item.schoolName}</span>
+                      {item.studentCount && (
+                        <span className="text-[11px] text-amber-400 font-mono bg-amber-900/60 px-2 py-0.5 rounded border border-amber-600/30">
+                          👥 {item.studentCount}
+                        </span>
+                      )}
+                      {item.boardOrAffiliation && (
+                        <span className="text-[11px] text-amber-200 font-mono bg-slate-900 px-2 py-0.5 rounded">
+                          {item.boardOrAffiliation}
+                        </span>
+                      )}
+                    </div>
+                  )}
+
                   <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-400 font-mono">
                     <span className="text-cyan-300 font-bold">{item.phone}</span>
                     {item.age && (
@@ -272,7 +294,9 @@ export const InquiriesManager: React.FC<InquiriesManagerProps> = ({
               {/* WhatsApp Action */}
               <a
                 href={`https://wa.me/${selectedInquiry.phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(
-                  `Hello ${selectedInquiry.name}, this is Digital Simple Solution. We received your inquiry regarding ${selectedInquiry.serviceOrDemo}. We would love to share a quick roadmap!`
+                  selectedInquiry.schoolName
+                    ? `Hello ${selectedInquiry.name}, this is Digital Simple Solution. We received your enquiry for ${selectedInquiry.schoolName} regarding Free School Management Software (Worth ₹30,000). We are excited to schedule your free setup & demo!`
+                    : `Hello ${selectedInquiry.name}, this is Digital Simple Solution. We received your inquiry regarding ${selectedInquiry.serviceOrDemo}. We would love to share a quick roadmap!`
                 )}`}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -285,9 +309,9 @@ export const InquiriesManager: React.FC<InquiriesManagerProps> = ({
               {/* Email Action */}
               <a
                 href={`mailto:${selectedInquiry.email}?subject=${encodeURIComponent(
-                  `Inquiry Response: ${selectedInquiry.serviceOrDemo} - Digital Simple Solution`
+                  `Inquiry Response: ${selectedInquiry.schoolName ? `${selectedInquiry.schoolName} - Free School ERP` : selectedInquiry.serviceOrDemo} - Digital Simple Solution`
                 )}&body=${encodeURIComponent(
-                  `Hello ${selectedInquiry.name},\n\nThank you for reaching out regarding ${selectedInquiry.serviceOrDemo}.\n\nBest regards,\nDigital Simple Solution Team`
+                  `Hello ${selectedInquiry.name},\n\nThank you for reaching out regarding ${selectedInquiry.schoolName || selectedInquiry.serviceOrDemo}.\n\nBest regards,\nDigital Simple Solution Team`
                 )}`}
                 className="p-2.5 rounded-xl bg-indigo-600/20 hover:bg-indigo-600/30 border border-indigo-500/40 text-indigo-300 text-xs font-semibold flex flex-col items-center gap-1 transition-all"
               >
@@ -304,6 +328,50 @@ export const InquiriesManager: React.FC<InquiriesManagerProps> = ({
                 <span>Call Client</span>
               </a>
             </div>
+
+            {/* School Institution Specific Details (If School Inquiry) */}
+            {selectedInquiry.schoolName && (
+              <div className="p-4 rounded-2xl bg-amber-950/40 border border-amber-500/30 space-y-2.5 text-xs">
+                <div className="flex items-center justify-between border-b border-amber-500/20 pb-2">
+                  <span className="font-mono text-amber-400 font-bold uppercase tracking-wider text-[11px] flex items-center gap-1.5">
+                    🏫 School Institution Details
+                  </span>
+                  <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-[10px] font-mono border border-amber-500/40 font-bold">
+                    Worth ₹30,000 Free
+                  </span>
+                </div>
+                <div className="flex justify-between py-1 border-b border-amber-900/40">
+                  <span className="text-slate-400">School Name:</span>
+                  <strong className="text-white font-bold">{selectedInquiry.schoolName}</strong>
+                </div>
+                {selectedInquiry.studentCount && (
+                  <div className="flex justify-between py-1 border-b border-amber-900/40">
+                    <span className="text-slate-400">Total Students:</span>
+                    <span className="text-amber-300 font-mono font-bold">{selectedInquiry.studentCount}</span>
+                  </div>
+                )}
+                {selectedInquiry.address && (
+                  <div className="py-1 border-b border-amber-900/40">
+                    <span className="text-slate-400 block mb-0.5">School Address:</span>
+                    <span className="text-slate-200 leading-relaxed">{selectedInquiry.address}</span>
+                  </div>
+                )}
+                {selectedInquiry.boardOrAffiliation && (
+                  <div className="flex justify-between py-1 border-b border-amber-900/40">
+                    <span className="text-slate-400">Affiliation / Board:</span>
+                    <span className="text-slate-200 font-mono">{selectedInquiry.boardOrAffiliation}</span>
+                  </div>
+                )}
+                {selectedInquiry.otherSchoolInfo && (
+                  <div className="py-1">
+                    <span className="text-slate-400 block mb-0.5">Other School Info & Requirements:</span>
+                    <div className="text-slate-300 bg-slate-950/60 p-2.5 rounded-xl border border-amber-500/20 leading-relaxed font-sans">
+                      {selectedInquiry.otherSchoolInfo}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Inquiry Details */}
             <div className="space-y-3 text-xs bg-slate-950/60 p-4 rounded-2xl border border-slate-800">
@@ -337,7 +405,7 @@ export const InquiriesManager: React.FC<InquiriesManagerProps> = ({
               </div>
               {selectedInquiry.budget && (
                 <div className="flex justify-between py-1 border-b border-slate-800/80">
-                  <span className="text-slate-400">Client Budget:</span>
+                  <span className="text-slate-400">Client Budget / Value:</span>
                   <span className="text-emerald-400 font-bold">{selectedInquiry.budget}</span>
                 </div>
               )}

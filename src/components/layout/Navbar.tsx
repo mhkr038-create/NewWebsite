@@ -22,6 +22,7 @@ import { useInquiry } from '../../context/InquiryContext';
 import { GROWTH_SERVICES } from '../../data/growthServices';
 import { SOLUTIONS_DATA } from '../../data/solutions';
 import { SITE_CONFIG } from '../../config/siteConfig';
+import { AnnouncementBanner } from './AnnouncementBanner';
 
 const SERVICE_ICONS: Record<string, React.ElementType> = {
   Package,
@@ -57,6 +58,7 @@ export const Navbar: React.FC = () => {
 
   const navLinks = [
     { name: 'Home', path: '/' },
+    { name: '🏫 Free School ERP', path: '/free-school-management-software', isSpecial: true },
     { name: 'Services', path: '/services', hasDropdown: 'services' },
     { name: 'Solutions', path: '/solutions', hasDropdown: 'solutions' },
     { name: 'Submit Request', path: '/intake-form' },
@@ -95,11 +97,12 @@ export const Navbar: React.FC = () => {
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
-          ? 'bg-slate-950/90 backdrop-blur-xl border-b border-slate-800/80 shadow-2xl shadow-indigo-950/20 py-3'
-          : 'bg-transparent py-5'
+          ? 'bg-slate-950/90 backdrop-blur-xl border-b border-slate-800/80 shadow-2xl shadow-indigo-950/20 pb-3'
+          : 'bg-transparent pb-5'
       }`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <AnnouncementBanner />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-3">
         <div className="flex items-center justify-between">
           
           {/* Brand Logo */}
@@ -137,13 +140,20 @@ export const Navbar: React.FC = () => {
                 <Link
                   href={link.path}
                   onClick={(e) => handleNavClick(link.path, e)}
-                  className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition-all duration-200 flex items-center gap-1 ${
-                    isActive(link.path)
+                  className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition-all duration-200 flex items-center gap-1.5 ${
+                    link.isSpecial
+                      ? 'bg-gradient-to-r from-amber-500/20 via-yellow-500/25 to-amber-500/20 text-amber-300 border border-amber-500/40 hover:border-amber-400 font-bold shadow-md shadow-amber-500/10'
+                      : isActive(link.path)
                       ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30 font-semibold'
                       : 'text-slate-300 hover:text-white hover:bg-slate-800/70'
                   }`}
                 >
                   {link.name}
+                  {link.isSpecial && (
+                    <span className="px-1.5 py-0.2 bg-amber-400 text-slate-950 text-[9px] font-extrabold rounded font-mono uppercase">
+                      FREE
+                    </span>
+                  )}
                   {link.hasDropdown && (
                     <ChevronDown
                       className={`w-3.5 h-3.5 transition-transform duration-200 ${
@@ -281,12 +291,21 @@ export const Navbar: React.FC = () => {
                   handleNavClick(link.path, e);
                 }}
                 className={`px-4 py-2.5 rounded-xl text-sm font-medium flex items-center justify-between ${
-                  isActive(link.path)
+                  link.isSpecial
+                    ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40 font-bold'
+                    : isActive(link.path)
                     ? 'bg-indigo-600/20 text-indigo-300 border border-indigo-500/30'
                     : 'text-slate-300 hover:bg-slate-900'
                 }`}
               >
-                <span>{link.name}</span>
+                <span className="flex items-center gap-2">
+                  <span>{link.name}</span>
+                  {link.isSpecial && (
+                    <span className="px-1.5 py-0.5 bg-amber-400 text-slate-950 text-[10px] font-bold rounded font-mono uppercase">
+                      WORTH ₹30K FREE
+                    </span>
+                  )}
+                </span>
                 {isActive(link.path) && <div className="w-2 h-2 rounded-full bg-indigo-400" />}
               </Link>
             ))}

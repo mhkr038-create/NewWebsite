@@ -22,7 +22,7 @@ export interface Inquiry {
   phone: string;
   serviceOrDemo: string;
   message: string;
-  source: 'Quick Modal' | 'Contact Form' | 'Demo Page' | 'WhatsApp Direct' | 'Intake Form' | 'Submit Request' | 'Google Form';
+  source: 'Quick Modal' | 'Contact Form' | 'Demo Page' | 'WhatsApp Direct' | 'Intake Form' | 'Submit Request' | 'Google Form' | 'School Software Enquiry';
   status: 'new' | 'contacted' | 'qualified' | 'converted' | 'closed';
   createdAt: string;
   age?: number | string;
@@ -31,6 +31,12 @@ export interface Inquiry {
   businessName?: string;
   budget?: string;
   notes?: string;
+  schoolName?: string;
+  studentCount?: string | number;
+  address?: string;
+  boardOrAffiliation?: string;
+  otherSchoolInfo?: string;
+  estimatedValue?: number;
 }
 
 export interface AnalyticsSummary {
@@ -167,6 +173,25 @@ const INITIAL_APPOINTMENTS: Appointment[] = [
 ];
 
 const INITIAL_INQUIRIES: Inquiry[] = [
+  {
+    id: 'inq-200',
+    name: 'Dr. Rameshwar Sharma (Principal)',
+    email: 'principal@stxavieracademy.edu.in',
+    phone: '+91 98290 44112',
+    serviceOrDemo: 'Free School Management Software',
+    message: 'We want to digitize our 850 students records, automate monthly fee collection receipts, and activate WhatsApp alerts for parents.',
+    source: 'School Software Enquiry',
+    status: 'new',
+    createdAt: '2026-08-30T09:30:00Z',
+    budget: '₹30,000 Value (Free Setup Offer)',
+    schoolName: "St. Xavier's Model Senior Secondary School",
+    studentCount: '500 – 1,000 Students (850 total)',
+    address: 'Plot 14-B, Vidyadhar Nagar, Jaipur, Rajasthan - 302039',
+    city: 'Jaipur',
+    boardOrAffiliation: 'CBSE Affiliated',
+    otherSchoolInfo: 'Currently using manual registers & Excel. Needs: Student Admission & ID Card Generation, Fee Management with SMS/WhatsApp alerts, Daily Attendance App for Teachers, and Report Card generation.',
+    estimatedValue: 30000,
+  },
   {
     id: 'inq-201',
     name: 'Devendra Patel',
@@ -363,6 +388,12 @@ export const adminStore = {
     city?: string;
     businessName?: string;
     notes?: string;
+    schoolName?: string;
+    studentCount?: string | number;
+    address?: string;
+    boardOrAffiliation?: string;
+    otherSchoolInfo?: string;
+    estimatedValue?: number;
   }): Inquiry {
     const current = loadInquiries();
     const newInquiry: Inquiry = {
@@ -375,12 +406,18 @@ export const adminStore = {
       source: data.source || 'Contact Form',
       status: 'new',
       createdAt: new Date().toISOString(),
-      budget: data.budget,
+      budget: data.budget || (data.source === 'School Software Enquiry' ? '₹30,000 Value (Free Offer)' : undefined),
       age: data.age,
       requirement: data.requirement,
       city: data.city,
       businessName: data.businessName,
       notes: data.notes,
+      schoolName: data.schoolName,
+      studentCount: data.studentCount,
+      address: data.address,
+      boardOrAffiliation: data.boardOrAffiliation,
+      otherSchoolInfo: data.otherSchoolInfo,
+      estimatedValue: data.estimatedValue || (data.source === 'School Software Enquiry' ? 30000 : undefined),
     };
     const updated = [newInquiry, ...current];
     saveInquiries(updated);

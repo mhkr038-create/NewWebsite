@@ -26,6 +26,7 @@ import { SITE_CONFIG } from '../config/siteConfig';
 import { adminStore } from '../services/adminStore';
 
 const REQUIREMENT_OPTIONS = [
+  'Free School Management Software ERP (Worth ₹30,000)',
   'Website Design & High-Converting Landing Pages',
   'Meta (Facebook/Instagram) & Google Ads Management',
   'WhatsApp Automated Sales & Lead Funnels',

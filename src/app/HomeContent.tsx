@@ -62,6 +62,42 @@ export function HomeContent() {
           </div>
         </div>
 
+        {/* Highlight Banner: Free School Management Software */}
+        <div className="w-full my-8 p-6 rounded-2xl bg-gradient-to-r from-amber-950/40 via-yellow-950/25 to-slate-900 border border-amber-500/40 shadow-xl relative overflow-hidden group">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/10 rounded-full blur-2xl pointer-events-none" />
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5 relative z-10">
+            <div className="space-y-1.5 max-w-xl">
+              <div className="flex items-center gap-2">
+                <span className="px-2.5 py-0.5 rounded-full bg-amber-400 text-slate-950 text-[10px] font-mono font-extrabold uppercase tracking-wider">
+                  SPECIAL OFFER • WORTH ₹30,000
+                </span>
+                <span className="text-xs text-emerald-400 font-mono font-semibold">100% Free Core ERP</span>
+              </div>
+              <h3 className="text-xl sm:text-2xl font-bold text-white font-heading">
+                Free School Management Software
+              </h3>
+              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-light">
+                Modern ERP for schools & educational institutes. Automate student admissions, daily attendance, fee receipts, report cards, and WhatsApp parent alerts at zero software license cost.
+              </p>
+            </div>
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 shrink-0">
+              <Link
+                href="/free-school-management-software#enquiry-form"
+                className="px-5 py-3 rounded-xl bg-gradient-to-r from-amber-400 to-yellow-500 hover:from-amber-300 hover:to-yellow-400 text-slate-950 font-bold text-xs uppercase tracking-wider shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2 transition-all hover:scale-105 cursor-pointer"
+              >
+                <span>Submit School Enquiry</span>
+                <ArrowUpRight className="w-4 h-4" />
+              </Link>
+              <Link
+                href="/free-school-management-software"
+                className="px-4 py-3 rounded-xl bg-slate-950/80 hover:bg-slate-900 text-amber-300 border border-amber-500/30 text-xs font-semibold flex items-center justify-center transition-colors"
+              >
+                <span>Explore Features</span>
+              </Link>
+            </div>
+          </div>
+        </div>
+
         {/* Action Buttons */}
         <div className="flex flex-wrap items-center gap-4">
           <Link
