@@ -29,7 +29,7 @@ export const RelationshipCoachDemo: React.FC = () => {
         'Custom somatic boundary & nervous system workbook',
         'Attachment style repatterning blueprints',
       ],
-      investment: '$2,400 (or $850/mo)',
+      investment: '₹24,999 (or ₹8,999/mo)',
       badge: 'Most Popular for Singles',
     },
     {
@@ -42,7 +42,7 @@ export const RelationshipCoachDemo: React.FC = () => {
         'Physical intimacy & deep connection rekindling exercises',
         'Lifetime access to the Couples Harmony Portal',
       ],
-      investment: '$3,200 (or $1,150/mo)',
+      investment: '₹34,999 (or ₹12,499/mo)',
       badge: 'Highest Transformation Rate',
     },
     {
@@ -55,7 +55,7 @@ export const RelationshipCoachDemo: React.FC = () => {
         'Private community support & accountability pod',
         'Exclusive weekend virtual retreat experience',
       ],
-      investment: '$1,800',
+      investment: '₹18,999',
       badge: 'Cohort Enrolling Now',
     },
   ];

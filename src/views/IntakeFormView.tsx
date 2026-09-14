@@ -36,10 +36,10 @@ const REQUIREMENT_OPTIONS = [
 ];
 
 const BUDGET_OPTIONS = [
-  'Under $1,000 / Under ₹25,000',
-  '$1,000 – $3,000 / ₹25,000 – ₹75,000',
-  '$3,000 – $7,000 / ₹75,000 – ₹2,00,000',
-  '$7,000+ / ₹2,00,000+ (Enterprise Scale)',
+  'Under ₹25,000',
+  '₹25,000 – ₹75,000',
+  '₹75,000 – ₹2,00,000',
+  '₹2,00,000+ (Enterprise Scale)',
 ];
 
 const TIMELINE_OPTIONS = [

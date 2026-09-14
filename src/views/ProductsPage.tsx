@@ -147,10 +147,10 @@ export const ProductsPage: React.FC = () => {
               <div className="pt-4 border-t border-slate-800 flex items-center justify-between gap-4">
                 <div>
                   <span className="text-xs text-slate-400 line-through mr-2 font-mono">
-                    ${product.originalPrice}
+                    ₹{product.originalPrice.toLocaleString('en-IN')}
                   </span>
                   <span className="text-2xl font-extrabold text-white font-mono">
-                    ${product.price}
+                    ₹{product.price.toLocaleString('en-IN')}
                   </span>
                 </div>
 
@@ -223,7 +223,7 @@ export const ProductsPage: React.FC = () => {
                     </div>
                   </div>
                   <span className="text-xl font-bold text-emerald-400 font-mono">
-                    ${activeProduct.price}
+                    ₹{activeProduct.price.toLocaleString('en-IN')}
                   </span>
                 </div>
 
@@ -243,7 +243,7 @@ export const ProductsPage: React.FC = () => {
                   <div className="p-3 rounded-xl bg-slate-950/80 border border-slate-800 space-y-2 text-slate-400 text-[11px]">
                     <div className="flex items-center gap-2 text-slate-300">
                       <CreditCard className="w-4 h-4 text-cyan-400" />
-                      <span>Demo Simulation (No live credit card required for test download)</span>
+                      <span>Instant Digital Download Access</span>
                     </div>
                   </div>
 
@@ -252,7 +252,7 @@ export const ProductsPage: React.FC = () => {
                     className="w-full py-3 bg-gradient-to-r from-indigo-600 to-cyan-500 hover:from-indigo-500 hover:to-cyan-400 text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-lg shadow-indigo-600/30 transition-all flex items-center justify-center gap-2"
                   >
                     <Download className="w-4 h-4" />
-                    <span>Complete Download (${activeProduct.price})</span>
+                    <span>Complete Download (₹{activeProduct.price.toLocaleString('en-IN')})</span>
                   </button>
                 </form>
               </div>

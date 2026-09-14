@@ -15,7 +15,7 @@ const demoData = DEMO_REGISTRY.find(d => d.id === 'digital-agency')!;
 
 export const DigitalAgencyDemo: React.FC = () => {
   const [auditUrl, setAuditUrl] = useState('');
-  const [auditBudget, setAuditBudget] = useState('$5k – $15k/mo');
+  const [auditBudget, setAuditBudget] = useState('₹50k – ₹1.5L/mo');
   const [isAuditing, setIsAuditing] = useState(false);
   const [auditResult, setAuditResult] = useState<any | null>(null);
 
@@ -33,7 +33,7 @@ export const DigitalAgencyDemo: React.FC = () => {
       setAuditResult({
         domain: auditUrl,
         score: '84/100',
-        missedRevenue: '$14,200/mo',
+        missedRevenue: '₹1,25,000/mo',
         levers: [
           'High mobile drop-off on checkout page (-34% friction point)',
           'Sub-optimal Meta ad creative hooks (avg watch time < 2.1s)',
@@ -47,20 +47,20 @@ export const DigitalAgencyDemo: React.FC = () => {
     {
       brand: 'AeroCloud SaaS',
       metric: '+340% Pipeline Velocity',
-      summary: 'Scaled paid demo acquisitions from $380 CAC down to $112 CAC while doubling closed-won pipeline in 90 days.',
+      summary: 'Scaled paid demo acquisitions from ₹30,000 CAC down to ₹9,000 CAC while doubling closed-won pipeline in 90 days.',
       image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=600&q=80',
       tags: ['Paid Search', 'CRO Funnel', 'B2B SaaS'],
     },
     {
       brand: 'Nordic Clean Living',
       metric: '5.2x Blended ROAS',
-      summary: 'Re-engineered DTC TikTok and Meta ad creative studio, driving $2.4M in Q4 Black Friday GMV.',
+      summary: 'Re-engineered DTC TikTok and Meta ad creative studio, driving ₹20 Crores in Q4 Black Friday GMV.',
       image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=600&q=80',
       tags: ['Creative Studio', 'Meta Ads', 'DTC E-Commerce'],
     },
     {
       brand: 'HyperScale Fintech',
-      metric: '$8.2M Net New AUM',
+      metric: '₹68 Cr Net New AUM',
       summary: 'Built high-intent organic search clusters and conversion landing pages ranking #1 for 42 high-value keywords.',
       image: 'https://images.unsplash.com/photo-1553877522-43269d4ea984?auto=format&fit=crop&w=600&q=80',
       tags: ['Programmatic SEO', 'Landing Pages'],
@@ -136,7 +136,7 @@ export const DigitalAgencyDemo: React.FC = () => {
               {/* Stats */}
               <div className="grid grid-cols-3 gap-4 pt-4 border-t border-slate-800">
                 <div className="p-3.5 rounded-2xl bg-slate-900/80 border border-blue-500/20">
-                  <span className="text-2xl font-bold text-blue-400 font-heading">$45M+</span>
+                  <span className="text-2xl font-bold text-blue-400 font-heading">₹350 Cr+</span>
                   <p className="text-xs text-slate-400 mt-0.5">Revenue Generated</p>
                 </div>
                 <div className="p-3.5 rounded-2xl bg-slate-900/80 border border-blue-500/20">
@@ -186,10 +186,10 @@ export const DigitalAgencyDemo: React.FC = () => {
                       onChange={(e) => setAuditBudget(e.target.value)}
                       className="w-full px-3 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-100 focus:outline-none focus:border-blue-500"
                     >
-                      <option>$2k – $5k/mo</option>
-                      <option>$5k – $15k/mo</option>
-                      <option>$15k – $50k/mo</option>
-                      <option>$50k+/mo</option>
+                      <option>₹25k – ₹50k/mo</option>
+                      <option>₹50k – ₹1.5L/mo</option>
+                      <option>₹1.5L – ₹5L/mo</option>
+                      <option>₹5L+/mo</option>
                     </select>
                   </div>
 

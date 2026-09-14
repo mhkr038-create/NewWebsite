@@ -18,12 +18,12 @@ const PRESETS: PromptPreset[] = [
     id: 'lead-qualification',
     category: 'Lead Intake',
     title: 'Qualify & Triage High-Value Prospect',
-    prompt: 'A visitor just submitted: "We are a 45-person B2B company spending $15k/mo on ads, but our leads take 2 days to get answered. We need an automated chatbot and CRM routing."',
-    response: `🎯 High-Intent Lead Detected ($15k/mo ad spend).
+    prompt: 'A visitor just submitted: "We are a 45-person B2B company spending ₹1.5L/mo on ads, but our leads take 2 days to get answered. We need an automated chatbot and CRM routing."',
+    response: `🎯 High-Intent Lead Detected (₹1.5L/mo ad spend).
 1. Lead Priority: TIER-1 Enterprise (Urgent SLA).
 2. Action Taken: Auto-created deal in HubSpot CRM, assigned to Senior Architect.
 3. Automated Action: Sent VIP Calendly booking link with personalized 3-minute video intro via SMS & Email.
-4. Estimated Value: $3,500/mo retainer opportunity.`,
+4. Estimated Value: ₹75,000/mo retainer opportunity.`,
     metrics: { timeSaved: '45 mins manual triage', action: 'Instant CRM + Calendar Route', confidence: '99.2%' },
   },
   {
@@ -47,9 +47,9 @@ Result: Ticket resolved autonomously without escalating to support staff.`,
     title: 'Repurpose Case Study into 5 Multi-Channel Assets',
     prompt: 'Repurpose our latest client win: "How Dr. Henderson clinic increased appointments by 68% using our AI Receptionist widget."',
     response: `🚀 Generated 5 Ready-to-Publish Formats:
-1. LinkedIn Carousel Hook: "Why 90% of dental clinics lose $20k/mo to missed calls (and the 5-minute fix)..."
+1. LinkedIn Carousel Hook: "Why 90% of dental clinics lose ₹1.5L/mo to missed calls (and the 5-minute fix)..."
 2. X/Twitter Thread: 7-step blueprint dissecting Dr. Henderson's 68% booking lift.
-3. Email Newsletter: Subject line "Case Study: The $0 ad-spend growth lever."
+3. Email Newsletter: Subject line "Case Study: The ₹0 ad-spend growth lever."
 4. Short-form Video Script: 30-second reel hook with caption & hashtag cluster.
 5. High-Impact Quote Card Graphic ready for Instagram.`,
     metrics: { timeSaved: '4 hours copywriting', action: '5 Multi-Channel Assets', confidence: '99.5%' },

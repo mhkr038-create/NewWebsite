@@ -229,7 +229,7 @@ export const GROWTH_SERVICES: GrowthService[] = [
     faqs: [
       {
         question: 'What is the recommended monthly ad budget for Meta Ads?',
-        answer: 'We recommend starting with at least $500–$1,500/month in ad spend to gather sufficient conversion data and identify winning audiences quickly.',
+        answer: 'We recommend starting with at least ₹25,000–₹50,000/month in ad spend to gather sufficient conversion data and identify winning audiences quickly.',
       },
       {
         question: 'Do you create the ad graphics and copywriting?',

@@ -28,7 +28,7 @@ export const AiAgencyDemo: React.FC = () => {
   // ROI Calculator State
   const [teamSize, setTeamSize] = useState<number>(12);
   const [hoursPerWeek, setHoursPerWeek] = useState<number>(15);
-  const [hourlyCost, setHourlyCost] = useState<number>(45);
+  const [hourlyCost, setHourlyCost] = useState<number>(650);
 
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
   const [bookingDone, setBookingDone] = useState(false);
@@ -56,14 +56,14 @@ export const AiAgencyDemo: React.FC = () => {
         setAgentOutput(`[NexusAI Agent Swarm v4.2 - Execution Complete]
 ✔ Ingested incoming Zendesk ticket #8942
 ✔ Parsed customer sentiment: Urgent / Billing Discrepancy
-✔ Queried Stripe API & verified $420 double charge on account 'acct_984'
+✔ Queried Stripe API & verified ₹35,000 double charge on account 'acct_984'
 ✔ Issued automated refund via Stripe webhook (Tx: #rf_091823)
 ✔ Generated empathetic, branded resolution email in 1.2 seconds.
 ✔ Status: TICKET RESOLVED (Zero human agent intervention required)`);
       } else if (activePromptTab === 'leads') {
         setAgentOutput(`[NexusAI Lead Intelligence Pipeline]
 ✔ Captured inbound form submission: CTO at FinTech Series B
-✔ Scraped LinkedIn & Apollo: 140 headcount, $18M funding, tech stack: React/AWS
+✔ Scraped LinkedIn & Apollo: 140 headcount, ₹150 Cr funding, tech stack: React/AWS
 ✔ Enriched lead score: 98/100 (Tier-1 Enterprise Buyer)
 ✔ Auto-scheduled calendar invite with VP of Sales & drafted personalized slide deck.
 ✔ CRM synced to HubSpot & Slack alert dispatched to #deals-won`);
@@ -359,7 +359,7 @@ export const AiAgencyDemo: React.FC = () => {
                 Calculate Your Automation ROI
               </h2>
               <p className="text-sm text-slate-400">
-                Estimate how many hundreds of manual labor hours and operational dollars AI workflows will return to your business.
+                Estimate how many hundreds of manual labor hours and operational capital AI workflows will return to your business.
               </p>
             </div>
 
@@ -402,13 +402,13 @@ export const AiAgencyDemo: React.FC = () => {
                 <div>
                   <div className="flex justify-between text-xs font-mono mb-2">
                     <span className="text-slate-300">Average Blended Hourly Rate:</span>
-                    <span className="text-cyan-400 font-bold text-sm">${hourlyCost}/hour</span>
+                    <span className="text-cyan-400 font-bold text-sm">₹{hourlyCost}/hour</span>
                   </div>
                   <input
                     type="range"
-                    min="20"
-                    max="150"
-                    step="5"
+                    min="200"
+                    max="2500"
+                    step="50"
                     value={hourlyCost}
                     onChange={(e) => setHourlyCost(Number(e.target.value))}
                     className="w-full accent-cyan-400 bg-slate-900 rounded-lg cursor-pointer"
@@ -423,7 +423,7 @@ export const AiAgencyDemo: React.FC = () => {
                     Estimated Annual Operational Savings
                   </span>
                   <h3 className="text-4xl sm:text-5xl font-mono font-extrabold text-cyan-400 tracking-tight mt-1">
-                    ${calculatedRoi.annualDollarsSaved.toLocaleString()}
+                    ₹{calculatedRoi.annualDollarsSaved.toLocaleString('en-IN')}
                   </h3>
                 </div>
 

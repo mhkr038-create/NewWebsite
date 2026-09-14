@@ -30,10 +30,10 @@ export const TESTIMONIALS_DATA: TestimonialItem[] = [
     role: 'Managing Partner',
     company: 'Sterling Crest Private Wealth',
     avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80',
-    quote: 'Traditional digital agencies quoted us 3 months and $25,000 without even showing us a design. With digitalsimplesolution, we picked the Wealth Advisor concept, customized the fiduciary calculator, and were live the following week. Our clients love the luxury feel.',
+    quote: 'Traditional digital agencies quoted us 3 months and ₹2,00,000 without even showing us a design. With digitalsimplesolution, we picked the Wealth Advisor concept, customized the fiduciary calculator, and were live the following week. Our clients love the luxury feel.',
     rating: 5,
     industry: 'Wealth & Finance',
-    results: '$14M New Inflows in 60 Days',
+    results: '₹1.2 Cr New Inflows in 60 Days',
     demoCustomized: 'Aura Capital Wealth Demo',
   },
   {

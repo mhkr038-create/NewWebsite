@@ -22,7 +22,7 @@ export const QuickInquiryModal: React.FC = () => {
   const [phone, setPhone] = useState('');
   const [age, setAge] = useState('');
   const [businessName, setBusinessName] = useState('');
-  const [budget, setBudget] = useState('$1,500 – $3,500');
+  const [budget, setBudget] = useState('₹25,000 – ₹75,000');
   const [timeline, setTimeline] = useState('Within 1–2 Weeks');
   const [notes, setNotes] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -194,10 +194,10 @@ export const QuickInquiryModal: React.FC = () => {
                     onChange={(e) => setBudget(e.target.value)}
                     className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-slate-100 focus:outline-none focus:border-indigo-500 text-[11px]"
                   >
-                    <option>$1,000 – $2,000</option>
-                    <option>$2,000 – $4,000</option>
-                    <option>$4,000 – $8,000</option>
-                    <option>$8,000+ Enterprise</option>
+                    <option>Under ₹25,000</option>
+                    <option>₹25,000 – ₹75,000</option>
+                    <option>₹75,000 – ₹2,00,000</option>
+                    <option>₹2,00,000+ Enterprise</option>
                   </select>
                 </div>
                 <div>

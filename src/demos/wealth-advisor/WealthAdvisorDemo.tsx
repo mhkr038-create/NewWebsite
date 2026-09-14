@@ -21,8 +21,8 @@ export const WealthAdvisorDemo: React.FC = () => {
   const [consultSubmitted, setConsultSubmitted] = useState(false);
 
   // Wealth Calculator State
-  const [initialCapital, setInitialCapital] = useState<number>(250000);
-  const [monthlyContribution, setMonthlyContribution] = useState<number>(3500);
+  const [initialCapital, setInitialCapital] = useState<number>(2500000);
+  const [monthlyContribution, setMonthlyContribution] = useState<number>(50000);
   const [investmentYears, setInvestmentYears] = useState<number>(15);
   const [expectedReturn, setExpectedReturn] = useState<number>(8.5);
 
@@ -140,7 +140,7 @@ export const WealthAdvisorDemo: React.FC = () => {
               {/* AUM & Credentials Proof */}
               <div className="grid grid-cols-3 gap-4 pt-4 border-t border-slate-800/80">
                 <div className="p-4 rounded-xl bg-slate-900/60 border border-amber-500/20">
-                  <span className="text-2xl sm:text-3xl font-serif font-bold text-amber-400">$850M+</span>
+                  <span className="text-2xl sm:text-3xl font-serif font-bold text-amber-400">₹7,000 Cr+</span>
                   <p className="text-[11px] text-slate-400 uppercase tracking-wider mt-1">AUM Advised</p>
                 </div>
                 <div className="p-4 rounded-xl bg-slate-900/60 border border-amber-500/20">
@@ -268,7 +268,7 @@ export const WealthAdvisorDemo: React.FC = () => {
                       <span>Inquire About Strategy</span>
                       <ArrowRight className="w-3.5 h-3.5" />
                     </button>
-                    <span className="text-[11px] font-mono text-slate-500">$500k+ Min Portfolio</span>
+                    <span className="text-[11px] font-mono text-slate-500">₹50L+ Min Portfolio</span>
                   </div>
                 </div>
               );
@@ -299,21 +299,21 @@ export const WealthAdvisorDemo: React.FC = () => {
                   <div className="flex justify-between text-xs font-semibold mb-2">
                     <span className="text-slate-300">Initial Portfolio Capital:</span>
                     <span className="text-amber-400 font-mono text-sm font-bold">
-                      ${initialCapital.toLocaleString()}
+                      ₹{initialCapital.toLocaleString('en-IN')}
                     </span>
                   </div>
                   <input
                     type="range"
-                    min="50000"
-                    max="2000000"
-                    step="25000"
+                    min="500000"
+                    max="50000000"
+                    step="100000"
                     value={initialCapital}
                     onChange={(e) => setInitialCapital(Number(e.target.value))}
                     className="w-full accent-amber-400 bg-slate-800 rounded-lg cursor-pointer"
                   />
                   <div className="flex justify-between text-[10px] text-slate-500 font-mono mt-1">
-                    <span>$50,000</span>
-                    <span>$2,000,000</span>
+                    <span>₹5,00,000</span>
+                    <span>₹5,00,00,000</span>
                   </div>
                 </div>
 
@@ -321,21 +321,21 @@ export const WealthAdvisorDemo: React.FC = () => {
                   <div className="flex justify-between text-xs font-semibold mb-2">
                     <span className="text-slate-300">Monthly Contribution:</span>
                     <span className="text-amber-400 font-mono text-sm font-bold">
-                      ${monthlyContribution.toLocaleString()}/mo
+                      ₹{monthlyContribution.toLocaleString('en-IN')}/mo
                     </span>
                   </div>
                   <input
                     type="range"
-                    min="500"
-                    max="25000"
-                    step="500"
+                    min="10000"
+                    max="500000"
+                    step="5000"
                     value={monthlyContribution}
                     onChange={(e) => setMonthlyContribution(Number(e.target.value))}
                     className="w-full accent-amber-400 bg-slate-800 rounded-lg cursor-pointer"
                   />
                   <div className="flex justify-between text-[10px] text-slate-500 font-mono mt-1">
-                    <span>$500/mo</span>
-                    <span>$25,000/mo</span>
+                    <span>₹10,000/mo</span>
+                    <span>₹5,00,000/mo</span>
                   </div>
                 </div>
 
@@ -380,7 +380,7 @@ export const WealthAdvisorDemo: React.FC = () => {
                     Projected Portfolio Value in {investmentYears} Years
                   </span>
                   <h3 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-extrabold text-amber-400 tracking-tight mt-1">
-                    ${calculatedWealth.futureValue.toLocaleString()}
+                    ₹{calculatedWealth.futureValue.toLocaleString('en-IN')}
                   </h3>
                 </div>
 
@@ -388,13 +388,13 @@ export const WealthAdvisorDemo: React.FC = () => {
                   <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
                     <span className="text-[11px] text-slate-400 uppercase tracking-wider block">Principal Contributed</span>
                     <span className="text-lg font-mono font-bold text-white mt-1 block">
-                      ${calculatedWealth.totalDeposited.toLocaleString()}
+                      ₹{calculatedWealth.totalDeposited.toLocaleString('en-IN')}
                     </span>
                   </div>
                   <div className="p-4 rounded-xl bg-slate-900/60 border border-amber-500/20">
                     <span className="text-[11px] text-amber-400 uppercase tracking-wider block">Compound Alpha Growth</span>
                     <span className="text-lg font-mono font-bold text-emerald-400 mt-1 block">
-                      +${calculatedWealth.totalGrowth.toLocaleString()}
+                      +₹{calculatedWealth.totalGrowth.toLocaleString('en-IN')}
                     </span>
                   </div>
                 </div>
@@ -534,10 +534,10 @@ export const WealthAdvisorDemo: React.FC = () => {
                     <div>
                       <label className="block text-xs font-semibold text-slate-300 mb-1">Estimated Investable Assets</label>
                       <select className="w-full px-3 py-2 text-xs bg-slate-950 border border-slate-800 rounded-lg text-slate-100 focus:outline-none focus:border-amber-400">
-                        <option>$500,000 – $1,500,000</option>
-                        <option>$1,500,000 – $5,000,000</option>
-                        <option>$5,000,000 – $20,000,000</option>
-                        <option>$20,000,000+ (Family Office)</option>
+                        <option>₹50 Lakhs – ₹1.5 Crores</option>
+                        <option>₹1.5 Crores – ₹5 Crores</option>
+                        <option>₹5 Crores – ₹20 Crores</option>
+                        <option>₹20 Crores+ (Family Office)</option>
                       </select>
                     </div>
 

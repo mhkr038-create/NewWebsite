@@ -34,7 +34,7 @@ export const SERVICES_REGISTRY: ServiceItem[] = [
       '30 days of post-launch warranty & technical support',
     ],
     timeline: '5-7 Business Days',
-    startingPrice: '$1,490',
+    startingPrice: '₹45,000',
     popular: true,
   },
   {
@@ -57,7 +57,7 @@ export const SERVICES_REGISTRY: ServiceItem[] = [
       'Cross-browser and cross-device testing report',
     ],
     timeline: '3-5 Business Days',
-    startingPrice: '$790',
+    startingPrice: '₹25,000',
   },
   {
     id: 'digital-biz-solutions',
@@ -73,13 +73,13 @@ export const SERVICES_REGISTRY: ServiceItem[] = [
       'Actionable Google Analytics 4 & conversion tracking',
     ],
     deliverables: [
-      'Digital product checkout & payment gateway setup (Stripe)',
+      'Digital product checkout & payment gateway setup (Razorpay/Stripe)',
       'Automated email notification sequences',
       'Lead magnet download funnels & landing pages',
       'Client onboarding intake dashboards',
     ],
     timeline: '7-10 Business Days',
-    startingPrice: '$2,290',
+    startingPrice: '₹65,000',
   },
   {
     id: 'ai-automation-solutions',
@@ -101,6 +101,6 @@ export const SERVICES_REGISTRY: ServiceItem[] = [
       'Admin monitoring dashboard & conversation transcript review',
     ],
     timeline: '5-8 Business Days',
-    startingPrice: '$1,890',
+    startingPrice: '₹55,000',
   },
 ];

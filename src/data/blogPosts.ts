@@ -184,13 +184,13 @@ export const BLOG_POSTS: BlogPost[] = [
         {
           heading: 'Step 2: Package with Clean, Professional Design',
           paragraphs: [
-            'Perceived value is heavily influenced by design presentation. Premium mockups, well-organized file hierarchies, clear documentation, and video walkthroughs elevate a $15 template into a $97 must-have toolkit.',
+            'Perceived value is heavily influenced by design presentation. Premium mockups, well-organized file hierarchies, clear documentation, and video walkthroughs elevate a ₹499 template into a ₹2,999 must-have toolkit.',
           ],
         },
         {
           heading: 'Step 3: Build a Frictionless Checkout Funnel',
           paragraphs: [
-            'Your checkout flow should require no more than 2 steps: Email + Payment (Stripe / Apple Pay / Credit Card). Integrate order bumps (e.g., adding an editable swipe file for +$19) to instantly increase average order value by 30%.',
+            'Your checkout flow should require no more than 2 steps: Email + Payment (Stripe / Apple Pay / Credit Card). Integrate order bumps (e.g., adding an editable swipe file for +₹499) to instantly increase average order value by 30%.',
           ],
         },
         {

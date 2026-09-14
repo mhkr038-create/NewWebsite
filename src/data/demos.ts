@@ -86,7 +86,7 @@ export const DEMO_REGISTRY: DemoItem[] = [
       gradient: 'from-amber-500 to-yellow-600',
     },
     stats: [
-      { label: 'AUM Supported', value: '$850M+' },
+      { label: 'AUM Supported', value: '₹7,000 Cr+' },
       { label: 'Fiduciary Standard', value: '100%' },
       { label: 'Avg Client Growth', value: '+14.2% YoY' },
     ],
@@ -256,7 +256,7 @@ export const DEMO_REGISTRY: DemoItem[] = [
       gradient: 'from-blue-600 to-pink-600',
     },
     stats: [
-      { label: 'Client Revenue Generated', value: '$45M+' },
+      { label: 'Client Revenue Generated', value: '₹350 Cr+' },
       { label: 'Avg ROAS Across Campaigns', value: '4.8x' },
       { label: 'Growth Sprints Run', value: '280+' },
     ],
