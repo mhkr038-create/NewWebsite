@@ -64,11 +64,19 @@ export function HomeContent() {
 
         {/* Action Buttons */}
         <div className="flex flex-wrap items-center gap-4">
+          <Link
+            href="/intake-form"
+            className="px-6 py-3 rounded-full text-xs font-mono uppercase tracking-wider bg-white text-black font-semibold hover:bg-neutral-200 transition-colors cursor-pointer inline-flex items-center gap-2 shadow-lg"
+          >
+            <span>Submit Requirement</span>
+            <ArrowUpRight className="w-3.5 h-3.5" />
+          </Link>
+
           <button
             onClick={() => openQuickModal()}
-            className="px-6 py-3 rounded-full text-xs font-mono uppercase tracking-wider bg-white text-black font-semibold hover:bg-neutral-200 transition-colors cursor-pointer"
+            className="px-6 py-3 rounded-full text-xs font-mono uppercase tracking-wider text-neutral-300 hover:text-white border border-neutral-800 hover:border-neutral-600 transition-colors cursor-pointer"
           >
-            Start a Project
+            Quick Inquire
           </button>
 
           <a

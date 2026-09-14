@@ -22,9 +22,13 @@ export interface Inquiry {
   phone: string;
   serviceOrDemo: string;
   message: string;
-  source: 'Quick Modal' | 'Contact Form' | 'Demo Page' | 'WhatsApp Direct';
+  source: 'Quick Modal' | 'Contact Form' | 'Demo Page' | 'WhatsApp Direct' | 'Intake Form' | 'Google Form';
   status: 'new' | 'contacted' | 'qualified' | 'converted' | 'closed';
   createdAt: string;
+  age?: number | string;
+  requirement?: string;
+  city?: string;
+  businessName?: string;
   budget?: string;
   notes?: string;
 }
@@ -352,8 +356,13 @@ export const adminStore = {
     phone: string;
     serviceOrDemo: string;
     message: string;
-    source?: 'Quick Modal' | 'Contact Form' | 'Demo Page' | 'WhatsApp Direct';
+    source?: Inquiry['source'];
     budget?: string;
+    age?: number | string;
+    requirement?: string;
+    city?: string;
+    businessName?: string;
+    notes?: string;
   }): Inquiry {
     const current = loadInquiries();
     const newInquiry: Inquiry = {
@@ -367,6 +376,11 @@ export const adminStore = {
       status: 'new',
       createdAt: new Date().toISOString(),
       budget: data.budget,
+      age: data.age,
+      requirement: data.requirement,
+      city: data.city,
+      businessName: data.businessName,
+      notes: data.notes,
     };
     const updated = [newInquiry, ...current];
     saveInquiries(updated);

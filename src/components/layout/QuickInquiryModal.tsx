@@ -20,6 +20,7 @@ export const QuickInquiryModal: React.FC = () => {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
+  const [age, setAge] = useState('');
   const [businessName, setBusinessName] = useState('');
   const [budget, setBudget] = useState('$1,500 – $3,500');
   const [timeline, setTimeline] = useState('Within 1–2 Weeks');
@@ -41,8 +42,10 @@ export const QuickInquiryModal: React.FC = () => {
       email: email,
       phone: phone || 'Not Provided',
       serviceOrDemo: `${currentDemo.name} (${currentDemo.categoryLabel})`,
-      message: `${businessName ? `[Business: ${businessName}] ` : ''}${notes || 'Quick Launch Request'} [Timeline: ${timeline}]`,
+      message: `${businessName ? `[Business: ${businessName}] ` : ''}${age ? `[Age: ${age}] ` : ''}${notes || 'Quick Launch Request'} [Timeline: ${timeline}]`,
       source: 'Quick Modal',
+      age: age,
+      businessName: businessName,
       budget: budget,
     });
 
@@ -134,24 +137,36 @@ export const QuickInquiryModal: React.FC = () => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="sm:col-span-1">
                   <label className="block font-semibold text-slate-300 mb-1">Phone / WhatsApp</label>
                   <input
                     type="tel"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    placeholder="(555) 012-3456"
+                    placeholder="+91 98765 43210"
                     className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-slate-100 placeholder-slate-600 focus:outline-none focus:border-indigo-500"
                   />
                 </div>
-                <div>
-                  <label className="block font-semibold text-slate-300 mb-1">Business / Brand Name</label>
+                <div className="sm:col-span-1">
+                  <label className="block font-semibold text-slate-300 mb-1">Age</label>
+                  <input
+                    type="number"
+                    min="16"
+                    max="99"
+                    value={age}
+                    onChange={(e) => setAge(e.target.value)}
+                    placeholder="e.g. 28"
+                    className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-slate-100 placeholder-slate-600 focus:outline-none focus:border-indigo-500"
+                  />
+                </div>
+                <div className="sm:col-span-1">
+                  <label className="block font-semibold text-slate-300 mb-1">Business / Brand</label>
                   <input
                     type="text"
                     value={businessName}
                     onChange={(e) => setBusinessName(e.target.value)}
-                    placeholder="e.g. Davis Wellness Group"
+                    placeholder="e.g. Davis Wellness"
                     className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-slate-100 placeholder-slate-600 focus:outline-none focus:border-indigo-500"
                   />
                 </div>

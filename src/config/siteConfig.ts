@@ -22,6 +22,7 @@ export interface SiteConfig {
     facebook: string;
     x: string;
   };
+  googleFormUrl?: string;
   navLinks: {
     name: string;
     path: string;
@@ -33,6 +34,7 @@ export const SITE_CONFIG: SiteConfig = {
   siteUrl: 'https://digitalsimplesolution.com',
   brandName: 'digitalsimplesolution',
   brandTagline: 'Build Your Digital Presence. Generate More Leads. Automate Your Growth.',
+  googleFormUrl: '', // Add your Google Form embed URL here anytime
 
   headline: 'Grow Your Business with Digital Marketing & Automation',
   subheadline: 'We build high-converting landing pages, targeted Google & Meta ads, and WhatsApp automations to help businesses capture leads and scale revenue.',

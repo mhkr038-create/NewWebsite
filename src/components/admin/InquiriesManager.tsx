@@ -317,6 +317,18 @@ export const InquiriesManager: React.FC<InquiriesManagerProps> = ({
                 <span className="text-slate-400">Phone:</span>
                 <span className="text-cyan-300 font-mono">{selectedInquiry.phone}</span>
               </div>
+              {selectedInquiry.age && (
+                <div className="flex justify-between py-1 border-b border-slate-800/80">
+                  <span className="text-slate-400">Age:</span>
+                  <span className="text-white font-mono">{selectedInquiry.age} years</span>
+                </div>
+              )}
+              {selectedInquiry.city && (
+                <div className="flex justify-between py-1 border-b border-slate-800/80">
+                  <span className="text-slate-400">Location / City:</span>
+                  <span className="text-slate-200">{selectedInquiry.city}</span>
+                </div>
+              )}
               <div className="flex justify-between py-1 border-b border-slate-800/80">
                 <span className="text-slate-400">Email:</span>
                 <span className="text-slate-200 font-mono truncate max-w-[200px]">{selectedInquiry.email}</span>
