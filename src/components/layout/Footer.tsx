@@ -229,10 +229,89 @@ export const Footer: React.FC = () => {
 
         </div>
 
+        {/* Industry Solutions Backlink Grid (For Google Indexation) */}
+        <div className="py-8 border-b border-slate-900">
+          <span className="text-[11px] font-mono uppercase tracking-widest text-slate-400 font-semibold mb-3 block text-left">
+            Industry Growth Architectures & Programmatic Solutions:
+          </span>
+          <div className="flex flex-wrap gap-2 text-xs">
+            <Link href="/solutions/education" className="px-2.5 py-1 rounded-lg bg-slate-900/80 hover:bg-slate-800 text-slate-400 hover:text-cyan-300 border border-slate-800 transition-colors">
+              Education & Schools ERP
+            </Link>
+            <Link href="/solutions/health" className="px-2.5 py-1 rounded-lg bg-slate-900/80 hover:bg-slate-800 text-slate-400 hover:text-cyan-300 border border-slate-800 transition-colors">
+              Health & Clinic Lead Systems
+            </Link>
+            <Link href="/solutions/finance" className="px-2.5 py-1 rounded-lg bg-slate-900/80 hover:bg-slate-800 text-slate-400 hover:text-cyan-300 border border-slate-800 transition-colors">
+              Wealth & Financial Advisory
+            </Link>
+            <Link href="/solutions/real-estate" className="px-2.5 py-1 rounded-lg bg-slate-900/80 hover:bg-slate-800 text-slate-400 hover:text-cyan-300 border border-slate-800 transition-colors">
+              Real Estate Development
+            </Link>
+            <Link href="/solutions/legal" className="px-2.5 py-1 rounded-lg bg-slate-900/80 hover:bg-slate-800 text-slate-400 hover:text-cyan-300 border border-slate-800 transition-colors">
+              Legal & Corporate Practices
+            </Link>
+            <Link href="/solutions/ecommerce" className="px-2.5 py-1 rounded-lg bg-slate-900/80 hover:bg-slate-800 text-slate-400 hover:text-cyan-300 border border-slate-800 transition-colors">
+              E-Commerce & DTC Retail
+            </Link>
+            <Link href="/solutions/hospitality" className="px-2.5 py-1 rounded-lg bg-slate-900/80 hover:bg-slate-800 text-slate-400 hover:text-cyan-300 border border-slate-800 transition-colors">
+              Hospitality & Restaurant Bookings
+            </Link>
+            <Link href="/solutions/automobile" className="px-2.5 py-1 rounded-lg bg-slate-900/80 hover:bg-slate-800 text-slate-400 hover:text-cyan-300 border border-slate-800 transition-colors">
+              Automobile & Dealerships
+            </Link>
+            <Link href="/free-school-management-software" className="px-2.5 py-1 rounded-lg bg-amber-950/40 hover:bg-amber-900/60 text-amber-300 hover:text-amber-200 border border-amber-500/30 transition-colors font-medium">
+              ⚡ Free School Management Software (₹30K Free)
+            </Link>
+          </div>
+        </div>
+
+        {/* External Authority Citations & Technology Backlinks */}
+        <div className="py-6 border-b border-slate-900 flex flex-wrap items-center justify-between gap-4 text-[11px] text-slate-500">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="font-mono text-slate-400">Verified Platforms:</span>
+            <a
+              href="https://github.com/mhkr038-create/NewWebsite"
+              target="_blank"
+              rel="me noopener noreferrer"
+              className="hover:text-cyan-400 transition-colors underline underline-offset-2"
+            >
+              GitHub Repository
+            </a>
+            <span>•</span>
+            <a
+              href="https://nextjs.org"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-cyan-400 transition-colors"
+            >
+              Next.js 15 Platform
+            </a>
+            <span>•</span>
+            <a
+              href="https://business.whatsapp.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-cyan-400 transition-colors"
+            >
+              WhatsApp Business Cloud API
+            </a>
+            <span>•</span>
+            <a
+              href="https://developers.google.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-cyan-400 transition-colors"
+            >
+              Google Cloud Platform
+            </a>
+          </div>
+          <span className="font-mono text-slate-600">Enterprise SSG Architecture</span>
+        </div>
+
         {/* Bottom Bar: Copyright & Legal */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+        <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
           <p>© 2026 {SITE_CONFIG.brandName}. All Rights Reserved.</p>
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-4 sm:gap-6 flex-wrap justify-center">
             <Link href="/privacy-policy" className="hover:text-slate-400 transition-colors">Privacy Policy</Link>
             <Link href="/terms-and-conditions" className="hover:text-slate-400 transition-colors">Terms & Conditions</Link>
             <Link href="/about" className="hover:text-slate-400 transition-colors">About</Link>

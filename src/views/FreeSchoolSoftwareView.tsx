@@ -233,7 +233,7 @@ export const FreeSchoolSoftwareView: React.FC = () => {
     <div className="w-full bg-[#050711] text-slate-100 font-sans min-h-screen selection:bg-amber-500 selection:text-slate-950">
       
       {/* Top Value Spotlight Bar */}
-      <section className="pt-28 pb-12 sm:pt-36 sm:pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto relative overflow-hidden">
+      <section className="pt-32 pb-12 sm:pt-36 sm:pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto relative overflow-hidden">
         {/* Glow Blobs */}
         <div className="absolute top-10 left-1/4 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute top-20 right-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
@@ -887,6 +887,149 @@ export const FreeSchoolSoftwareView: React.FC = () => {
             </div>
           )}
 
+        </div>
+      </section>
+
+      {/* Internal Backlinks & Cross-Indexation Hub for Googlebot */}
+      <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-slate-900 text-left">
+        <div className="text-center max-w-2xl mx-auto space-y-2 mb-10">
+          <span className="text-xs font-mono uppercase text-cyan-400 tracking-wider font-semibold">
+            Comprehensive Growth Infrastructure
+          </span>
+          <h3 className="text-xl sm:text-3xl font-bold text-white font-heading">
+            Related Educational Systems & Growth Solutions
+          </h3>
+          <p className="text-xs sm:text-sm text-slate-400">
+            Explore our connected ecosystem of admission marketing, parent automations, and live institution demos.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <Link
+            href="/demo/education-academy"
+            className="p-5 rounded-2xl bg-slate-950/80 border border-slate-800/80 hover:border-cyan-500/40 transition-all group flex flex-col justify-between"
+          >
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[10px] font-mono text-cyan-400 uppercase bg-cyan-950/60 px-2 py-0.5 rounded border border-cyan-800/30">
+                  Live Demo
+                </span>
+                <ArrowRight className="w-3.5 h-3.5 text-slate-500 group-hover:text-cyan-400 group-hover:translate-x-1 transition-all" />
+              </div>
+              <h4 className="text-sm font-bold text-white group-hover:text-cyan-300 transition-colors">
+                Education Academy Website Demo
+              </h4>
+              <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                Interactive preview of our high-speed Next.js academy portal with course catalogs and student inquiry capture.
+              </p>
+            </div>
+            <span className="text-[11px] text-cyan-400 font-semibold mt-3 inline-block">Launch Demo Portal →</span>
+          </Link>
+
+          <Link
+            href="/solutions/education"
+            className="p-5 rounded-2xl bg-slate-950/80 border border-slate-800/80 hover:border-indigo-500/40 transition-all group flex flex-col justify-between"
+          >
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[10px] font-mono text-indigo-400 uppercase bg-indigo-950/60 px-2 py-0.5 rounded border border-indigo-800/30">
+                  Industry Solution
+                </span>
+                <ArrowRight className="w-3.5 h-3.5 text-slate-500 group-hover:text-indigo-400 group-hover:translate-x-1 transition-all" />
+              </div>
+              <h4 className="text-sm font-bold text-white group-hover:text-indigo-300 transition-colors">
+                Education Industry Growth Suite
+              </h4>
+              <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                Complete student acquisition systems for CBSE schools, coaching institutes, and colleges in India.
+              </p>
+            </div>
+            <span className="text-[11px] text-indigo-400 font-semibold mt-3 inline-block">Explore Solutions →</span>
+          </Link>
+
+          <Link
+            href="/whatsapp-automation"
+            className="p-5 rounded-2xl bg-slate-950/80 border border-slate-800/80 hover:border-emerald-500/40 transition-all group flex flex-col justify-between"
+          >
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[10px] font-mono text-emerald-400 uppercase bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-500/30">
+                  Automation
+                </span>
+                <ArrowRight className="w-3.5 h-3.5 text-slate-500 group-hover:text-emerald-400 group-hover:translate-x-1 transition-all" />
+              </div>
+              <h4 className="text-sm font-bold text-white group-hover:text-emerald-300 transition-colors">
+                WhatsApp Parent Communication API
+              </h4>
+              <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                Automated 24/7 inquiry response, fee receipts, and broadcast notices directly to parents' WhatsApp.
+              </p>
+            </div>
+            <span className="text-[11px] text-emerald-400 font-semibold mt-3 inline-block">Discover Workflows →</span>
+          </Link>
+
+          <Link
+            href="/landing-pages"
+            className="p-5 rounded-2xl bg-slate-950/80 border border-slate-800/80 hover:border-amber-500/40 transition-all group flex flex-col justify-between"
+          >
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[10px] font-mono text-amber-400 uppercase bg-amber-950/60 px-2 py-0.5 rounded border border-amber-800/30">
+                  Admissions
+                </span>
+                <ArrowRight className="w-3.5 h-3.5 text-slate-500 group-hover:text-amber-400 group-hover:translate-x-1 transition-all" />
+              </div>
+              <h4 className="text-sm font-bold text-white group-hover:text-amber-300 transition-colors">
+                High-Converting School Landing Pages
+              </h4>
+              <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                Designed to maximize student admission inquiries from Meta Ads, Google Ads, and organic search.
+              </p>
+            </div>
+            <span className="text-[11px] text-amber-400 font-semibold mt-3 inline-block">View Landing Page Suite →</span>
+          </Link>
+
+          <Link
+            href="/blog/how-whatsapp-automation-improves-lead-follow-up"
+            className="p-5 rounded-2xl bg-slate-950/80 border border-slate-800/80 hover:border-purple-500/40 transition-all group flex flex-col justify-between"
+          >
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[10px] font-mono text-purple-400 uppercase bg-purple-950/60 px-2 py-0.5 rounded border border-purple-800/30">
+                  Case Study
+                </span>
+                <ArrowRight className="w-3.5 h-3.5 text-slate-500 group-hover:text-purple-400 group-hover:translate-x-1 transition-all" />
+              </div>
+              <h4 className="text-sm font-bold text-white group-hover:text-purple-300 transition-colors">
+                Instant Inquiry Response & Parent Conversion
+              </h4>
+              <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                Why sub-60-second WhatsApp responses increase parent enrollment conversions by up to 300%.
+              </p>
+            </div>
+            <span className="text-[11px] text-purple-400 font-semibold mt-3 inline-block">Read Article →</span>
+          </Link>
+
+          <Link
+            href="/schedule-meeting"
+            className="p-5 rounded-2xl bg-gradient-to-br from-indigo-950/40 to-slate-950 border border-indigo-500/30 hover:border-cyan-400/50 transition-all group flex flex-col justify-between"
+          >
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[10px] font-mono text-cyan-300 uppercase bg-indigo-900/60 px-2 py-0.5 rounded border border-indigo-700/40">
+                  Consultation
+                </span>
+                <ArrowRight className="w-3.5 h-3.5 text-slate-500 group-hover:text-cyan-400 group-hover:translate-x-1 transition-all" />
+              </div>
+              <h4 className="text-sm font-bold text-white group-hover:text-cyan-300 transition-colors">
+                Book Digital Strategy Session
+              </h4>
+              <p className="text-xs text-slate-300 mt-1 leading-relaxed">
+                Meet with our engineering team to plan your institute's digital modernization roadmap.
+              </p>
+            </div>
+            <span className="text-[11px] text-cyan-400 font-semibold mt-3 inline-block">Schedule 1-on-1 Call →</span>
+          </Link>
         </div>
       </section>
 

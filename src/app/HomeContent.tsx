@@ -10,14 +10,14 @@ export function HomeContent() {
   const { openQuickModal } = useInquiry();
 
   return (
-    <div className="w-full bg-black text-white flex flex-col justify-center min-h-[calc(100vh-80px)] pt-28 pb-20 sm:pt-36 sm:pb-24 px-6 sm:px-10 lg:px-16 font-sans">
+    <div className="w-full bg-black text-white flex flex-col justify-center min-h-[calc(100vh-80px)] pt-32 pb-20 sm:pt-36 sm:pb-24 px-4 sm:px-10 lg:px-16 font-sans overflow-x-hidden">
       {/* Main Hero Content */}
       <main className="w-full max-w-5xl mx-auto my-auto flex flex-col items-start text-left">
-        <div className="flex items-center gap-3 mb-4">
+        <div className="flex items-center gap-2 sm:gap-3 mb-4 flex-wrap">
           <span className="text-xs font-mono uppercase tracking-widest text-neutral-500">
             Digital Studio & Systems
           </span>
-          <span className="text-neutral-700">•</span>
+          <span className="text-neutral-700 hidden sm:inline">•</span>
           <span className="inline-flex items-center gap-1.5 text-xs font-mono text-neutral-400">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
             Available for projects
@@ -25,42 +25,45 @@ export function HomeContent() {
         </div>
 
         {/* Big Bold Statement */}
-        <h1 className="text-3xl sm:text-5xl md:text-6xl font-normal tracking-tight leading-[1.1] mb-6 font-heading">
+        <h1 className="text-2xl sm:text-5xl md:text-6xl font-normal tracking-tight leading-[1.15] sm:leading-[1.1] mb-6 font-heading">
           We engineer high-converting digital platforms, landing pages & automated marketing systems.
         </h1>
 
-        {/* 3 Core Pillars */}
-        <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-6 pt-6 pb-6 border-t border-neutral-900">
-          <div>
-            <h2 className="font-mono text-white text-xs uppercase tracking-wider mb-2">
-              01 / Engineering
+        {/* 3 Core Pillars with Internal Indexing Backlinks */}
+        <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6 pt-6 pb-6 border-t border-neutral-900">
+          <Link href="/landing-pages" className="group/pillar block p-3.5 -m-3.5 rounded-2xl hover:bg-neutral-900/50 transition-colors">
+            <h2 className="font-mono text-white text-xs uppercase tracking-wider mb-2 group-hover/pillar:text-cyan-400 transition-colors flex items-center justify-between">
+              <span>01 / Engineering</span>
+              <ArrowUpRight className="w-3.5 h-3.5 opacity-0 group-hover/pillar:opacity-100 transition-opacity" />
             </h2>
             <p className="text-neutral-400 text-xs leading-relaxed font-light">
               High-performance Next.js web applications, client portals, and e-commerce architectures.
             </p>
-          </div>
+          </Link>
 
-          <div>
-            <h2 className="font-mono text-white text-xs uppercase tracking-wider mb-2">
-              02 / Acquisition
+          <Link href="/meta-ads" className="group/pillar block p-3.5 -m-3.5 rounded-2xl hover:bg-neutral-900/50 transition-colors">
+            <h2 className="font-mono text-white text-xs uppercase tracking-wider mb-2 group-hover/pillar:text-indigo-400 transition-colors flex items-center justify-between">
+              <span>02 / Acquisition</span>
+              <ArrowUpRight className="w-3.5 h-3.5 opacity-0 group-hover/pillar:opacity-100 transition-opacity" />
             </h2>
             <p className="text-neutral-400 text-xs leading-relaxed font-light">
               Targeted Meta & Google ad campaigns engineered for measurable ROAS.
             </p>
-          </div>
+          </Link>
 
-          <div>
-            <h2 className="font-mono text-white text-xs uppercase tracking-wider mb-2">
-              03 / Automation
+          <Link href="/whatsapp-automation" className="group/pillar block p-3.5 -m-3.5 rounded-2xl hover:bg-neutral-900/50 transition-colors">
+            <h2 className="font-mono text-white text-xs uppercase tracking-wider mb-2 group-hover/pillar:text-emerald-400 transition-colors flex items-center justify-between">
+              <span>03 / Automation</span>
+              <ArrowUpRight className="w-3.5 h-3.5 opacity-0 group-hover/pillar:opacity-100 transition-opacity" />
             </h2>
             <p className="text-neutral-400 text-xs leading-relaxed font-light">
               WhatsApp Cloud API workflows for instant, 24/7 lead capture and booking.
             </p>
-          </div>
+          </Link>
         </div>
 
         {/* Highlight Banner: Free School Management Software */}
-        <div className="w-full my-8 p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-amber-950/40 via-yellow-950/25 to-slate-900 border border-amber-500/40 shadow-xl relative overflow-hidden group">
+        <div className="w-full my-6 sm:my-8 p-4 sm:p-8 rounded-2xl sm:rounded-3xl bg-gradient-to-r from-amber-950/40 via-yellow-950/25 to-slate-900 border border-amber-500/40 shadow-xl relative overflow-hidden group">
           <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/10 rounded-full blur-2xl pointer-events-none" />
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center relative z-10">
             <div className="lg:col-span-8 space-y-3 text-left">

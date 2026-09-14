@@ -103,26 +103,26 @@ export const Navbar: React.FC = () => {
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
-          ? 'bg-slate-950/90 backdrop-blur-xl border-b border-slate-800/80 shadow-2xl shadow-indigo-950/20 pb-3'
-          : 'bg-transparent pb-5'
+          ? 'bg-slate-950/95 backdrop-blur-xl border-b border-slate-800/80 shadow-2xl shadow-indigo-950/20 pb-2.5 sm:pb-3'
+          : 'bg-slate-950/80 lg:bg-transparent backdrop-blur-lg lg:backdrop-blur-none pb-3 sm:pb-5'
       }`}
     >
       <AnnouncementBanner />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-3">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 mt-2 sm:mt-3">
         <div className="flex items-center justify-between">
           
           {/* Brand Logo */}
-          <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-cyan-400 p-[1.5px] shadow-lg shadow-indigo-500/25 group-hover:scale-105 transition-transform duration-300">
+          <Link href="/" className="flex items-center gap-2 sm:gap-3 group min-w-0">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-cyan-400 p-[1.5px] shadow-lg shadow-indigo-500/25 group-hover:scale-105 transition-transform duration-300 shrink-0">
               <div className="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
-                <Sparkles className="w-5 h-5 text-cyan-400 group-hover:rotate-12 transition-transform duration-300" />
+                <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-cyan-400 group-hover:rotate-12 transition-transform duration-300" />
               </div>
             </div>
-            <div className="flex flex-col text-left">
-              <span className="font-extrabold text-xl tracking-tight text-white flex items-center gap-1 font-heading">
+            <div className="flex flex-col text-left min-w-0">
+              <span className="font-extrabold text-base sm:text-xl tracking-tight text-white flex items-center gap-1 font-heading truncate max-w-[175px] sm:max-w-none">
                 {SITE_CONFIG.brandName}
               </span>
-              <span className="text-[10px] text-cyan-400 tracking-wider font-mono uppercase -mt-1 font-semibold">
+              <span className="text-[9px] sm:text-[10px] text-cyan-400 tracking-wider font-mono uppercase -mt-0.5 sm:-mt-1 font-semibold truncate">
                 Digital Growth & Automation
               </span>
             </div>
@@ -303,7 +303,7 @@ export const Navbar: React.FC = () => {
 
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-slate-950/98 border-b border-slate-800 px-4 pt-4 pb-6 space-y-3 animate-in fade-in duration-200 text-left">
+        <div className="lg:hidden bg-slate-950/98 border-b border-slate-800 px-4 pt-3 pb-8 space-y-3 animate-in fade-in duration-200 text-left max-h-[calc(100dvh-4.5rem)] overflow-y-auto overscroll-contain shadow-2xl">
           <div className="grid grid-cols-1 gap-1">
             {navLinks.map((link) => (
               <Link
@@ -313,30 +313,30 @@ export const Navbar: React.FC = () => {
                   setMobileMenuOpen(false);
                   handleNavClick(link.path, e);
                 }}
-                className={`px-4 py-2.5 rounded-xl text-sm font-medium flex items-center justify-between ${
+                className={`px-3.5 py-2.5 rounded-xl text-sm font-medium flex items-center justify-between transition-colors ${
                   link.isFlash
                     ? 'bg-amber-500/15 text-amber-300 border border-amber-500/40 font-bold'
                     : isActive(link.path)
                     ? 'bg-indigo-600/20 text-indigo-300 border border-indigo-500/30'
-                    : 'text-slate-300 hover:bg-slate-900'
+                    : 'text-slate-300 hover:bg-slate-900 active:bg-slate-800'
                 }`}
               >
-                <span className="flex items-center gap-2">
+                <span className="flex items-center gap-2 min-w-0">
                   {link.isFlash && (
-                    <span className="relative flex h-2 w-2">
+                    <span className="relative flex h-2 w-2 shrink-0">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-90" />
                       <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-400" />
                     </span>
                   )}
-                  <span>{link.name}</span>
+                  <span className="truncate">{link.name}</span>
                   {link.isFlash && (
-                    <span className="px-2 py-0.5 bg-red-600 text-white text-[9px] font-extrabold rounded-full font-mono uppercase tracking-wider animate-blink-flash flex items-center gap-0.5 shadow-sm">
+                    <span className="px-2 py-0.5 bg-red-600 text-white text-[9px] font-extrabold rounded-full font-mono uppercase tracking-wider animate-blink-flash flex items-center gap-0.5 shadow-sm shrink-0">
                       <Zap className="w-2.5 h-2.5 fill-yellow-300 text-yellow-300" />
-                      LIMITED SLOTS • ₹30K FREE
+                      LIMITED SLOTS (₹30K FREE)
                     </span>
                   )}
                 </span>
-                {isActive(link.path) && <div className="w-2 h-2 rounded-full bg-indigo-400" />}
+                {isActive(link.path) && <div className="w-2 h-2 rounded-full bg-indigo-400 shrink-0" />}
               </Link>
             ))}
           </div>
@@ -347,7 +347,7 @@ export const Navbar: React.FC = () => {
                 setMobileMenuOpen(false);
                 openQuickModal();
               }}
-              className="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-slate-200 text-center rounded-xl font-semibold text-xs border border-slate-700 flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-slate-200 text-center rounded-xl font-semibold text-xs border border-slate-700 flex items-center justify-center gap-2 cursor-pointer active:scale-98 transition-transform"
             >
               <Zap className="w-4 h-4 text-amber-400" />
               <span>Get Started</span>
@@ -355,7 +355,7 @@ export const Navbar: React.FC = () => {
             <Link
               href="/schedule-meeting"
               onClick={() => setMobileMenuOpen(false)}
-              className="w-full py-2.5 bg-gradient-to-r from-indigo-600 via-indigo-500 to-cyan-600 hover:from-indigo-500 hover:to-cyan-500 text-white text-center rounded-xl font-bold text-xs shadow-lg shadow-indigo-600/30 flex items-center justify-center gap-2"
+              className="w-full py-2.5 bg-gradient-to-r from-indigo-600 via-indigo-500 to-cyan-600 hover:from-indigo-500 hover:to-cyan-500 text-white text-center rounded-xl font-bold text-xs shadow-lg shadow-indigo-600/30 flex items-center justify-center gap-2 active:scale-98 transition-transform"
             >
               <Calendar className="w-4 h-4" />
               <span>Book Consultation</span>
