@@ -13,7 +13,11 @@ import {
   Target, 
   CheckCircle2, 
   Layers,
-  ArrowRight
+  ArrowRight,
+  MousePointerClick,
+  Smartphone,
+  MapPin,
+  Activity
 } from 'lucide-react';
 import { AnalyticsSummary, Appointment, Inquiry } from '../../services/adminStore';
 
@@ -23,6 +27,7 @@ interface AnalyticsOverviewProps {
   inquiries: Inquiry[];
   onNavigateToAppointments: () => void;
   onNavigateToInquiries: () => void;
+  onNavigateToVisitors?: () => void;
 }
 
 export const AnalyticsOverview: React.FC<AnalyticsOverviewProps> = ({
@@ -31,6 +36,7 @@ export const AnalyticsOverview: React.FC<AnalyticsOverviewProps> = ({
   inquiries,
   onNavigateToAppointments,
   onNavigateToInquiries,
+  onNavigateToVisitors,
 }) => {
   const pendingAppointments = appointments.filter((a) => a.status === 'pending');
   const confirmedAppointments = appointments.filter((a) => a.status === 'confirmed');
@@ -97,7 +103,17 @@ export const AnalyticsOverview: React.FC<AnalyticsOverviewProps> = ({
           </p>
         </div>
 
-        <div className="flex items-center gap-3 relative z-10">
+        <div className="flex flex-wrap items-center gap-3 relative z-10">
+          {onNavigateToVisitors && (
+            <button
+              onClick={onNavigateToVisitors}
+              className="px-4 py-2.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-cyan-500/40 text-cyan-300 text-xs font-bold flex items-center gap-2 transition-all cursor-pointer shadow-lg shadow-cyan-950/40"
+            >
+              <MousePointerClick className="w-3.5 h-3.5 text-cyan-400" />
+              <span>Live Visitors & Clicks</span>
+            </button>
+          )}
+
           <button
             onClick={onNavigateToAppointments}
             className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-cyan-600 hover:from-indigo-500 hover:to-cyan-500 text-white text-xs font-bold shadow-lg shadow-indigo-600/30 flex items-center gap-2 transition-all cursor-pointer"
@@ -148,6 +164,36 @@ export const AnalyticsOverview: React.FC<AnalyticsOverviewProps> = ({
           );
         })}
       </div>
+
+      {/* Live Visitors & Click Intelligence Fast Bar */}
+      {onNavigateToVisitors && (
+        <div className="p-4 sm:p-5 rounded-3xl bg-gradient-to-r from-slate-950 via-slate-900 to-indigo-950/60 border border-cyan-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xl">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-cyan-950/80 border border-cyan-500/40 flex items-center justify-center shrink-0">
+              <Activity className="w-5 h-5 text-cyan-400 animate-pulse" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-mono font-bold text-cyan-300">Live Website Telemetry</span>
+                <span className="text-[10px] px-2 py-0.2 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-800 font-mono">
+                  Real-Time Active
+                </span>
+              </div>
+              <p className="text-xs text-slate-300 mt-0.5">
+                Monitoring <strong>Daily Visitors</strong>, <strong>Mobile vs Desktop Ratio (64% Mobile)</strong>, <strong>Top Cities (Delhi NCR, Bengaluru, Jaipur)</strong>, and <strong>Interactive Click Feeds</strong>.
+              </p>
+            </div>
+          </div>
+
+          <button
+            onClick={onNavigateToVisitors}
+            className="px-4 py-2 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-500/50 text-cyan-300 hover:text-white text-xs font-mono font-bold flex items-center gap-2 transition-all cursor-pointer whitespace-nowrap self-start sm:self-auto shadow-md"
+          >
+            <span>Open Visitors & Clicks Station</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
 
       {/* Conversion Funnel Breakdown Visual */}
       <div className="p-6 sm:p-8 rounded-3xl bg-slate-900/80 border border-slate-800/90 space-y-6 shadow-xl">

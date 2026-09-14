@@ -5,6 +5,7 @@ import { AdminAuthProvider } from '../context/AdminAuthContext';
 import { InquiryProvider } from '../context/InquiryContext';
 import { SiteChrome } from '../components/layout/SiteChrome';
 import { SITE_CONFIG } from '../config/siteConfig';
+import { AnalyticsTracker } from '../components/analytics/AnalyticsTracker';
 
 
 export const metadata: Metadata = {
@@ -205,6 +206,7 @@ export default function RootLayout({
           }}
         />
 
+        <AnalyticsTracker />
         <AdminAuthProvider>
           <InquiryProvider>
             <SiteChrome>{children}</SiteChrome>

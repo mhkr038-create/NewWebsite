@@ -21,7 +21,10 @@ import {
   Check, 
   XCircle,
   X,
-  PlusCircle
+  PlusCircle,
+  Lock,
+  Unlock,
+  ShieldCheck
 } from 'lucide-react';
 
 interface InquiriesManagerProps {
@@ -40,6 +43,19 @@ export const InquiriesManager: React.FC<InquiriesManagerProps> = ({
   const [selectedInquiry, setSelectedInquiry] = useState<Inquiry | null>(null);
   const [editingNotesId, setEditingNotesId] = useState<string | null>(null);
   const [tempNotes, setTempNotes] = useState<string>('');
+  const [isMasked, setIsMasked] = useState<boolean>(true);
+
+  const maskPhone = (phone: string) => {
+    if (!isMasked) return phone;
+    return phone.replace(/(\+?\d{2,4}\s?)(\d{2,3})(\d{3,5})(\d{2})/, '$1$2*** ***$4');
+  };
+
+  const maskEmail = (email: string) => {
+    if (!isMasked) return email;
+    const parts = email.split('@');
+    if (parts.length < 2) return email;
+    return `${parts[0].charAt(0)}***@${parts[1]}`;
+  };
 
   const filtered = useMemo(() => {
     return inquiries.filter((item) => {
@@ -128,6 +144,19 @@ export const InquiriesManager: React.FC<InquiriesManagerProps> = ({
             Real-time messages from quick modals, contact submissions, and demo requests.
           </p>
         </div>
+
+        <button
+          onClick={() => setIsMasked(!isMasked)}
+          className={`px-3.5 py-1.5 rounded-xl text-xs font-mono font-semibold flex items-center gap-2 border transition-all cursor-pointer ${
+            isMasked
+              ? 'bg-slate-900 border-slate-700 text-slate-300 hover:text-white'
+              : 'bg-amber-950/80 border-amber-500/50 text-amber-300'
+          }`}
+          title="Toggle masking of client phone numbers, age, and confidential information"
+        >
+          {isMasked ? <Lock className="w-3.5 h-3.5 text-emerald-400" /> : <Unlock className="w-3.5 h-3.5 text-amber-400" />}
+          <span>{isMasked ? 'Privacy Shield: Active' : 'Sensitive Data: Unmasked'}</span>
+        </button>
       </div>
 
       {/* Toolbar */}
@@ -237,11 +266,13 @@ export const InquiriesManager: React.FC<InquiriesManagerProps> = ({
                   )}
 
                   <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-400 font-mono">
-                    <span className="text-cyan-300 font-bold">{item.phone}</span>
+                    <span className="text-cyan-300 font-bold">{maskPhone(item.phone)}</span>
                     {item.age && (
                       <>
                         <span>•</span>
-                        <span className="text-white bg-slate-800 px-1.5 py-0.5 rounded text-[11px]">Age: {item.age}</span>
+                        <span className="text-white bg-slate-800 px-1.5 py-0.5 rounded text-[11px]">
+                          Age: {isMasked ? '**' : item.age}
+                        </span>
                       </>
                     )}
                     {item.city && (
@@ -251,7 +282,7 @@ export const InquiriesManager: React.FC<InquiriesManagerProps> = ({
                       </>
                     )}
                     <span>•</span>
-                    <span className="truncate max-w-[180px]">{item.email}</span>
+                    <span className="truncate max-w-[180px]">{maskEmail(item.email)}</span>
                     {item.budget && (
                       <>
                         <span>•</span>
@@ -381,12 +412,12 @@ export const InquiriesManager: React.FC<InquiriesManagerProps> = ({
               </div>
               <div className="flex justify-between py-1 border-b border-slate-800/80">
                 <span className="text-slate-400">Phone:</span>
-                <span className="text-cyan-300 font-mono">{selectedInquiry.phone}</span>
+                <span className="text-cyan-300 font-mono">{maskPhone(selectedInquiry.phone)}</span>
               </div>
               {selectedInquiry.age && (
                 <div className="flex justify-between py-1 border-b border-slate-800/80">
                   <span className="text-slate-400">Age:</span>
-                  <span className="text-white font-mono">{selectedInquiry.age} years</span>
+                  <span className="text-white font-mono">{isMasked ? '**' : `${selectedInquiry.age} years`}</span>
                 </div>
               )}
               {selectedInquiry.city && (
@@ -397,7 +428,7 @@ export const InquiriesManager: React.FC<InquiriesManagerProps> = ({
               )}
               <div className="flex justify-between py-1 border-b border-slate-800/80">
                 <span className="text-slate-400">Email:</span>
-                <span className="text-slate-200 font-mono truncate max-w-[200px]">{selectedInquiry.email}</span>
+                <span className="text-slate-200 font-mono truncate max-w-[200px]">{maskEmail(selectedInquiry.email)}</span>
               </div>
               <div className="flex justify-between py-1 border-b border-slate-800/80">
                 <span className="text-slate-400">Capture Channel:</span>

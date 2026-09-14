@@ -6,6 +6,7 @@ import { AdminLayout, AdminTab } from '../../components/admin/AdminLayout';
 import { AnalyticsOverview } from '../../components/admin/AnalyticsOverview';
 import { AppointmentsManager } from '../../components/admin/AppointmentsManager';
 import { InquiriesManager } from '../../components/admin/InquiriesManager';
+import { VisitorAnalyticsView } from '../../components/admin/VisitorAnalyticsView';
 import { AdminSettings } from '../../components/admin/AdminSettings';
 import { 
   adminStore, 
@@ -79,7 +80,12 @@ export default function AdminDashboardPage() {
             inquiries={inquiries}
             onNavigateToAppointments={() => setActiveTab('appointments')}
             onNavigateToInquiries={() => setActiveTab('inquiries')}
+            onNavigateToVisitors={() => setActiveTab('visitors')}
           />
+        )}
+
+        {activeTab === 'visitors' && (
+          <VisitorAnalyticsView />
         )}
 
         {activeTab === 'appointments' && (
