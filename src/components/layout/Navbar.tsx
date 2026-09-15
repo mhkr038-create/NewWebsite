@@ -59,23 +59,24 @@ export const Navbar: React.FC = () => {
 
   interface NavLinkItem {
     name: string;
+    shortName?: string;
     path: string;
     hasDropdown?: 'services' | 'solutions';
     isFlash?: boolean;
+    hideOnDesktop?: boolean;
   }
 
   const navLinks: NavLinkItem[] = [
     { name: 'Home', path: '/' },
     { name: 'Services', path: '/services', hasDropdown: 'services' },
     { name: 'Solutions', path: '/solutions', hasDropdown: 'solutions' },
-    { name: 'Free School ERP', path: '/free-school-management-software', isFlash: true },
+    { name: 'Free School ERP', shortName: 'School ERP', path: '/free-school-management-software', isFlash: true },
     { name: 'Demos', path: '/demos' },
     { name: 'Products', path: '/digital-products' },
-    { name: 'Submit Request', path: '/intake-form' },
+    { name: 'Submit Request', path: '/intake-form', hideOnDesktop: true },
     { name: 'Blog', path: '/blog' },
     { name: 'Contact', path: '/contact' },
   ];
-
 
   const isActive = (path: string) => {
     if (path === '/' && pathname === '/') return true;
@@ -103,34 +104,34 @@ export const Navbar: React.FC = () => {
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
-          ? 'bg-slate-950/95 backdrop-blur-xl border-b border-slate-800/80 shadow-2xl shadow-indigo-950/20 pb-2.5 sm:pb-3'
-          : 'bg-slate-950/80 lg:bg-transparent backdrop-blur-lg lg:backdrop-blur-none pb-3 sm:pb-5'
+          ? 'bg-slate-950/95 backdrop-blur-xl border-b border-slate-800/80 shadow-2xl shadow-indigo-950/20 py-2 sm:py-2.5'
+          : 'bg-slate-950/90 backdrop-blur-lg border-b border-slate-800/50 shadow-lg shadow-black/40 py-2 sm:py-2.5'
       }`}
     >
       <AnnouncementBanner />
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 mt-2 sm:mt-3">
-        <div className="flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 mt-1.5 sm:mt-2">
+        <div className="flex items-center justify-between gap-3 xl:gap-6 w-full">
           
           {/* Brand Logo */}
-          <Link href="/" className="flex items-center gap-2 sm:gap-3 group min-w-0">
+          <Link href="/" className="flex items-center gap-2 sm:gap-3 group shrink-0">
             <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-cyan-400 p-[1.5px] shadow-lg shadow-indigo-500/25 group-hover:scale-105 transition-transform duration-300 shrink-0">
               <div className="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
                 <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-cyan-400 group-hover:rotate-12 transition-transform duration-300" />
               </div>
             </div>
-            <div className="flex flex-col text-left min-w-0">
-              <span className="font-extrabold text-base sm:text-xl tracking-tight text-white flex items-center gap-1 font-heading truncate max-w-[175px] sm:max-w-none">
+            <div className="flex flex-col text-left shrink-0">
+              <span className="font-extrabold text-sm sm:text-base xl:text-lg tracking-tight text-white flex items-center gap-1 font-heading whitespace-nowrap">
                 {SITE_CONFIG.brandName}
               </span>
-              <span className="text-[9px] sm:text-[10px] text-cyan-400 tracking-wider font-mono uppercase -mt-0.5 sm:-mt-1 font-semibold truncate">
+              <span className="text-[9px] sm:text-[10px] text-cyan-400 tracking-wider font-mono uppercase -mt-0.5 font-semibold whitespace-nowrap">
                 Digital Growth & Automation
               </span>
             </div>
           </Link>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden lg:flex items-center gap-1 bg-slate-900/80 p-1.5 rounded-full border border-slate-800/80 backdrop-blur-md">
-            {navLinks.map((link) => (
+          <nav className="hidden lg:flex items-center gap-0.5 xl:gap-1 bg-slate-900/90 px-2 py-1 xl:px-2.5 xl:py-1.5 rounded-full border border-slate-800/90 backdrop-blur-md shadow-xl shadow-black/50 shrink-0">
+            {navLinks.filter((l) => !l.hideOnDesktop).map((link) => (
               <div
                 key={link.path}
                 className="relative"
@@ -146,7 +147,7 @@ export const Navbar: React.FC = () => {
                 <Link
                   href={link.path}
                   onClick={(e) => handleNavClick(link.path, e)}
-                  className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-200 flex items-center gap-1.5 ${
+                  className={`px-2.5 py-1.5 xl:px-3 xl:py-1.5 rounded-full text-xs font-medium transition-all duration-200 flex items-center gap-1 xl:gap-1.5 whitespace-nowrap ${
                     link.isFlash
                       ? 'bg-gradient-to-r from-amber-500/20 via-red-500/20 to-amber-500/20 text-amber-300 border border-amber-500/50 hover:border-amber-400 font-bold shadow-md shadow-amber-500/10'
                       : isActive(link.path)
@@ -155,16 +156,16 @@ export const Navbar: React.FC = () => {
                   }`}
                 >
                   {link.isFlash && (
-                    <span className="relative flex h-2 w-2">
+                    <span className="relative flex h-2 w-2 shrink-0">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-90" />
                       <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-400" />
                     </span>
                   )}
-                  <span>{link.name}</span>
+                  <span>{link.shortName || link.name}</span>
                   {link.isFlash && (
-                    <span className="px-1.5 py-0.5 bg-red-600 text-white text-[9px] font-extrabold rounded-full font-mono uppercase tracking-wider animate-blink-flash flex items-center gap-0.5 shadow-sm">
+                    <span className="px-1.5 py-0.2 bg-red-600 text-white text-[9px] font-extrabold rounded-full font-mono uppercase tracking-wider animate-blink-flash flex items-center gap-0.5 shadow-sm shrink-0">
                       <Zap className="w-2.5 h-2.5 fill-yellow-300 text-yellow-300" />
-                      LIMITED OFFER
+                      FREE
                     </span>
                   )}
                   {link.hasDropdown && (
@@ -258,34 +259,34 @@ export const Navbar: React.FC = () => {
           </nav>
 
           {/* Action CTAs */}
-          <div className="hidden sm:flex items-center gap-2">
+          <div className="hidden sm:flex items-center gap-1.5 xl:gap-2 shrink-0">
             {/* Admin Portal link */}
             <Link
               href="/admin"
               title="Admin Portal"
-              className="p-2 rounded-xl bg-slate-900/80 hover:bg-slate-800 text-slate-400 hover:text-cyan-400 border border-slate-800 hover:border-slate-700 transition-all flex items-center justify-center cursor-pointer group"
+              className="p-2 rounded-xl bg-slate-900/80 hover:bg-slate-800 text-slate-400 hover:text-cyan-400 border border-slate-800 hover:border-slate-700 transition-all flex items-center justify-center cursor-pointer group shrink-0"
             >
               <ShieldCheck className="w-4 h-4 group-hover:scale-110 transition-transform" />
               <span className="sr-only">Admin Portal</span>
             </Link>
 
-            {/* CTA 1: Get Started */}
+            {/* CTA 1: Get Started (visible on wide screens >= 1440px to preserve space on laptop widths) */}
             <button
               onClick={() => openQuickModal()}
-              className="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 text-xs font-semibold border border-slate-700/80 shadow-md transition-all hover:border-slate-600 flex items-center gap-1.5 cursor-pointer"
+              className="hidden 2xl:flex px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 text-xs font-semibold border border-slate-700/80 shadow-md transition-all hover:border-slate-600 items-center gap-1.5 cursor-pointer shrink-0"
             >
               <Zap className="w-3.5 h-3.5 text-amber-400" />
               <span>Get Started</span>
             </button>
 
-            {/* CTA 2: Schedule a Meeting */}
+            {/* CTA 2: Schedule a Meeting (Always visible on desktop) */}
             <Link
               href="/schedule-meeting"
-              className="relative inline-flex items-center justify-center p-0.5 overflow-hidden text-xs font-bold rounded-xl group bg-gradient-to-r from-indigo-500 via-purple-500 to-cyan-500 shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
+              className="relative inline-flex items-center justify-center p-0.5 overflow-hidden text-xs font-bold rounded-xl group bg-gradient-to-r from-indigo-500 via-purple-500 to-cyan-500 shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 shrink-0"
             >
-              <span className="px-3.5 py-2 transition-all ease-in duration-75 bg-gradient-to-r from-indigo-600 to-cyan-600 rounded-[10px] flex items-center gap-1.5 text-white">
+              <span className="px-3 py-1.5 xl:px-3.5 xl:py-2 transition-all ease-in duration-75 bg-gradient-to-r from-indigo-600 to-cyan-600 rounded-[10px] flex items-center gap-1.5 text-white">
                 <Calendar className="w-3.5 h-3.5 text-cyan-200" />
-                <span>Book Consultation</span>
+                <span className="whitespace-nowrap">Book Consultation</span>
               </span>
             </Link>
           </div>
