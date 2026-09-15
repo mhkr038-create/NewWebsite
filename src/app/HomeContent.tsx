@@ -88,15 +88,13 @@ export function HomeContent() {
                 </span>
               </div>
               <h3 className="text-xl sm:text-2xl font-bold text-white font-heading">
-                Free School Management Software
+                Free School Software &amp; Management ERP
               </h3>
               <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-light max-w-xl">
-                Modern ERP for schools & educational institutes. Automate student admissions, daily attendance, fee receipts, report cards, and WhatsApp parent alerts at zero software license cost.
+                Looking for the best <strong className="text-amber-300 font-semibold">free school software</strong>? Complete cloud ERP for schools, colleges &amp; educational institutes. Automate student admissions, daily attendance, fee receipts, report cards, and WhatsApp parent alerts at zero software license cost.
               </p>
-
-              {/* Scarcity Progress Bar */}
-              <div className="bg-slate-950/70 border border-amber-500/30 rounded-xl p-3 max-w-xl">
-                <div className="flex items-center justify-between text-[11px] font-mono mb-1.5">
+              <div className="space-y-1 pt-1 max-w-md">
+                <div className="flex justify-between text-[11px] font-mono">
                   <span className="text-amber-300 font-bold flex items-center gap-1">
                     <Flame className="w-3.5 h-3.5 text-amber-400" />
                     18 of 25 Free Setup Slots Claimed
@@ -112,14 +110,14 @@ export function HomeContent() {
                   href="/free-school-management-software#enquiry-form"
                   className="px-5 py-3 rounded-xl bg-gradient-to-r from-amber-400 to-yellow-500 hover:from-amber-300 hover:to-yellow-400 text-slate-950 font-bold text-xs uppercase tracking-wider shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2 transition-all hover:scale-105 cursor-pointer"
                 >
-                  <span>Submit School Enquiry</span>
+                  <span>Claim Free School Software</span>
                   <ArrowUpRight className="w-4 h-4" />
                 </Link>
                 <Link
                   href="/free-school-management-software"
                   className="px-4 py-3 rounded-xl bg-slate-950/80 hover:bg-slate-900 text-amber-300 border border-amber-500/30 text-xs font-semibold flex items-center justify-center transition-colors"
                 >
-                  <span>Explore Features</span>
+                  <span>Explore Free School ERP</span>
                 </Link>
               </div>
             </div>
@@ -128,7 +126,7 @@ export function HomeContent() {
               <Link href="/free-school-management-software" className="block relative rounded-2xl overflow-hidden border-2 border-amber-500/40 shadow-xl group/img hover:border-amber-400 transition-all hover:scale-[1.02]">
                 <img
                   src="/images/free-school-management-software.jpg"
-                  alt="Free School Management Software ERP Preview"
+                  alt="Free School Software - Free School Management ERP"
                   className="w-full h-auto object-cover"
                 />
               </Link>

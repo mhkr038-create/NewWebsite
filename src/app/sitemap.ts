@@ -5,7 +5,7 @@ import { DEMO_REGISTRY } from '../data/demos';
 import { SITE_CONFIG } from '../config/siteConfig';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = SITE_CONFIG.siteUrl || 'https://digitalsimplesolution.com';
+  const baseUrl = SITE_CONFIG.siteUrl || 'https://www.digitalsimplesolution.online';
   const currentDate = new Date().toISOString().split('T')[0];
 
   // Core Static Pages
@@ -19,8 +19,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     {
       url: `${baseUrl}/free-school-management-software`,
       lastModified: currentDate,
-      changeFrequency: 'weekly',
-      priority: 0.95,
+      changeFrequency: 'daily',
+      priority: 1.0,
     },
     {
       url: `${baseUrl}/services`,

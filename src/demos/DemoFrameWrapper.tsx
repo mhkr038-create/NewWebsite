@@ -149,7 +149,7 @@ export const DemoFrameWrapper: React.FC<DemoFrameWrapperProps> = ({ demo, childr
                 <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/80" />
               </div>
               <div className="text-[10px] font-mono text-slate-400 truncate max-w-[200px] bg-slate-950 px-2.5 py-0.5 rounded border border-slate-800">
-                demo.digitalsimplesolution.com/{demo.slug}
+                demo.digitalsimplesolution.online/{demo.slug}
               </div>
               <div className="w-6" />
             </div>

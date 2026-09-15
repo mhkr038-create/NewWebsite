@@ -159,7 +159,7 @@ export const Footer: React.FC = () => {
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-80" />
                     <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-amber-400" />
                   </span>
-                  <span>Free School ERP (₹30K Free)</span>
+                  <span>Free School Software (₹30K Free)</span>
                 </Link>
               </li>
             </ul>
@@ -260,7 +260,7 @@ export const Footer: React.FC = () => {
               Automobile & Dealerships
             </Link>
             <Link href="/free-school-management-software" className="px-2.5 py-1 rounded-lg bg-amber-950/40 hover:bg-amber-900/60 text-amber-300 hover:text-amber-200 border border-amber-500/30 transition-colors font-medium">
-              ⚡ Free School Management Software (₹30K Free)
+              ⚡ Free School Software &amp; ERP (₹30K Free)
             </Link>
           </div>
         </div>

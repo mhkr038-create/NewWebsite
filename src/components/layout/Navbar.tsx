@@ -70,7 +70,7 @@ export const Navbar: React.FC = () => {
     { name: 'Home', path: '/' },
     { name: 'Services', path: '/services', hasDropdown: 'services' },
     { name: 'Solutions', path: '/solutions', hasDropdown: 'solutions' },
-    { name: 'Free School ERP', shortName: 'School ERP', path: '/free-school-management-software', isFlash: true },
+    { name: 'Free School Software', shortName: 'Free School ERP', path: '/free-school-management-software', isFlash: true },
     { name: 'Demos', path: '/demos' },
     { name: 'Products', path: '/digital-products' },
     { name: 'Submit Request', path: '/intake-form', hideOnDesktop: true },

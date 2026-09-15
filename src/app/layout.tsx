@@ -9,7 +9,10 @@ import { AnalyticsTracker } from '../components/analytics/AnalyticsTracker';
 
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://digitalsimplesolution.com'),
+  metadataBase: new URL(SITE_CONFIG.siteUrl),
+  alternates: {
+    canonical: './',
+  },
   title: {
     default: 'Digital Simple Solution | Web & AI Automation',
     template: '%s | Digital Simple Solution',
@@ -25,7 +28,7 @@ export const metadata: Metadata = {
     'seo content agency',
     'conversion rate optimization',
   ],
-  authors: [{ name: SITE_CONFIG.brandName, url: 'https://digitalsimplesolution.com' }],
+  authors: [{ name: SITE_CONFIG.brandName, url: SITE_CONFIG.siteUrl }],
   creator: SITE_CONFIG.brandName,
   publisher: SITE_CONFIG.brandName,
   formatDetection: {
@@ -36,7 +39,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://digitalsimplesolution.com',
+    url: SITE_CONFIG.siteUrl,
     siteName: 'Digital Simple Solution',
     title: 'Digital Simple Solution | Web & AI Automation',
     description: SITE_CONFIG.subheadline,
@@ -89,7 +92,7 @@ export default function RootLayout({
       '@type': 'ProfessionalService',
       name: SITE_CONFIG.brandName,
       description: SITE_CONFIG.subheadline,
-      url: 'https://digitalsimplesolution.com',
+      url: SITE_CONFIG.siteUrl,
       telephone: SITE_CONFIG.contact.phone,
       email: SITE_CONFIG.contact.email,
       address: {
@@ -104,10 +107,10 @@ export default function RootLayout({
       '@context': 'https://schema.org',
       '@type': 'WebSite',
       name: 'Digital Simple Solution',
-      url: 'https://digitalsimplesolution.com',
+      url: SITE_CONFIG.siteUrl,
       potentialAction: {
         '@type': 'SearchAction',
-        target: 'https://digitalsimplesolution.com/blog?q={search_term_string}',
+        target: `${SITE_CONFIG.siteUrl}/blog?q={search_term_string}`,
         'query-input': 'required name=search_term_string',
       },
     },
@@ -151,60 +154,44 @@ export default function RootLayout({
           </>
         )}
 
-        {/* Next.js Script: Google Tag Manager (Non-blocking afterInteractive) */}
-        <Script
-          id="google-tag-manager"
-          strategy="afterInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-              new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-              j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-              'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-              })(window,document,'script','dataLayer','GTM-DEMO-DSS');
-            `,
-          }}
-        />
+        {/* Google Tag Manager (Conditional via NEXT_PUBLIC_GTM_ID) */}
+        {process.env.NEXT_PUBLIC_GTM_ID && (
+          <Script
+            id="google-tag-manager"
+            strategy="afterInteractive"
+            dangerouslySetInnerHTML={{
+              __html: `
+                (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+                new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+                j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+                'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+                })(window,document,'script','dataLayer','${process.env.NEXT_PUBLIC_GTM_ID}');
+              `,
+            }}
+          />
+        )}
 
-        {/* Next.js Script: Meta Pixel (Non-blocking afterInteractive) */}
-        <Script
-          id="meta-pixel"
-          strategy="afterInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `
-              !function(f,b,e,v,n,t,s)
-              {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-              n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-              if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-              n.queue=[];t=b.createElement(e);t.async=!0;
-              t.src=v;s=b.getElementsByTagName(e)[0];
-              s.parentNode.insertBefore(t,s)}(window, document,'script',
-              'https://connect.facebook.net/en_US/fbevents.js');
-              fbq('init', '1234567890123456');
-              fbq('track', 'PageView');
-            `,
-          }}
-        />
-
-        {/* Next.js Script: Google Analytics 4 (Non-blocking afterInteractive) */}
-        <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-DEMO123456"
-          strategy="afterInteractive"
-        />
-        <Script
-          id="google-analytics"
-          strategy="afterInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', 'G-DEMO123456', {
-                page_path: window.location.pathname,
-              });
-            `,
-          }}
-        />
+        {/* Meta Pixel (Conditional via NEXT_PUBLIC_META_PIXEL_ID) */}
+        {process.env.NEXT_PUBLIC_META_PIXEL_ID && (
+          <Script
+            id="meta-pixel"
+            strategy="afterInteractive"
+            dangerouslySetInnerHTML={{
+              __html: `
+                !function(f,b,e,v,n,t,s)
+                {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+                n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+                if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+                n.queue=[];t=b.createElement(e);t.async=!0;
+                t.src=v;s=b.getElementsByTagName(e)[0];
+                s.parentNode.insertBefore(t,s)}(window, document,'script',
+                'https://connect.facebook.net/en_US/fbevents.js');
+                fbq('init', '${process.env.NEXT_PUBLIC_META_PIXEL_ID}');
+                fbq('track', 'PageView');
+              `,
+            }}
+          />
+        )}
 
         <AnalyticsTracker />
         <AdminAuthProvider>

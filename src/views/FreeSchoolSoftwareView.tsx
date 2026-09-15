@@ -204,12 +204,20 @@ export const FreeSchoolSoftwareView: React.FC = () => {
 
   const faqs = [
     {
-      q: 'Is the Free School Management Software really 100% free?',
-      a: 'Yes. The complete core ERP software license (valued at ₹30,000) is provided at ₹0 software fee for the first 25 registered educational institutions with zero recurring per-student software charges.',
+      q: 'What is the best free school software in India?',
+      a: 'Digital Simple Solution provides one of the best free school software platforms in India. It includes student admission management, automated fee receipts, web and mobile attendance, CBSE/ICSE report cards, and WhatsApp parent alerts with zero software license fees (valued at ₹30,000).',
+    },
+    {
+      q: 'Is the Free School Software really 100% free?',
+      a: 'Yes. The complete core ERP software license (valued at ₹30,000) is provided at ₹0 software fee for registered educational institutions with zero recurring per-student software charges.',
     },
     {
       q: 'What education boards are supported by the software?',
       a: 'It fully supports CBSE Affiliated schools, ICSE / ISC Boards, State Education Boards, IB / Cambridge International curricula, pre-schools, coaching academies, and degree colleges with customizable rubrics.',
+    },
+    {
+      q: 'Can small schools, pre-schools, and new academies use this free school software?',
+      a: 'Yes. The software is designed to scale effortlessly from small pre-schools with 50 students up to multi-branch institutions with 5,000+ students.',
     },
     {
       q: 'Can we import our existing student data from Excel or spreadsheets?',
@@ -262,19 +270,19 @@ export const FreeSchoolSoftwareView: React.FC = () => {
 
             <span className="inline-flex items-center gap-1.5 text-amber-300 bg-slate-900/90 border border-slate-700 px-3 py-1 rounded-full text-xs font-mono font-bold uppercase tracking-wider">
               <Sparkles className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-              <span>WORTH ₹30,000 — 100% FREE SETUP</span>
+              <span>WORTH ₹30,000 — 100% FREE SCHOOL SOFTWARE SETUP</span>
             </span>
           </div>
 
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-[1.15] font-heading">
-            Free School Management Software <br className="hidden sm:inline" />
+            Free School Software &amp; Management ERP <br className="hidden sm:inline" />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-yellow-200 to-amber-500">
-              Modern ERP for Educational Institutions
+              100% Free ERP for Schools &amp; Institutes
             </span>
           </h1>
 
           <p className="text-sm sm:text-lg text-slate-300 leading-relaxed font-light max-w-2xl mx-auto">
-            Say goodbye to clumsy paper registers, lost fee receipts, and uncoordinated parent messages. Get our complete, cloud-hosted School ERP (valued at <strong className="text-amber-300 font-semibold">₹30,000</strong>) with <strong className="text-emerald-400 font-semibold">zero software license fee</strong>.
+            Searching for the best <strong className="text-amber-300 font-semibold">free school software</strong>? Say goodbye to clumsy paper registers, lost fee receipts, and uncoordinated parent messages. Get our complete, cloud-hosted Free School Management Software &amp; ERP (valued at <strong className="text-amber-300 font-semibold">₹30,000</strong>) with <strong className="text-emerald-400 font-semibold">zero software license fee</strong>.
           </p>
 
           {/* Live Scarcity & Capacity Tracker */}
@@ -388,7 +396,7 @@ export const FreeSchoolSoftwareView: React.FC = () => {
             All-In-One Institution Infrastructure
           </span>
           <h2 className="text-2xl sm:text-4xl font-bold text-white font-heading">
-            8 Powerful ERP Modules Built Into Your Free School Portal
+            8 Powerful ERP Modules Built Into Our Free School Software
           </h2>
           <p className="text-xs sm:text-sm text-slate-400">
             Engineered for CBSE, ICSE, State Boards, and private educational institutes.
@@ -431,7 +439,7 @@ export const FreeSchoolSoftwareView: React.FC = () => {
               Transparent Institutional Economics
             </span>
             <h3 className="text-2xl sm:text-3xl font-bold text-white font-heading">
-              Why Are We Offering a ₹30,000 Software for Free?
+              Why Are We Offering Free School Software Worth ₹30,000 at ₹0 Cost?
             </h3>
             <p className="text-xs sm:text-sm text-slate-300 max-w-xl mx-auto leading-relaxed">
               We empower schools with modern digital systems. We provide the complete core software free of cost so your school saves capital for classrooms, computers, and student development.
@@ -492,10 +500,10 @@ export const FreeSchoolSoftwareView: React.FC = () => {
             <span>Got Questions? We Have Answers</span>
           </span>
           <h2 className="text-2xl sm:text-4xl font-bold text-white font-heading">
-            Frequently Asked Questions
+            Free School Software: Frequently Asked Questions
           </h2>
           <p className="text-xs sm:text-sm text-slate-400">
-            Everything you need to know about our Free ₹30,000 School ERP license, modules, data security, and setup.
+            Everything you need to know about our Free School Software (Worth ₹30,000), ERP modules, data security, and onboarding.
           </p>
         </div>
 

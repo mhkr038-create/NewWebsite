@@ -35,9 +35,9 @@ export const BlogPostPage: React.FC<{ slug: string }> = ({ slug }) => {
     publisher: {
       '@type': 'Organization',
       name: SITE_CONFIG.brandName,
-      url: 'https://digitalsimplesolution.com',
+      url: SITE_CONFIG.siteUrl,
     },
-    mainEntityOfPage: `https://digitalsimplesolution.com/blog/${post.slug}`,
+    mainEntityOfPage: `${SITE_CONFIG.siteUrl}/blog/${post.slug}`,
   };
 
   return (

@@ -24,14 +24,14 @@ export const AnnouncementBanner: React.FC = () => {
               <span>⚡ FLASH</span>
             </span>
             <span className="font-bold text-slate-950 text-[11px] truncate">
-              Free School ERP <strong className="font-mono text-[10px] text-amber-950">(Worth ₹30K)</strong>
+              Free School Software <strong className="font-mono text-[10px] text-amber-950">(Worth ₹30K Free)</strong>
             </span>
           </div>
           <Link
             href="/free-school-management-software#enquiry-form"
             className="inline-flex items-center gap-0.5 font-extrabold text-white bg-slate-950 hover:bg-slate-900 px-2.5 py-1 rounded-full text-[10px] shadow-sm transition-all shrink-0"
           >
-            <span>Claim</span>
+            <span>Claim Free</span>
             <ArrowRight className="w-3 h-3 text-amber-400" />
           </Link>
         </div>
@@ -64,13 +64,13 @@ export const AnnouncementBanner: React.FC = () => {
           </span>
 
           <span className="font-bold text-white sm:text-slate-950">
-            Free School Management Software ERP!
+            Free School Software &amp; Management ERP!
           </span>
           <Link
             href="/free-school-management-software#enquiry-form"
             className="inline-flex items-center gap-1 font-extrabold text-white bg-slate-950 hover:bg-slate-900 px-3 py-1 rounded-full text-[11px] shadow-sm transition-all cursor-pointer hover:scale-105"
           >
-            <span>Claim Free License</span>
+            <span>Claim Free Software</span>
             <ArrowRight className="w-3.5 h-3.5 text-amber-400" />
           </Link>
         </div>

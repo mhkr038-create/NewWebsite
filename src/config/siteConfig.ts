@@ -31,7 +31,7 @@ export interface SiteConfig {
 }
 
 export const SITE_CONFIG: SiteConfig = {
-  siteUrl: 'https://digitalsimplesolution.com',
+  siteUrl: process.env.NEXT_PUBLIC_SITE_URL || 'https://www.digitalsimplesolution.online',
   brandName: 'digitalsimplesolution',
   brandTagline: 'Build Your Digital Presence. Generate More Leads. Automate Your Growth.',
   googleFormUrl: '', // Add your Google Form embed URL here anytime

@@ -364,7 +364,7 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({ onRefresh }) => {
               <h4 className="text-xs font-bold text-white">Connect Domain DNS</h4>
             </div>
             <p className="text-[11px] text-slate-400 leading-relaxed">
-              Point your domain <code className="text-cyan-300 text-[10px]">digitalsimplesolution.com</code> to your Vercel/hosting server so Googlebot can crawl live pages.
+              Point your domain <code className="text-cyan-300 text-[10px]">digitalsimplesolution.online</code> to your Vercel/hosting server so Googlebot can crawl live pages.
             </p>
           </div>
 

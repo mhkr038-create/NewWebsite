@@ -27,6 +27,21 @@ const nextConfig = {
         destination: '/intake-form',
         permanent: true,
       },
+      {
+        source: '/free-school-software',
+        destination: '/free-school-management-software',
+        permanent: true,
+      },
+      {
+        source: '/school-software',
+        destination: '/free-school-management-software',
+        permanent: true,
+      },
+      {
+        source: '/free-school-erp',
+        destination: '/free-school-management-software',
+        permanent: true,
+      },
     ];
   },
 };

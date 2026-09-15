@@ -122,7 +122,7 @@ export default async function Image() {
               color: '#818cf8',
             }}
           >
-            digitalsimplesolution.com
+            digitalsimplesolution.online
           </div>
           <div
             style={{

@@ -37,11 +37,11 @@ export const BlogPage: React.FC = () => {
     '@type': 'Blog',
     name: `${SITE_CONFIG.brandName} Digital Growth & Marketing Blog`,
     description: 'Expert playbooks, tutorials, and data-driven guides on landing pages, paid ads, SEO, and WhatsApp automation.',
-    url: 'https://digitalsimplesolution.com/blog',
+    url: `${SITE_CONFIG.siteUrl}/blog`,
     publisher: {
       '@type': 'Organization',
       name: SITE_CONFIG.brandName,
-      url: 'https://digitalsimplesolution.com',
+      url: SITE_CONFIG.siteUrl,
     },
   };
 
