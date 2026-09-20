@@ -265,6 +265,10 @@ export const adminStore = {
     saveInquiries(current.filter((item) => item.id !== id));
   },
 
+  clearAllInquiries(): void {
+    saveInquiries([]);
+  },
+
   // Analytics Computation - 100% Real Data
   getAnalyticsSummary(): AnalyticsSummary {
     const appointments = loadAppointments();

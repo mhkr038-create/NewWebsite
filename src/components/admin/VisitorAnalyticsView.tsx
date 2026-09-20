@@ -32,6 +32,7 @@ import {
   ClickCategory,
   TrackedVisitorSession 
 } from '../../services/analyticsTracking';
+import { adminStore } from '../../services/adminStore';
 
 function formatRelativeTime(timestamp: string): string {
   try {
@@ -100,6 +101,28 @@ export const VisitorAnalyticsView: React.FC = () => {
       await refreshData();
       setFeedbackMessage('Real tracking data reset to 0.');
       setTimeout(() => setFeedbackMessage(''), 3000);
+    }
+  };
+
+  const handleDeleteLead = (id: string, name: string) => {
+    if (confirm(`Are you sure you want to delete lead "${name}" from analytics?`)) {
+      adminStore.deleteInquiry(id);
+      setFeedbackMessage(`Lead "${name}" was deleted successfully.`);
+      setTimeout(() => setFeedbackMessage(''), 4000);
+      refreshData();
+      window.dispatchEvent(new CustomEvent('dss_analytics_updated'));
+      window.dispatchEvent(new Event('storage'));
+    }
+  };
+
+  const handleClearAllLeads = () => {
+    if (confirm('Are you sure you want to delete ALL declared lead inquiries from analytics? This cannot be undone.')) {
+      adminStore.clearAllInquiries();
+      setFeedbackMessage('All declared leads have been cleared from analytics.');
+      setTimeout(() => setFeedbackMessage(''), 4000);
+      refreshData();
+      window.dispatchEvent(new CustomEvent('dss_analytics_updated'));
+      window.dispatchEvent(new Event('storage'));
     }
   };
 
@@ -727,13 +750,23 @@ export const VisitorAnalyticsView: React.FC = () => {
               Actual Declared Age & Sensitive Client Requirements
             </h3>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <span className="text-[11px] font-mono px-2.5 py-1 rounded-full bg-purple-950/80 border border-purple-800/40 text-purple-300">
               {data.declaredDemographics.totalLeadsWithAge} Leads with Declared Age
             </span>
             <span className="text-[11px] font-mono px-2.5 py-1 rounded-full bg-slate-950 text-slate-300 border border-slate-800">
               Avg Age: <strong className="text-white">{data.declaredDemographics.averageAge}</strong>
             </span>
+            {data.declaredDemographics.leads.length > 0 && (
+              <button
+                onClick={handleClearAllLeads}
+                className="text-[11px] font-mono px-2.5 py-1 rounded-full bg-rose-950/40 hover:bg-rose-900/70 border border-rose-800/50 text-rose-300 hover:text-white flex items-center gap-1.5 transition-colors cursor-pointer"
+                title="Permanently remove all lead inquiries from analytics"
+              >
+                <Trash2 className="w-3 h-3 text-rose-400" />
+                <span>Clear All Leads</span>
+              </button>
+            )}
           </div>
         </div>
 
@@ -770,43 +803,63 @@ export const VisitorAnalyticsView: React.FC = () => {
                 <th className="py-2.5 px-3">Contact</th>
                 <th className="py-2.5 px-3">Budget / Value</th>
                 <th className="py-2.5 px-3">Requirement</th>
+                <th className="py-2.5 px-3 text-right">Action</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-800/60 text-slate-300">
-              {data.declaredDemographics.leads.map((lead, idx) => (
-                <tr key={idx} className="hover:bg-slate-950/40 transition-colors">
-                  <td className="py-3 px-3">
-                    <span className="font-bold text-white block">{lead.name}</span>
-                    {lead.schoolName && (
-                      <span className="text-[10px] text-amber-300 font-sans block truncate max-w-[180px]">
-                        🏫 {lead.schoolName}
-                      </span>
-                    )}
-                  </td>
-                  <td className="py-3 px-3">
-                    {lead.age ? (
-                      <span className="px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800 font-bold">
-                        {isMasked ? '**' : `${lead.age} yrs`}
-                      </span>
-                    ) : (
-                      <span className="text-slate-500 italic">Not declared</span>
-                    )}
-                  </td>
-                  <td className="py-3 px-3 text-slate-300 truncate max-w-[140px]">
-                    {lead.city ? `📍 ${lead.city}` : 'Not specified'}
-                  </td>
-                  <td className="py-3 px-3">
-                    <span className="text-cyan-300 block">{maskPhone(lead.phone)}</span>
-                    <span className="text-[10px] text-slate-400 block truncate max-w-[160px]">{maskEmail(lead.email)}</span>
-                  </td>
-                  <td className="py-3 px-3 text-emerald-400 font-bold">
-                    {lead.budget || 'Standard'}
-                  </td>
-                  <td className="py-3 px-3 text-slate-400 truncate max-w-[220px]">
-                    {lead.requirement || 'N/A'}
+              {data.declaredDemographics.leads.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="py-8 text-center text-slate-500 font-mono">
+                    <UserCheck className="w-6 h-6 mx-auto mb-2 text-slate-600" />
+                    <span>No lead inquiries recorded yet. Submissions from website forms will appear here.</span>
                   </td>
                 </tr>
-              ))}
+              ) : (
+                data.declaredDemographics.leads.map((lead, idx) => (
+                  <tr key={lead.id || idx} className="hover:bg-slate-950/40 transition-colors group">
+                    <td className="py-3 px-3">
+                      <span className="font-bold text-white block">{lead.name}</span>
+                      {lead.schoolName && (
+                        <span className="text-[10px] text-amber-300 font-sans block truncate max-w-[180px]">
+                          🏫 {lead.schoolName}
+                        </span>
+                      )}
+                    </td>
+                    <td className="py-3 px-3">
+                      {lead.age ? (
+                        <span className="px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800 font-bold">
+                          {isMasked ? '**' : `${lead.age} yrs`}
+                        </span>
+                      ) : (
+                        <span className="text-slate-500 italic">Not declared</span>
+                      )}
+                    </td>
+                    <td className="py-3 px-3 text-slate-300 truncate max-w-[140px]">
+                      {lead.city ? `📍 ${lead.city}` : 'Not specified'}
+                    </td>
+                    <td className="py-3 px-3">
+                      <span className="text-cyan-300 block">{maskPhone(lead.phone)}</span>
+                      <span className="text-[10px] text-slate-400 block truncate max-w-[160px]">{maskEmail(lead.email)}</span>
+                    </td>
+                    <td className="py-3 px-3 text-emerald-400 font-bold">
+                      {lead.budget || 'Standard'}
+                    </td>
+                    <td className="py-3 px-3 text-slate-400 truncate max-w-[220px]">
+                      {lead.requirement || 'N/A'}
+                    </td>
+                    <td className="py-3 px-3 text-right">
+                      <button
+                        onClick={() => handleDeleteLead(lead.id, lead.name)}
+                        className="p-1.5 px-2.5 rounded-xl bg-rose-950/40 hover:bg-rose-900/70 border border-rose-800/40 hover:border-rose-700 text-rose-300 hover:text-white transition-all cursor-pointer inline-flex items-center gap-1 text-xs font-mono"
+                        title={`Delete lead: ${lead.name}`}
+                      >
+                        <Trash2 className="w-3.5 h-3.5 text-rose-400" />
+                        <span>Delete</span>
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
