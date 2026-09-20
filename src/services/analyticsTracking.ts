@@ -68,6 +68,31 @@ export interface DeclaredDemographicLead {
   createdAt: string;
 }
 
+export interface TrackedVisitorSession {
+  id: string;
+  visitorId: string;
+  timestamp: string; // ISO string
+  date: string; // YYYY-MM-DD
+  timeFormatted: string; // e.g. "9:15 AM"
+  timeWithSeconds: string; // e.g. "09:15:32 AM"
+  dateTimeFormatted: string; // e.g. "Sep 20, 2026 • 9:15 AM"
+  hour: number; // 0 - 23
+  path: string;
+  pageTitle: string;
+  device: DeviceType;
+  location: string;
+  referrer: string;
+  userAgent?: string;
+  isNewToday: boolean;
+}
+
+export interface HourlyStat {
+  hour: number;
+  label: string;
+  todayCount: number;
+  totalCount: number;
+}
+
 export interface VisitorAnalyticsData {
   today: DailyVisitorStat;
   dailyStats: DailyVisitorStat[];
@@ -98,6 +123,10 @@ export interface VisitorAnalyticsData {
     leads: DeclaredDemographicLead[];
   };
   clickSummary: ClickSummary;
+  visitorSessions: TrackedVisitorSession[];
+  latestVisitorSession: TrackedVisitorSession | null;
+  hourlyDistribution: HourlyStat[];
+  peakVisitingHour: string;
   totalUniqueVisitors: number;
   totalPageViews: number;
   overallCtr: number;
@@ -105,6 +134,7 @@ export interface VisitorAnalyticsData {
 
 const STORAGE_KEYS = {
   DAILY_VISITORS: 'dss_analytics_daily_visitors_v2',
+  VISITOR_SESSIONS: 'dss_analytics_visitor_sessions_v2',
   CLICKS: 'dss_analytics_clicks_v2',
   VISITOR_ID: 'dss_visitor_id',
   CACHED_LOCATION: 'dss_visitor_location',
@@ -197,6 +227,54 @@ function saveRealClicks(data: TrackedClick[]) {
   }
 }
 
+// Load real recorded visitor sessions with Date and Time
+function loadRealVisitorSessions(): TrackedVisitorSession[] {
+  if (!isBrowser()) return [];
+  ensureCleanRealStorage();
+  try {
+    const raw = localStorage.getItem(STORAGE_KEYS.VISITOR_SESSIONS);
+    if (!raw) return [];
+    return JSON.parse(raw);
+  } catch {
+    return [];
+  }
+}
+
+function saveRealVisitorSessions(data: TrackedVisitorSession[]) {
+  if (!isBrowser()) return;
+  try {
+    const trimmed = data.slice(0, 300);
+    localStorage.setItem(STORAGE_KEYS.VISITOR_SESSIONS, JSON.stringify(trimmed));
+  } catch (e) {
+    console.error('Failed to save visitor sessions', e);
+  }
+}
+
+function getCleanPageTitle(path: string): string {
+  if (path === '/') return 'Home Page';
+  if (path === '/free-school-management-software') return 'Free School Software';
+  if (path === '/services') return 'Services Overview';
+  if (path === '/solutions') return 'Solutions Hub';
+  if (path === '/demos') return 'Live Demos';
+  if (path === '/digital-products') return 'Digital Products';
+  if (path === '/intake-form') return 'Intake Form';
+  if (path === '/blog') return 'Growth Blog';
+  if (path === '/contact') return 'Contact Page';
+  if (path.startsWith('/blog/')) {
+    const slug = path.replace('/blog/', '').replace(/-/g, ' ');
+    return `Blog: ${slug.charAt(0).toUpperCase() + slug.slice(1)}`;
+  }
+  if (path.startsWith('/solutions/')) {
+    const ind = path.replace('/solutions/', '').replace(/-/g, ' ');
+    return `Solution: ${ind.charAt(0).toUpperCase() + ind.slice(1)}`;
+  }
+  if (path.startsWith('/demo/')) {
+    const d = path.replace('/demo/', '').replace(/-/g, ' ');
+    return `Demo: ${d.charAt(0).toUpperCase() + d.slice(1)}`;
+  }
+  return path.replace('/', '').replace(/-/g, ' ').toUpperCase();
+}
+
 export const analyticsTracking = {
   // Record a REAL page visit
   recordPageView(
@@ -262,6 +340,32 @@ export const analyticsTracking = {
 
     saveRealDailyStats(stats);
 
+    // Record individual Visitor Session with exact Date and Time
+    const now = new Date();
+    const timeFormatted = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+    const timeWithSeconds = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', second: '2-digit', hour12: true });
+    const dateTimeFormatted = `${now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })} • ${timeFormatted}`;
+
+    const newSession: TrackedVisitorSession = {
+      id: `vis-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+      visitorId,
+      timestamp: now.toISOString(),
+      date: todayStr,
+      timeFormatted,
+      timeWithSeconds,
+      dateTimeFormatted,
+      hour: now.getHours(),
+      path,
+      pageTitle: getCleanPageTitle(path),
+      device,
+      location,
+      referrer: referrer || 'Direct / Bookmark',
+      isNewToday,
+    };
+
+    const currentSessions = loadRealVisitorSessions();
+    saveRealVisitorSessions([newSession, ...currentSessions]);
+
     // Dispatch to Server for Central Cross-Device Tracking
     if (isBrowser()) {
       try {
@@ -274,13 +378,14 @@ export const analyticsTracking = {
             device,
             location,
             visitorId,
+            referrer,
           }),
           keepalive: true,
         }).catch(() => {});
       } catch {}
     }
 
-    window.dispatchEvent(new CustomEvent('dss_analytics_updated'));
+    window.dispatchEvent(new CustomEvent('dss_analytics_updated', { detail: newSession }));
   },
 
   // Record a REAL click
@@ -560,6 +665,41 @@ export const analyticsTracking = {
 
     const overallCtr = totalViews > 0 ? Number(((totalClicksCount / totalViews) * 100).toFixed(2)) : 0;
 
+    const visitorSessions = loadRealVisitorSessions();
+    const hourlyDistribution: HourlyStat[] = Array.from({ length: 24 }, (_, h) => {
+      const hourLabel = h === 0 ? '12 AM' : h < 12 ? `${h} AM` : h === 12 ? '12 PM' : `${h - 12} PM`;
+      return {
+        hour: h,
+        label: hourLabel,
+        todayCount: 0,
+        totalCount: 0,
+      };
+    });
+
+    visitorSessions.forEach((s) => {
+      if (s.hour >= 0 && s.hour < 24) {
+        hourlyDistribution[s.hour].totalCount += 1;
+        if (s.date === todayStr) {
+          hourlyDistribution[s.hour].todayCount += 1;
+        }
+      }
+    });
+
+    let maxHour = -1;
+    let maxCount = 0;
+    hourlyDistribution.forEach((hd) => {
+      if (hd.totalCount > maxCount) {
+        maxCount = hd.totalCount;
+        maxHour = hd.hour;
+      }
+    });
+
+    const peakVisitingHour = maxHour >= 0 && maxCount > 0
+      ? `${hourlyDistribution[maxHour].label} - ${maxHour === 23 ? '12 AM' : hourlyDistribution[maxHour + 1].label}`
+      : 'Waiting for traffic';
+
+    const latestVisitorSession = visitorSessions[0] || null;
+
     return {
       today,
       dailyStats,
@@ -586,6 +726,10 @@ export const analyticsTracking = {
         totalClicks: totalClicksCount,
         recentClicks: clicks.slice(0, 50),
       },
+      visitorSessions,
+      latestVisitorSession,
+      hourlyDistribution,
+      peakVisitingHour,
       totalUniqueVisitors: totalUnique,
       totalPageViews: totalViews,
       overallCtr,
@@ -606,6 +750,7 @@ export const analyticsTracking = {
             const raw = localStorage.getItem('dss_admin_inquiries');
             if (raw) {
               const parsed = JSON.parse(raw);
+              // Only real inquiries, ignore any initial artificial mock IDs
               inquiries = Array.isArray(parsed) ? parsed.filter((item: any) => !/^inq-20\d$/.test(item.id)) : [];
             }
           } catch {}
@@ -655,8 +800,16 @@ export const analyticsTracking = {
             createdAt: i.createdAt,
           }));
 
+          const fallbackLocalSessions = loadRealVisitorSessions();
+
           return {
             ...serverData,
+            visitorSessions: serverData.visitorSessions && serverData.visitorSessions.length > 0
+              ? serverData.visitorSessions
+              : fallbackLocalSessions,
+            latestVisitorSession: serverData.latestVisitorSession || fallbackLocalSessions[0] || null,
+            hourlyDistribution: serverData.hourlyDistribution || [],
+            peakVisitingHour: serverData.peakVisitingHour || 'Waiting for traffic',
             declaredDemographics: {
               totalLeadsWithAge: validAgeCount,
               averageAge,
@@ -676,6 +829,7 @@ export const analyticsTracking = {
   clearRealAnalyticsData(): void {
     if (!isBrowser()) return;
     localStorage.removeItem(STORAGE_KEYS.DAILY_VISITORS);
+    localStorage.removeItem(STORAGE_KEYS.VISITOR_SESSIONS);
     localStorage.removeItem(STORAGE_KEYS.CLICKS);
     localStorage.removeItem(STORAGE_KEYS.LAST_VISIT_DATE);
     try {

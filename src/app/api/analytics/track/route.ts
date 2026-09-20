@@ -48,13 +48,15 @@ export async function POST(req: Request) {
 
     if (body.type === 'pageview') {
       const path = body.path || '/';
-      await recordServerPageView({
+      const session = await recordServerPageView({
         path,
         visitorId,
         device,
         location,
+        referrer: body.referrer || '',
+        userAgent: ua ? ua.slice(0, 150) : '',
       });
-      return NextResponse.json({ success: true, type: 'pageview', path, device, location });
+      return NextResponse.json({ success: true, type: 'pageview', path, device, location, session });
     }
 
     if (body.type === 'click') {

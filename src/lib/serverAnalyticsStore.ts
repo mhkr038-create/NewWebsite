@@ -35,16 +35,36 @@ export interface TrackedClick {
   visitorId: string;
 }
 
+export interface TrackedVisitorSession {
+  id: string;
+  visitorId: string;
+  timestamp: string; // Full ISO timestamp (e.g. 2026-09-20T03:45:12.345Z)
+  date: string; // YYYY-MM-DD
+  timeFormatted: string; // e.g. "9:15 AM"
+  timeWithSeconds: string; // e.g. "09:15:32 AM"
+  dateTimeFormatted: string; // e.g. "Sep 20, 2026 • 9:15 AM"
+  hour: number; // 0 - 23
+  path: string;
+  pageTitle: string;
+  device: DeviceType;
+  location: string;
+  referrer: string;
+  userAgent?: string;
+  isNewToday: boolean;
+}
+
 export interface ServerAnalyticsState {
   dailyStats: Record<string, DailyVisitorStat>;
   clicks: TrackedClick[];
   allVisitorIds: string[];
+  visitorSessions: TrackedVisitorSession[];
 }
 
 const INITIAL_STATE: ServerAnalyticsState = {
   dailyStats: {},
   clicks: [],
   allVisitorIds: [],
+  visitorSessions: [],
 };
 
 // Global memory cache across warm serverless requests
@@ -194,20 +214,48 @@ function getFormattedDate(d = new Date()): string {
   return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 }
 
+function getPageTitle(path: string): string {
+  if (path === '/') return 'Home Page';
+  if (path === '/free-school-management-software') return 'Free School Software';
+  if (path === '/services') return 'Services Overview';
+  if (path === '/solutions') return 'Solutions Hub';
+  if (path === '/demos') return 'Live Demos';
+  if (path === '/digital-products') return 'Digital Products';
+  if (path === '/intake-form') return 'Intake Form';
+  if (path === '/blog') return 'Growth Blog';
+  if (path === '/contact') return 'Contact Page';
+  if (path.startsWith('/blog/')) {
+    const slug = path.replace('/blog/', '').replace(/-/g, ' ');
+    return `Blog: ${slug.charAt(0).toUpperCase() + slug.slice(1)}`;
+  }
+  if (path.startsWith('/solutions/')) {
+    const ind = path.replace('/solutions/', '').replace(/-/g, ' ');
+    return `Solution: ${ind.charAt(0).toUpperCase() + ind.slice(1)}`;
+  }
+  if (path.startsWith('/demo/')) {
+    const d = path.replace('/demo/', '').replace(/-/g, ' ');
+    return `Demo: ${d.charAt(0).toUpperCase() + d.slice(1)}`;
+  }
+  return path.replace('/', '').replace(/-/g, ' ').toUpperCase();
+}
+
 // Server-side recording of page views
 export async function recordServerPageView(params: {
   path: string;
   visitorId: string;
   device: DeviceType;
   location: string;
-}): Promise<void> {
-  if (params.path.startsWith('/admin')) return;
+  referrer?: string;
+  userAgent?: string;
+}): Promise<TrackedVisitorSession | null> {
+  if (params.path.startsWith('/admin')) return null;
 
   const state = await loadServerAnalytics();
   const todayKey = getTodayKey();
 
   if (!state.dailyStats) state.dailyStats = {};
   if (!state.allVisitorIds) state.allVisitorIds = [];
+  if (!state.visitorSessions) state.visitorSessions = [];
 
   let dayStat = state.dailyStats[todayKey];
   if (!dayStat) {
@@ -232,8 +280,10 @@ export async function recordServerPageView(params: {
   // Increment total page views
   dayStat.totalPageViews += 1;
 
+  const isNewToday = !dayStat.visitorIds.includes(params.visitorId);
+
   // Check unique visitor for today
-  if (!dayStat.visitorIds.includes(params.visitorId)) {
+  if (isNewToday) {
     dayStat.visitorIds.push(params.visitorId);
     dayStat.uniqueVisitors += 1;
 
@@ -263,7 +313,37 @@ export async function recordServerPageView(params: {
     dayStat.topPages.push({ path: params.path, views: 1 });
   }
 
+  // Create date and time visitor session log
+  const now = new Date();
+  const timeFormatted = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+  const timeWithSeconds = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', second: '2-digit', hour12: true });
+  const dateTimeFormatted = `${now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })} • ${timeFormatted}`;
+
+  const cleanTitle = getPageTitle(params.path);
+
+  const session: TrackedVisitorSession = {
+    id: `vis-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
+    visitorId: params.visitorId,
+    timestamp: now.toISOString(),
+    date: todayKey,
+    timeFormatted,
+    timeWithSeconds,
+    dateTimeFormatted,
+    hour: now.getHours(),
+    path: params.path,
+    pageTitle: cleanTitle,
+    device: params.device,
+    location: params.location || 'Online Visitor',
+    referrer: params.referrer || 'Direct / Bookmark',
+    userAgent: params.userAgent,
+    isNewToday,
+  };
+
+  // Prepend new visitor session log (keep latest 500)
+  state.visitorSessions = [session, ...state.visitorSessions].slice(0, 500);
+
   await saveServerAnalytics(state);
+  return session;
 }
 
 // Server-side recording of clicks
@@ -424,6 +504,43 @@ export async function getServerAnalyticsSummary() {
   const totalUniqueVisitors = state.allVisitorIds?.length || dailyStatsList.reduce((sum, d) => sum + (d.uniqueVisitors || 0), 0);
   const overallCtr = totalPageViewsSum > 0 ? Number(((totalClicks / totalPageViewsSum) * 100).toFixed(1)) : 0;
 
+  // Compute 24-Hour Activity Distribution
+  const hourlyDistribution = Array.from({ length: 24 }, (_, h) => {
+    const hourLabel = h === 0 ? '12 AM' : h < 12 ? `${h} AM` : h === 12 ? '12 PM' : `${h - 12} PM`;
+    return {
+      hour: h,
+      label: hourLabel,
+      todayCount: 0,
+      totalCount: 0,
+    };
+  });
+
+  const visitorSessions = state.visitorSessions || [];
+  visitorSessions.forEach((s) => {
+    if (s.hour >= 0 && s.hour < 24) {
+      hourlyDistribution[s.hour].totalCount += 1;
+      if (s.date === todayKey) {
+        hourlyDistribution[s.hour].todayCount += 1;
+      }
+    }
+  });
+
+  // Calculate Peak Visiting Hour
+  let maxHour = -1;
+  let maxCount = 0;
+  hourlyDistribution.forEach((hd) => {
+    if (hd.totalCount > maxCount) {
+      maxCount = hd.totalCount;
+      maxHour = hd.hour;
+    }
+  });
+
+  const peakVisitingHour = maxHour >= 0 && maxCount > 0
+    ? `${hourlyDistribution[maxHour].label} - ${maxHour === 23 ? '12 AM' : hourlyDistribution[maxHour + 1].label}`
+    : 'Waiting for traffic';
+
+  const latestVisitorSession = visitorSessions[0] || null;
+
   return {
     today,
     dailyStats: dailyStatsList,
@@ -437,6 +554,10 @@ export async function getServerAnalyticsSummary() {
       totalClicks,
       recentClicks: clicks,
     },
+    visitorSessions,
+    latestVisitorSession,
+    hourlyDistribution,
+    peakVisitingHour,
     totalUniqueVisitors,
     totalPageViews: totalPageViewsSum,
     overallCtr,

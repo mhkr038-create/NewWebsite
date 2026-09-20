@@ -21,18 +21,42 @@ import {
   Trash2,
   AlertCircle,
   FileText,
-  UserCheck
+  UserCheck,
+  Clock,
+  History,
+  BarChart2
 } from 'lucide-react';
 import { 
   analyticsTracking, 
   VisitorAnalyticsData, 
-  ClickCategory 
+  ClickCategory,
+  TrackedVisitorSession 
 } from '../../services/analyticsTracking';
+
+function formatRelativeTime(timestamp: string): string {
+  try {
+    const diffMs = Date.now() - new Date(timestamp).getTime();
+    const diffSec = Math.floor(diffMs / 1000);
+    if (diffSec < 45) return 'Just now';
+    const diffMin = Math.floor(diffSec / 60);
+    if (diffMin < 60) return `${diffMin}m ago`;
+    const diffHour = Math.floor(diffMin / 60);
+    if (diffHour < 24) return `${diffHour}h ago`;
+    const diffDays = Math.floor(diffHour / 24);
+    if (diffDays === 1) return 'Yesterday';
+    return `${diffDays}d ago`;
+  } catch {
+    return '';
+  }
+}
 
 export const VisitorAnalyticsView: React.FC = () => {
   const [data, setData] = useState<VisitorAnalyticsData | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedVisitorDateFilter, setSelectedVisitorDateFilter] = useState<'all' | 'today' | 'yesterday'>('all');
+  const [selectedVisitorDeviceFilter, setSelectedVisitorDeviceFilter] = useState<'all' | 'mobile' | 'desktop' | 'tablet'>('all');
+  const [visitorSearchQuery, setVisitorSearchQuery] = useState('');
   const [isMasked, setIsMasked] = useState<boolean>(true);
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
   const [feedbackMessage, setFeedbackMessage] = useState<string>('');
@@ -100,6 +124,40 @@ export const VisitorAnalyticsView: React.FC = () => {
 
     return list;
   }, [data, selectedCategory, searchQuery]);
+
+  const filteredVisitorSessions = useMemo(() => {
+    if (!data || !data.visitorSessions) return [];
+    let list = data.visitorSessions;
+
+    const todayStr = new Date().toISOString().split('T')[0];
+    const yestDate = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+
+    if (selectedVisitorDateFilter === 'today') {
+      list = list.filter((s) => s.date === todayStr);
+    } else if (selectedVisitorDateFilter === 'yesterday') {
+      list = list.filter((s) => s.date === yestDate);
+    }
+
+    if (selectedVisitorDeviceFilter !== 'all') {
+      list = list.filter((s) => s.device === selectedVisitorDeviceFilter);
+    }
+
+    if (visitorSearchQuery.trim()) {
+      const q = visitorSearchQuery.toLowerCase();
+      list = list.filter(
+        (s) =>
+          s.path.toLowerCase().includes(q) ||
+          s.pageTitle.toLowerCase().includes(q) ||
+          s.location.toLowerCase().includes(q) ||
+          s.visitorId.toLowerCase().includes(q) ||
+          s.date.toLowerCase().includes(q) ||
+          s.timeFormatted.toLowerCase().includes(q) ||
+          (s.referrer && s.referrer.toLowerCase().includes(q))
+      );
+    }
+
+    return list;
+  }, [data, selectedVisitorDateFilter, selectedVisitorDeviceFilter, visitorSearchQuery]);
 
   if (!data) {
     return (
@@ -386,7 +444,278 @@ export const VisitorAnalyticsView: React.FC = () => {
         )}
       </div>
 
-      {/* SECTION 2: Real Declared Age & Client Data from Inbound Submissions */}
+      {/* SECTION 2: Real Visitor Sessions Log with Exact Date & Time */}
+      <div className="p-6 sm:p-8 rounded-3xl bg-slate-900/80 border border-slate-800 space-y-6 shadow-xl">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+          <div>
+            <div className="inline-flex items-center gap-1.5 text-xs font-mono text-cyan-400 font-semibold mb-1">
+              <Clock className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
+              <span>Visitor Arrival Date &amp; Time Storage</span>
+            </div>
+            <h3 className="text-xl font-bold text-white font-heading">
+              Stored Visitor Sessions (Date, Time, Location &amp; Device)
+            </h3>
+            <p className="text-xs text-slate-400 mt-0.5">
+              Every single visitor arrival is timestamped and stored with exact calendar date, clock time, device, and landing route.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2 flex-wrap text-xs font-mono">
+            <span className="px-3 py-1 rounded-full bg-cyan-950/80 border border-cyan-800/40 text-cyan-300">
+              Total Logged: <strong className="text-white">{data.visitorSessions?.length || 0}</strong> sessions
+            </span>
+            <span className="px-3 py-1 rounded-full bg-slate-950 border border-slate-800 text-slate-400">
+              Peak: <strong className="text-amber-300">{data.peakVisitingHour}</strong>
+            </span>
+          </div>
+        </div>
+
+        {/* Highlight Cards for Date & Time Intelligence */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {/* Latest Visitor */}
+          <div className="p-4 rounded-2xl bg-slate-950/70 border border-slate-800 space-y-2">
+            <div className="flex items-center justify-between text-[11px] font-mono text-slate-400">
+              <span className="flex items-center gap-1.5 font-semibold text-slate-300">
+                <History className="w-3.5 h-3.5 text-cyan-400" />
+                Latest Visitor Arrival
+              </span>
+              {data.latestVisitorSession && (
+                <span className="px-1.5 py-0.5 rounded bg-emerald-950/80 text-emerald-400 border border-emerald-800/40 text-[10px] font-bold">
+                  {formatRelativeTime(data.latestVisitorSession.timestamp)}
+                </span>
+              )}
+            </div>
+            {data.latestVisitorSession ? (
+              <div className="space-y-1">
+                <div className="text-sm font-bold text-white font-mono flex items-center gap-2">
+                  <span>{data.latestVisitorSession.dateTimeFormatted}</span>
+                </div>
+                <div className="text-[11px] text-slate-400 flex items-center gap-2 truncate">
+                  {deviceIcon(data.latestVisitorSession.device)}
+                  <span>{data.latestVisitorSession.pageTitle}</span>
+                  <span>•</span>
+                  <span className="text-emerald-400 truncate">{data.latestVisitorSession.location}</span>
+                </div>
+              </div>
+            ) : (
+              <p className="text-xs text-slate-500 font-mono">No visitor session recorded yet.</p>
+            )}
+          </div>
+
+          {/* Peak Visiting Hour */}
+          <div className="p-4 rounded-2xl bg-slate-950/70 border border-slate-800 space-y-2">
+            <div className="flex items-center justify-between text-[11px] font-mono text-slate-400">
+              <span className="flex items-center gap-1.5 font-semibold text-slate-300">
+                <BarChart2 className="w-3.5 h-3.5 text-amber-400" />
+                Peak Activity Window
+              </span>
+              <span className="text-[10px] text-amber-400 font-bold">24-HR CYCLE</span>
+            </div>
+            <div className="space-y-1">
+              <div className="text-base font-bold text-amber-300 font-mono">
+                {data.peakVisitingHour}
+              </div>
+              <p className="text-[11px] text-slate-400">
+                Hour of the day when highest traffic arrives on your pages.
+              </p>
+            </div>
+          </div>
+
+          {/* Today's Stored Date Record */}
+          <div className="p-4 rounded-2xl bg-slate-950/70 border border-slate-800 space-y-2">
+            <div className="flex items-center justify-between text-[11px] font-mono text-slate-400">
+              <span className="flex items-center gap-1.5 font-semibold text-slate-300">
+                <Calendar className="w-3.5 h-3.5 text-indigo-400" />
+                Today&apos;s Date Log
+              </span>
+              <span className="text-[10px] text-indigo-300 font-bold">{data.today.date}</span>
+            </div>
+            <div className="space-y-1">
+              <div className="text-base font-bold text-white font-mono">
+                {data.today.uniqueVisitors} Unique / {data.today.totalPageViews} Views
+              </div>
+              <p className="text-[11px] text-slate-400">
+                Auto-saved to persistent multi-tier server and browser storage.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* 24-Hour Activity Distribution Visualizer */}
+        <div className="p-4 sm:p-5 rounded-2xl bg-slate-950/60 border border-slate-800 space-y-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 text-xs font-mono text-slate-300 font-semibold">
+              <BarChart2 className="w-4 h-4 text-cyan-400" />
+              <span>24-Hour Visitor Time Density (Hourly Distribution)</span>
+            </div>
+            <span className="text-[10px] font-mono text-slate-500">Hours 00:00 to 23:00</span>
+          </div>
+
+          <div className="grid grid-cols-12 sm:grid-cols-24 gap-1 items-end h-24 pt-2">
+            {data.hourlyDistribution?.map((hd) => {
+              const maxCount = Math.max(1, ...data.hourlyDistribution.map((h) => h.totalCount));
+              const heightPct = hd.totalCount > 0 ? Math.max(18, Math.round((hd.totalCount / maxCount) * 100)) : 6;
+              const isPeak = hd.totalCount > 0 && hd.totalCount === maxCount;
+
+              return (
+                <div key={hd.hour} className="flex flex-col items-center gap-1 h-full justify-end group relative">
+                  {/* Tooltip */}
+                  <div className="absolute -top-9 bg-slate-900 text-white text-[9px] font-mono px-2 py-1 rounded shadow-lg border border-slate-700 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-20 whitespace-nowrap">
+                    {hd.label}: {hd.totalCount} visit(s) ({hd.todayCount} today)
+                  </div>
+
+                  <div
+                    className={`w-full rounded-t transition-all duration-500 ${
+                      isPeak
+                        ? 'bg-gradient-to-t from-amber-500 to-yellow-300 shadow-md shadow-amber-500/40'
+                        : hd.totalCount > 0
+                        ? 'bg-gradient-to-t from-cyan-600 to-indigo-400'
+                        : 'bg-slate-800/40'
+                    }`}
+                    style={{ height: `${heightPct}%` }}
+                  />
+                  <span className="text-[8px] font-mono text-slate-500 truncate w-full text-center group-hover:text-cyan-300">
+                    {hd.hour % 3 === 0 ? hd.label.replace(' ', '') : ''}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Visitor Sessions Feed Controls (Search + Filters) */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2">
+          <div className="flex items-center gap-2 flex-wrap">
+            <div className="relative">
+              <Search className="w-3.5 h-3.5 text-slate-500 absolute left-2.5 top-1/2 -translate-y-1/2" />
+              <input
+                type="text"
+                value={visitorSearchQuery}
+                onChange={(e) => setVisitorSearchQuery(e.target.value)}
+                placeholder="Search date, time, page, city..."
+                className="pl-8 pr-3 py-1.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 w-56 transition-colors font-mono"
+              />
+            </div>
+
+            {/* Date filter */}
+            <div className="flex items-center gap-1">
+              {(['all', 'today', 'yesterday'] as const).map((df) => (
+                <button
+                  key={df}
+                  onClick={() => setSelectedVisitorDateFilter(df)}
+                  className={`px-2.5 py-1 rounded-lg text-[11px] font-mono capitalize transition-all cursor-pointer ${
+                    selectedVisitorDateFilter === df
+                      ? 'bg-indigo-600 text-white font-bold'
+                      : 'bg-slate-950 text-slate-400 hover:text-white border border-slate-800'
+                  }`}
+                >
+                  {df === 'all' ? 'All Dates' : df}
+                </button>
+              ))}
+            </div>
+
+            {/* Device filter */}
+            <div className="flex items-center gap-1">
+              {(['all', 'mobile', 'desktop', 'tablet'] as const).map((dev) => (
+                <button
+                  key={dev}
+                  onClick={() => setSelectedVisitorDeviceFilter(dev)}
+                  className={`px-2.5 py-1 rounded-lg text-[11px] font-mono capitalize transition-all cursor-pointer ${
+                    selectedVisitorDeviceFilter === dev
+                      ? 'bg-cyan-600 text-white font-bold'
+                      : 'bg-slate-950 text-slate-400 hover:text-white border border-slate-800'
+                  }`}
+                >
+                  {dev === 'all' ? 'All Devices' : dev}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <span className="text-xs font-mono text-slate-400">
+            Showing <strong className="text-cyan-300">{filteredVisitorSessions.length}</strong> of {data.visitorSessions?.length || 0} sessions
+          </span>
+        </div>
+
+        {/* Chronological Table of Date & Time Visitor Logs */}
+        {filteredVisitorSessions.length === 0 ? (
+          <div className="p-8 text-center rounded-2xl bg-slate-950/60 border border-slate-800 text-slate-400 space-y-2">
+            <AlertCircle className="w-6 h-6 mx-auto text-cyan-400" />
+            <p className="text-xs font-mono">No visitor sessions match your current filter.</p>
+            <p className="text-[11px] text-slate-500">
+              When visitors browse any page on your website, their exact date and time of arrival will be logged here.
+            </p>
+          </div>
+        ) : (
+          <div className="overflow-x-auto max-h-[460px] overflow-y-auto">
+            <table className="w-full text-left text-xs font-mono">
+              <thead className="sticky top-0 bg-slate-900 border-b border-slate-800 text-slate-400 z-10">
+                <tr>
+                  <th className="py-2.5 px-3">Date &amp; Time (Arrival)</th>
+                  <th className="py-2.5 px-3">Visitor ID &amp; Type</th>
+                  <th className="py-2.5 px-3">Device</th>
+                  <th className="py-2.5 px-3">Page Visited</th>
+                  <th className="py-2.5 px-3">Detected Location</th>
+                  <th className="py-2.5 px-3">Referrer / Source</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-800/60 text-slate-300">
+                {filteredVisitorSessions.map((session, idx) => (
+                  <tr key={session.id || idx} className="hover:bg-slate-950/50 transition-colors">
+                    <td className="py-2.5 px-3 whitespace-nowrap">
+                      <div className="flex items-center gap-2">
+                        <Clock className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+                        <div>
+                          <span className="font-bold text-white block">{session.date}</span>
+                          <span className="text-[11px] text-cyan-300 font-mono block">{session.timeWithSeconds || session.timeFormatted}</span>
+                        </div>
+                        <span className="px-1.5 py-0.5 rounded bg-slate-800 text-[10px] text-slate-400 ml-1">
+                          {formatRelativeTime(session.timestamp)}
+                        </span>
+                      </div>
+                    </td>
+
+                    <td className="py-2.5 px-3 whitespace-nowrap">
+                      <span className="text-slate-300 block font-mono">{session.visitorId}</span>
+                      {session.isNewToday ? (
+                        <span className="inline-block px-1.5 py-0.5 rounded text-[9px] bg-emerald-950 text-emerald-300 border border-emerald-800/50 font-bold">
+                          ✨ First Today
+                        </span>
+                      ) : (
+                        <span className="inline-block px-1.5 py-0.5 rounded text-[9px] bg-slate-800 text-slate-400 font-normal">
+                          🔁 Returning
+                        </span>
+                      )}
+                    </td>
+
+                    <td className="py-2.5 px-3 whitespace-nowrap">
+                      <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-slate-950 border border-slate-800 text-[11px] capitalize">
+                        {deviceIcon(session.device)}
+                        <span className="text-slate-300">{session.device}</span>
+                      </div>
+                    </td>
+
+                    <td className="py-2.5 px-3 max-w-[220px]">
+                      <span className="font-semibold text-white block truncate">{session.pageTitle}</span>
+                      <code className="text-[10px] text-cyan-400 truncate block">{session.path}</code>
+                    </td>
+
+                    <td className="py-2.5 px-3 max-w-[180px]">
+                      <span className="text-slate-300 block truncate">📍 {session.location}</span>
+                    </td>
+
+                    <td className="py-2.5 px-3 max-w-[150px] text-slate-400 truncate text-[11px]">
+                      {session.referrer || 'Direct'}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+
+      {/* SECTION 3: Real Declared Age & Client Data from Inbound Submissions */}
       <div className="p-6 sm:p-8 rounded-3xl bg-slate-900/80 border border-slate-800 space-y-6 shadow-xl">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-4">
           <div>

@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   TrendingUp, 
   Users, 
@@ -20,6 +20,7 @@ import {
   Activity
 } from 'lucide-react';
 import { AnalyticsSummary, Appointment, Inquiry } from '../../services/adminStore';
+import { analyticsTracking, TrackedVisitorSession } from '../../services/analyticsTracking';
 
 interface AnalyticsOverviewProps {
   summary: AnalyticsSummary;
@@ -38,6 +39,24 @@ export const AnalyticsOverview: React.FC<AnalyticsOverviewProps> = ({
   onNavigateToInquiries,
   onNavigateToVisitors,
 }) => {
+  const [latestVisitor, setLatestVisitor] = useState<TrackedVisitorSession | null>(null);
+
+  useEffect(() => {
+    const updateLatest = () => {
+      try {
+        const vData = analyticsTracking.getVisitorAnalyticsData();
+        setLatestVisitor(vData.latestVisitorSession);
+      } catch {}
+    };
+    updateLatest();
+    analyticsTracking.fetchVisitorAnalyticsData().then((vData) => {
+      setLatestVisitor(vData.latestVisitorSession);
+    }).catch(() => {});
+
+    window.addEventListener('dss_analytics_updated', updateLatest);
+    return () => window.removeEventListener('dss_analytics_updated', updateLatest);
+  }, []);
+
   const pendingAppointments = appointments.filter((a) => a.status === 'pending');
   const confirmedAppointments = appointments.filter((a) => a.status === 'confirmed');
   const newInquiries = inquiries.filter((i) => i.status === 'new');
@@ -123,6 +142,32 @@ export const AnalyticsOverview: React.FC<AnalyticsOverviewProps> = ({
           </button>
         </div>
       </div>
+
+      {/* Real Visitor Live Arrival Badge */}
+      {latestVisitor && (
+        <div className="p-4 rounded-2xl bg-slate-900/90 border border-cyan-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs font-mono shadow-lg">
+          <div className="flex items-center gap-3">
+            <span className="relative flex h-2.5 w-2.5 shrink-0">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
+            </span>
+            <div>
+              <span className="text-slate-400">Latest Stored Visitor Arrival: </span>
+              <strong className="text-white">{latestVisitor.dateTimeFormatted}</strong>
+              <span className="text-cyan-300 ml-2">({latestVisitor.device} • {latestVisitor.pageTitle})</span>
+            </div>
+          </div>
+          {onNavigateToVisitors && (
+            <button
+              onClick={onNavigateToVisitors}
+              className="text-cyan-400 hover:text-cyan-300 text-[11px] underline underline-offset-4 flex items-center gap-1 cursor-pointer"
+            >
+              <span>View All Stored Visitor Logs</span>
+              <ArrowUpRight className="w-3.5 h-3.5" />
+            </button>
+          )}
+        </div>
+      )}
 
       {/* 4 Primary KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
