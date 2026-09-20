@@ -94,12 +94,8 @@ export const AnalyticsTracker: React.FC = () => {
     const device = detectDevice();
     const referrer = typeof document !== 'undefined' ? document.referrer : '';
 
-    // Small delay to allow location cache if available
-    const t = setTimeout(() => {
-      analyticsTracking.recordPageView(pathname, referrer, device, currentLocRef.current);
-    }, 150);
-
-    return () => clearTimeout(t);
+    // Track pageview immediately on route change
+    analyticsTracking.recordPageView(pathname, referrer, device, currentLocRef.current);
   }, [pathname]);
 
   // Global click tracker for buttons, CTAs, and links

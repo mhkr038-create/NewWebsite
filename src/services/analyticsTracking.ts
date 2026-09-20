@@ -366,22 +366,31 @@ export const analyticsTracking = {
     const currentSessions = loadRealVisitorSessions();
     saveRealVisitorSessions([newSession, ...currentSessions]);
 
-    // Dispatch to Server for Central Cross-Device Tracking
+    // Dispatch to Server for Central Cross-Device Tracking (bypass adblockers via /api/traffic/track)
     if (isBrowser()) {
+      const payload = JSON.stringify({
+        type: 'pageview',
+        path,
+        device,
+        location,
+        visitorId,
+        referrer,
+      });
+
       try {
-        fetch('/api/analytics/track', {
+        fetch('/api/traffic/track', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            type: 'pageview',
-            path,
-            device,
-            location,
-            visitorId,
-            referrer,
-          }),
+          body: payload,
           keepalive: true,
-        }).catch(() => {});
+        }).catch(() => {
+          fetch('/api/analytics/track', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: payload,
+            keepalive: true,
+          }).catch(() => {});
+        });
       } catch {}
     }
 
@@ -424,24 +433,33 @@ export const analyticsTracking = {
     const updated = [newClick, ...currentClicks];
     saveRealClicks(updated);
 
-    // Dispatch to Server for Central Cross-Device Tracking
+    // Dispatch to Server for Central Cross-Device Tracking (bypass adblockers via /api/traffic/track)
     if (isBrowser()) {
+      const payload = JSON.stringify({
+        type: 'click',
+        elementText: newClick.elementText,
+        elementType: newClick.elementType,
+        pagePath: newClick.pagePath,
+        targetUrl: newClick.targetUrl,
+        device: newClick.device,
+        location: newClick.location,
+        visitorId,
+      });
+
       try {
-        fetch('/api/analytics/track', {
+        fetch('/api/traffic/track', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            type: 'click',
-            elementText: newClick.elementText,
-            elementType: newClick.elementType,
-            pagePath: newClick.pagePath,
-            targetUrl: newClick.targetUrl,
-            device: newClick.device,
-            location: newClick.location,
-            visitorId,
-          }),
+          body: payload,
           keepalive: true,
-        }).catch(() => {});
+        }).catch(() => {
+          fetch('/api/analytics/track', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: payload,
+            keepalive: true,
+          }).catch(() => {});
+        });
       } catch {}
     }
 
@@ -736,93 +754,236 @@ export const analyticsTracking = {
     };
   },
 
-  // Fetch real consolidated telemetry from central server
+  // Fetch real consolidated telemetry from central server with local merge resilience
   async fetchVisitorAnalyticsData(): Promise<VisitorAnalyticsData> {
-    if (isBrowser()) {
-      try {
-        const res = await fetch('/api/analytics/data', { cache: 'no-store' });
-        if (res.ok) {
-          const serverData = await res.json();
+    const localData = this.getVisitorAnalyticsData();
+    if (!isBrowser()) return localData;
 
-          // Merge with real inquiries for declared demographics
-          let inquiries: any[] = [];
-          try {
-            const raw = localStorage.getItem('dss_admin_inquiries');
-            if (raw) {
-              const parsed = JSON.parse(raw);
-              // Only real inquiries, ignore any initial artificial mock IDs
-              inquiries = Array.isArray(parsed) ? parsed.filter((item: any) => !/^inq-20\d$/.test(item.id)) : [];
-            }
-          } catch {}
-
-          const leadsWithAge = inquiries.filter((i) => i.age !== undefined && i.age !== '');
-          let sumAge = 0;
-          let validAgeCount = 0;
-          const bracketCounts: Record<string, number> = {
-            '18–24': 0,
-            '25–34': 0,
-            '35–44': 0,
-            '45–54': 0,
-            '55+': 0,
-          };
-
-          leadsWithAge.forEach((lead) => {
-            const num = Number(lead.age);
-            if (!isNaN(num) && num > 0) {
-              sumAge += num;
-              validAgeCount += 1;
-              if (num < 25) bracketCounts['18–24'] += 1;
-              else if (num < 35) bracketCounts['25–34'] += 1;
-              else if (num < 45) bracketCounts['35–44'] += 1;
-              else if (num < 55) bracketCounts['45–54'] += 1;
-              else bracketCounts['55+'] += 1;
-            }
-          });
-
-          const averageAge = validAgeCount > 0 ? Math.round(sumAge / validAgeCount) : 'N/A';
-          const ageBrackets = Object.entries(bracketCounts).map(([bracket, count]) => ({
-            bracket,
-            count,
-            percentage: validAgeCount > 0 ? Math.round((count / validAgeCount) * 100) : 0,
-          }));
-
-          const declaredLeads: DeclaredDemographicLead[] = inquiries.map((i) => ({
-            id: i.id,
-            name: i.name,
-            age: i.age,
-            city: i.city,
-            phone: i.phone,
-            email: i.email,
-            source: i.source,
-            requirement: i.requirement || i.message,
-            schoolName: i.schoolName,
-            budget: i.budget,
-            createdAt: i.createdAt,
-          }));
-
-          const fallbackLocalSessions = loadRealVisitorSessions();
-
-          return {
-            ...serverData,
-            visitorSessions: serverData.visitorSessions && serverData.visitorSessions.length > 0
-              ? serverData.visitorSessions
-              : fallbackLocalSessions,
-            latestVisitorSession: serverData.latestVisitorSession || fallbackLocalSessions[0] || null,
-            hourlyDistribution: serverData.hourlyDistribution || [],
-            peakVisitingHour: serverData.peakVisitingHour || 'Waiting for traffic',
-            declaredDemographics: {
-              totalLeadsWithAge: validAgeCount,
-              averageAge,
-              ageBrackets,
-              leads: declaredLeads,
-            },
-          };
-        }
-      } catch (e) {
-        console.warn('Failed to load server analytics, falling back to local', e);
+    try {
+      // Try adblocker-safe route first
+      let res = await fetch('/api/traffic/data', { cache: 'no-store' });
+      if (!res.ok) {
+        res = await fetch('/api/analytics/data', { cache: 'no-store' });
       }
+
+      if (res.ok) {
+        const serverData = await res.json();
+
+        // Merge visitor sessions from both server and local storage
+        const localSessions = loadRealVisitorSessions();
+        const serverSessions: TrackedVisitorSession[] = Array.isArray(serverData.visitorSessions) ? serverData.visitorSessions : [];
+
+        const sessionMap = new Map<string, TrackedVisitorSession>();
+        // Add all local sessions
+        localSessions.forEach((s) => {
+          if (s && s.id) sessionMap.set(s.id, s);
+        });
+        // Merge in server sessions
+        serverSessions.forEach((s) => {
+          if (s && s.id) sessionMap.set(s.id, s);
+        });
+
+        const mergedSessions = Array.from(sessionMap.values()).sort(
+          (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+        ).slice(0, 500);
+
+        // Keep local cache up-to-date with any newly received server sessions
+        if (mergedSessions.length > localSessions.length) {
+          saveRealVisitorSessions(mergedSessions);
+        }
+
+        const todayKey = getISODate();
+        const todaySessions = mergedSessions.filter((s) => s.date === todayKey);
+        const todayVisitorIds = new Set(todaySessions.map((s) => s.visitorId));
+        const allVisitorIds = new Set(mergedSessions.map((s) => s.visitorId));
+
+        // Aggregate unique visitors & page views (take maximum of merged sessions, server, and local)
+        const todayUniqueVisitors = Math.max(
+          todayVisitorIds.size,
+          serverData.today?.uniqueVisitors || 0,
+          localData.today?.uniqueVisitors || 0
+        );
+        const todayPageViews = Math.max(
+          todaySessions.length,
+          serverData.today?.totalPageViews || 0,
+          localData.today?.totalPageViews || 0
+        );
+
+        // Aggregate devices
+        const mobileCount = Math.max(
+          todaySessions.filter((s) => s.device === 'mobile').length,
+          serverData.deviceSummary?.mobile || 0,
+          localData.deviceSummary?.mobile || 0
+        );
+        const tabletCount = Math.max(
+          todaySessions.filter((s) => s.device === 'tablet').length,
+          serverData.deviceSummary?.tablet || 0,
+          localData.deviceSummary?.tablet || 0
+        );
+        const desktopCount = Math.max(
+          todaySessions.filter((s) => s.device === 'desktop').length,
+          serverData.deviceSummary?.desktop || 0,
+          localData.deviceSummary?.desktop || 0
+        );
+        const totalDev = mobileCount + tabletCount + desktopCount;
+
+        const totalUnique = Math.max(
+          allVisitorIds.size,
+          serverData.totalUniqueVisitors || 0,
+          localData.totalUniqueVisitors || 0
+        );
+        const totalViews = Math.max(
+          mergedSessions.length,
+          serverData.totalPageViews || 0,
+          localData.totalPageViews || 0
+        );
+
+        // Compute 24-hour hourly distribution from merged sessions
+        const hourlyDistribution: HourlyStat[] = Array.from({ length: 24 }, (_, h) => {
+          const hourLabel = h === 0 ? '12 AM' : h < 12 ? `${h} AM` : h === 12 ? '12 PM' : `${h - 12} PM`;
+          return {
+            hour: h,
+            label: hourLabel,
+            todayCount: 0,
+            totalCount: 0,
+          };
+        });
+
+        mergedSessions.forEach((s) => {
+          if (s.hour >= 0 && s.hour < 24) {
+            hourlyDistribution[s.hour].totalCount += 1;
+            if (s.date === todayKey) {
+              hourlyDistribution[s.hour].todayCount += 1;
+            }
+          }
+        });
+
+        let maxHour = -1;
+        let maxCount = 0;
+        hourlyDistribution.forEach((hd) => {
+          if (hd.totalCount > maxCount) {
+            maxCount = hd.totalCount;
+            maxHour = hd.hour;
+          }
+        });
+
+        const peakVisitingHour = maxHour >= 0 && maxCount > 0
+          ? `${hourlyDistribution[maxHour].label} - ${maxHour === 23 ? '12 AM' : hourlyDistribution[maxHour + 1].label}`
+          : 'Waiting for traffic';
+
+        const latestVisitorSession = mergedSessions[0] || serverData.latestVisitorSession || localData.latestVisitorSession || null;
+
+        // Extract declared inquiries demographics
+        let inquiries: any[] = [];
+        try {
+          const raw = localStorage.getItem('dss_admin_inquiries');
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            inquiries = Array.isArray(parsed) ? parsed.filter((item: any) => !/^inq-20\d$/.test(item.id)) : [];
+          }
+        } catch {}
+
+        const leadsWithAge = inquiries.filter((i) => i.age !== undefined && i.age !== '');
+        let sumAge = 0;
+        let validAgeCount = 0;
+        const bracketCounts: Record<string, number> = {
+          '18–24': 0,
+          '25–34': 0,
+          '35–44': 0,
+          '45–54': 0,
+          '55+': 0,
+        };
+
+        leadsWithAge.forEach((lead) => {
+          const num = Number(lead.age);
+          if (!isNaN(num) && num > 0) {
+            sumAge += num;
+            validAgeCount += 1;
+            if (num < 25) bracketCounts['18–24'] += 1;
+            else if (num < 35) bracketCounts['25–34'] += 1;
+            else if (num < 45) bracketCounts['35–44'] += 1;
+            else if (num < 55) bracketCounts['45–54'] += 1;
+            else bracketCounts['55+'] += 1;
+          }
+        });
+
+        const averageAge = validAgeCount > 0 ? Math.round(sumAge / validAgeCount) : 'N/A';
+        const ageBrackets = Object.entries(bracketCounts).map(([bracket, count]) => ({
+          bracket,
+          count,
+          percentage: validAgeCount > 0 ? Math.round((count / validAgeCount) * 100) : 0,
+        }));
+
+        const declaredLeads: DeclaredDemographicLead[] = inquiries.map((i) => ({
+          id: i.id,
+          name: i.name,
+          age: i.age,
+          city: i.city,
+          phone: i.phone,
+          email: i.email,
+          source: i.source,
+          requirement: i.requirement || i.message,
+          schoolName: i.schoolName,
+          budget: i.budget,
+          createdAt: i.createdAt,
+        }));
+
+        const topLocations = (serverData.topLocations && serverData.topLocations.length > 0)
+          ? serverData.topLocations
+          : localData.topLocations;
+
+        const topPages = (serverData.topPages && serverData.topPages.length > 0)
+          ? serverData.topPages
+          : localData.topPages;
+
+        const clickSummary = (serverData.clickSummary && serverData.clickSummary.totalClicks > 0)
+          ? serverData.clickSummary
+          : localData.clickSummary;
+
+        const totalClicks = clickSummary.totalClicks || 0;
+        const overallCtr = totalViews > 0 ? Number(((totalClicks / totalViews) * 100).toFixed(2)) : 0;
+
+        return {
+          today: {
+            date: todayKey,
+            formattedDate: getFormattedDay(),
+            uniqueVisitors: todayUniqueVisitors,
+            totalPageViews: todayPageViews,
+            devices: { mobile: mobileCount, tablet: tabletCount, desktop: desktopCount },
+            topLocations,
+            topPages,
+          },
+          dailyStats: (serverData.dailyStats && serverData.dailyStats.length > 0) ? serverData.dailyStats : localData.dailyStats,
+          deviceSummary: {
+            mobile: mobileCount,
+            tablet: tabletCount,
+            desktop: desktopCount,
+            mobilePct: totalDev > 0 ? Math.round((mobileCount / totalDev) * 100) : 0,
+            tabletPct: totalDev > 0 ? Math.round((tabletCount / totalDev) * 100) : 0,
+            desktopPct: totalDev > 0 ? Math.round((desktopCount / totalDev) * 100) : 0,
+          },
+          topLocations,
+          topPages,
+          declaredDemographics: {
+            totalLeadsWithAge: validAgeCount,
+            averageAge,
+            ageBrackets,
+            leads: declaredLeads,
+          },
+          clickSummary,
+          visitorSessions: mergedSessions,
+          latestVisitorSession,
+          hourlyDistribution,
+          peakVisitingHour,
+          totalUniqueVisitors: totalUnique,
+          totalPageViews: totalViews,
+          overallCtr,
+        };
+      }
+    } catch (e) {
+      console.warn('Failed to load server analytics, falling back to local', e);
     }
-    return this.getVisitorAnalyticsData();
+    return localData;
   },
 
   // Clear real analytics storage completely
@@ -833,7 +994,9 @@ export const analyticsTracking = {
     localStorage.removeItem(STORAGE_KEYS.CLICKS);
     localStorage.removeItem(STORAGE_KEYS.LAST_VISIT_DATE);
     try {
-      fetch('/api/analytics/clear', { method: 'POST' }).catch(() => {});
+      fetch('/api/traffic/clear', { method: 'POST' }).catch(() => {
+        fetch('/api/analytics/clear', { method: 'POST' }).catch(() => {});
+      });
     } catch {}
     window.dispatchEvent(new CustomEvent('dss_analytics_updated'));
   },

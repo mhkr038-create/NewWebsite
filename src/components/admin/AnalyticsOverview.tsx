@@ -45,16 +45,26 @@ export const AnalyticsOverview: React.FC<AnalyticsOverviewProps> = ({
     const updateLatest = () => {
       try {
         const vData = analyticsTracking.getVisitorAnalyticsData();
-        setLatestVisitor(vData.latestVisitorSession);
+        if (vData.latestVisitorSession) {
+          setLatestVisitor(vData.latestVisitorSession);
+        }
       } catch {}
+
+      analyticsTracking.fetchVisitorAnalyticsData().then((vData) => {
+        if (vData.latestVisitorSession) {
+          setLatestVisitor(vData.latestVisitorSession);
+        }
+      }).catch(() => {});
     };
+
     updateLatest();
-    analyticsTracking.fetchVisitorAnalyticsData().then((vData) => {
-      setLatestVisitor(vData.latestVisitorSession);
-    }).catch(() => {});
+    const interval = setInterval(updateLatest, 8000);
 
     window.addEventListener('dss_analytics_updated', updateLatest);
-    return () => window.removeEventListener('dss_analytics_updated', updateLatest);
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('dss_analytics_updated', updateLatest);
+    };
   }, []);
 
   const pendingAppointments = appointments.filter((a) => a.status === 'pending');
@@ -62,6 +72,16 @@ export const AnalyticsOverview: React.FC<AnalyticsOverviewProps> = ({
   const newInquiries = inquiries.filter((i) => i.status === 'new');
 
   const kpis = [
+    {
+      label: 'Real Website Visitors',
+      value: `${summary.totalVisitors} Unique`,
+      subValue: `${summary.totalPageViews} Legit Pageviews`,
+      change: 'Captured Real-Time',
+      icon: Users,
+      color: 'from-blue-600 to-cyan-500',
+      textColor: 'text-cyan-300',
+      badge: 'Live Visitors',
+    },
     {
       label: 'Pipeline Value',
       value: `₹${(summary.totalPipelineValue).toLocaleString('en-IN')}`,
@@ -143,8 +163,8 @@ export const AnalyticsOverview: React.FC<AnalyticsOverviewProps> = ({
         </div>
       </div>
 
-      {/* Real Visitor Live Arrival Badge */}
-      {latestVisitor && (
+      {/* Real Visitor Live Arrival Banner */}
+      {latestVisitor ? (
         <div className="p-4 rounded-2xl bg-slate-900/90 border border-cyan-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs font-mono shadow-lg">
           <div className="flex items-center gap-3">
             <span className="relative flex h-2.5 w-2.5 shrink-0">
@@ -167,10 +187,29 @@ export const AnalyticsOverview: React.FC<AnalyticsOverviewProps> = ({
             </button>
           )}
         </div>
+      ) : (
+        <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs font-mono">
+          <div className="flex items-center gap-3">
+            <span className="w-2.5 h-2.5 rounded-full bg-cyan-500/60 animate-pulse shrink-0" />
+            <div>
+              <span className="text-slate-400">Visitor Traffic Tracker: </span>
+              <span className="text-slate-300">Listening for authentic visits on public website pages (e.g. Homepage, School ERP)</span>
+            </div>
+          </div>
+          {onNavigateToVisitors && (
+            <button
+              onClick={onNavigateToVisitors}
+              className="text-cyan-400 hover:text-cyan-300 text-[11px] flex items-center gap-1 cursor-pointer underline underline-offset-4"
+            >
+              <span>Explore Visitors & Clicks View</span>
+              <ArrowUpRight className="w-3.5 h-3.5" />
+            </button>
+          )}
+        </div>
       )}
 
-      {/* 4 Primary KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      {/* 5 Primary KPI Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
         {kpis.map((kpi, idx) => {
           const Icon = kpi.icon;
           return (
