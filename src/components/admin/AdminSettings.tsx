@@ -28,9 +28,10 @@ import { SITE_CONFIG } from '../../config/siteConfig';
 
 interface AdminSettingsProps {
   onRefresh: () => void;
+  onNavigateToSeo?: () => void;
 }
 
-export const AdminSettings: React.FC<AdminSettingsProps> = ({ onRefresh }) => {
+export const AdminSettings: React.FC<AdminSettingsProps> = ({ onRefresh, onNavigateToSeo }) => {
   const { changePassword, adminUser } = useAdminAuth();
 
   // Recovery Email state
@@ -350,10 +351,22 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({ onRefresh }) => {
               Tools, verification checklists, and live sitemap links to improve Google search rank.
             </p>
           </div>
-          <span className="text-[11px] font-mono text-emerald-400 bg-emerald-950/80 px-2.5 py-1 rounded-full border border-emerald-500/30 flex items-center gap-1.5">
-            <CheckCircle2 className="w-3.5 h-3.5" />
-            <span>Technical SEO Score: 96/100 (A+)</span>
-          </span>
+          <div className="flex items-center gap-3 flex-wrap">
+            {onNavigateToSeo && (
+              <button
+                type="button"
+                onClick={onNavigateToSeo}
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 text-xs font-semibold transition-all cursor-pointer shadow-sm hover:shadow-cyan-500/10"
+              >
+                <Globe className="w-3.5 h-3.5 text-cyan-400" />
+                <span>Launch Search Console Tab</span>
+              </button>
+            )}
+            <span className="text-[11px] font-mono text-emerald-400 bg-emerald-950/80 px-2.5 py-1 rounded-full border border-emerald-500/30 flex items-center gap-1.5">
+              <CheckCircle2 className="w-3.5 h-3.5" />
+              <span>Technical SEO Score: 96/100 (A+)</span>
+            </span>
+          </div>
         </div>
 
         {/* 3 Steps to Rank on Google */}

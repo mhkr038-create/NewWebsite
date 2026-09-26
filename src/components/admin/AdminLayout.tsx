@@ -15,11 +15,12 @@ import {
   Bell,
   CheckCircle2,
   Sparkles,
-  MousePointerClick
+  MousePointerClick,
+  Globe
 } from 'lucide-react';
 import { SITE_CONFIG } from '../../config/siteConfig';
 
-export type AdminTab = 'analytics' | 'visitors' | 'appointments' | 'inquiries' | 'settings';
+export type AdminTab = 'analytics' | 'visitors' | 'seo' | 'appointments' | 'inquiries' | 'settings';
 
 interface AdminLayoutProps {
   activeTab: AdminTab;
@@ -47,6 +48,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
   const navItems: { id: AdminTab; label: string; icon: React.FC<{ className?: string }>; badge?: number }[] = [
     { id: 'analytics', label: 'Analytics & Funnel', icon: BarChart3 },
     { id: 'visitors', label: 'Visitors & Clicks', icon: MousePointerClick },
+    { id: 'seo', label: 'Google Search & SEO', icon: Globe },
     { id: 'appointments', label: 'Appointments', icon: CalendarDays, badge: pendingAppointmentsCount },
     { id: 'inquiries', label: 'Leads & Inquiries', icon: Inbox, badge: newInquiriesCount },
     { id: 'settings', label: 'Security & Settings', icon: Settings },

@@ -8,6 +8,7 @@ import { AppointmentsManager } from '../../components/admin/AppointmentsManager'
 import { InquiriesManager } from '../../components/admin/InquiriesManager';
 import { VisitorAnalyticsView } from '../../components/admin/VisitorAnalyticsView';
 import { AdminSettings } from '../../components/admin/AdminSettings';
+import { GoogleSearchConsoleView } from '../../components/admin/GoogleSearchConsoleView';
 import { 
   adminStore, 
   Appointment, 
@@ -102,6 +103,10 @@ export default function AdminDashboardPage() {
           <VisitorAnalyticsView />
         )}
 
+        {activeTab === 'seo' && (
+          <GoogleSearchConsoleView />
+        )}
+
         {activeTab === 'appointments' && (
           <AppointmentsManager
             appointments={appointments}
@@ -120,6 +125,7 @@ export default function AdminDashboardPage() {
         {activeTab === 'settings' && (
           <AdminSettings
             onRefresh={loadData}
+            onNavigateToSeo={() => setActiveTab('seo')}
           />
         )}
       </AdminLayout>
