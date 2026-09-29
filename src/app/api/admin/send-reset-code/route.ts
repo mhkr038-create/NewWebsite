@@ -10,7 +10,7 @@ export async function POST(req: Request) {
     }
 
     const gmailUser = process.env.GMAIL_USER || 'mhkr038@gmail.com';
-    const gmailPass = process.env.GMAIL_APP_PASSWORD;
+    const gmailPass = process.env.GMAIL_APP_PASSWORD || 'huhfqqqrsjfnwrev';
 
     // If Gmail App Password is configured, dispatch real email
     if (gmailPass) {

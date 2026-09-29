@@ -23,6 +23,7 @@ export interface SchoolLicense {
   username: string; // School login username (default: 'admin')
   password: string; // School login password (default: 'admin123')
   recoveryEmail?: string; // Registered Gmail for OTP password recovery
+  activeResetCode?: PasswordResetCodeRecord;
   createdAt: string;
   activatedAt: string | null;
   machineId: string | null;

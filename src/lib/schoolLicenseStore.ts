@@ -28,7 +28,7 @@ const INITIAL_LICENSES: SchoolLicense[] = [
     notes: 'Trial For One month - Rainbow School deployment',
     contactPhone: '+91 85006 99708',
     contactEmail: 'mhkr038@gmail.com',
-    username: 'admin',
+    username: 'Administrator',
     password: 'admin123',
     recoveryEmail: 'mhkr038@gmail.com',
     createdAt: '2026-09-07T02:15:13.322Z',
@@ -381,30 +381,26 @@ export function getLicenseStats(): SchoolLicenseStats {
 // Helper to send email via nodemailer
 async function dispatchEmail(to: string, subject: string, htmlContent: string): Promise<boolean> {
   const gmailUser = process.env.GMAIL_USER || 'mhkr038@gmail.com';
-  const gmailPass = process.env.GMAIL_APP_PASSWORD;
+  // Use environment variable, falling back to verified Google App Password
+  const gmailPass = process.env.GMAIL_APP_PASSWORD || 'huhfqqqrsjfnwrev';
 
-  if (gmailPass) {
-    try {
-      const transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: { user: gmailUser, pass: gmailPass },
-      });
-      await transporter.sendMail({
-        from: `"SchoolMIS Security & Licensing" <${gmailUser}>`,
-        to,
-        subject,
-        html: htmlContent,
-      });
-      return true;
-    } catch (e) {
-      console.error('[EMAIL ERROR] Failed sending live Gmail:', e);
-      return false;
-    }
+  try {
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: { user: gmailUser, pass: gmailPass },
+    });
+    await transporter.sendMail({
+      from: `"SchoolMIS Security & Licensing" <${gmailUser}>`,
+      to,
+      subject,
+      html: htmlContent,
+    });
+    console.log(`[LIVE EMAIL SENT TO ${to}]: Subject: ${subject}`);
+    return true;
+  } catch (e: any) {
+    console.error('[EMAIL ERROR] Failed sending live Gmail:', e?.message || e);
+    return false;
   }
-
-  // Fallback simulator for development
-  console.log(`[SIMULATED EMAIL TO ${to}]: Subject: ${subject}`);
-  return true;
 }
 
 // Mask email for security display (e.g. r***l@gmail.com)
@@ -439,24 +435,33 @@ export async function requestPasswordResetCode(params: {
   let lic: SchoolLicense | undefined;
   if (licenseKey && licenseKey.trim()) {
     const cleanKey = licenseKey.toUpperCase().trim();
-    lic = licenses.find(l => l.key.toUpperCase() === cleanKey);
+    lic = licenses.find(l => l.key.toUpperCase().trim() === cleanKey);
+    if (!lic) {
+      lic = findLicenseByLookup(cleanKey);
+    }
     if (!lic) {
       return { ok: false, error: 'Invalid license key. Check your SchoolMIS license.' };
     }
-    // Check if recovery email matches
-    if (!lic.recoveryEmail || lic.recoveryEmail.trim().toLowerCase() !== cleanEmail) {
+    // Check if entered email matches recoveryEmail OR contactEmail
+    const recMatches = lic.recoveryEmail && lic.recoveryEmail.trim().toLowerCase() === cleanEmail;
+    const conMatches = lic.contactEmail && lic.contactEmail.trim().toLowerCase() === cleanEmail;
+    if (!recMatches && !conMatches) {
+      const regHint = lic.recoveryEmail || lic.contactEmail;
       return { 
         ok: false, 
-        error: `The entered Gmail does not match the registered recovery email for ${lic.schoolName}. Contact administrator for assistance.` 
+        error: `The entered Gmail (${cleanEmail}) does not match the registered recovery email for ${lic.schoolName}.${regHint ? ` Registered recovery email on file is: ${maskEmail(regHint)}.` : ' No recovery email registered yet. Please set it in Admin portal.'} (Support: +91 85006 99708)` 
       };
     }
   } else {
-    // Lookup by recovery email directly
-    lic = licenses.find(l => l.recoveryEmail && l.recoveryEmail.trim().toLowerCase() === cleanEmail);
+    // Lookup by recovery email or contact email directly
+    lic = licenses.find(l => 
+      (l.recoveryEmail && l.recoveryEmail.trim().toLowerCase() === cleanEmail) ||
+      (l.contactEmail && l.contactEmail.trim().toLowerCase() === cleanEmail)
+    );
     if (!lic) {
       return { 
         ok: false, 
-        error: `No registered SchoolMIS license found matching "${cleanEmail}". Please check your email or contact administrator.` 
+        error: `No registered SchoolMIS license found matching "${cleanEmail}". Please check your email or contact administrator (+91 85006 99708).` 
       };
     }
   }
@@ -468,12 +473,14 @@ export async function requestPasswordResetCode(params: {
   if (!global.__dss_school_reset_codes) {
     global.__dss_school_reset_codes = {};
   }
-  global.__dss_school_reset_codes[cleanEmail] = {
+  const resetRecord: PasswordResetCodeRecord = {
     code,
     licenseId: lic.id,
     email: cleanEmail,
     expiresAt,
   };
+  global.__dss_school_reset_codes[cleanEmail] = resetRecord;
+  lic.activeResetCode = resetRecord;
 
   // Dispatch email to school's Gmail
   const emailHtml = `
@@ -509,11 +516,18 @@ export async function requestPasswordResetCode(params: {
     </div>
   `;
 
-  await dispatchEmail(
+  const emailDispatched = await dispatchEmail(
     cleanEmail,
     `🔐 SchoolMIS Password Recovery Code: ${code} (${lic.schoolName})`,
     emailHtml
   );
+
+  if (!emailDispatched) {
+    return {
+      ok: false,
+      error: `Could not dispatch verification email to ${cleanEmail}. Please check that your email is valid or contact administrator (+91 85006 99708).`
+    };
+  }
 
   if (!lic.activityLog) lic.activityLog = [];
   lic.activityLog.unshift({
@@ -527,7 +541,7 @@ export async function requestPasswordResetCode(params: {
 
   return {
     ok: true,
-    message: `A 6-digit verification code has been dispatched to your Gmail (${maskEmail(cleanEmail)}).`,
+    message: `A 6-digit verification code has been dispatched to your Gmail (${maskEmail(cleanEmail)}). Check your inbox or spam folder.`,
     maskedEmail: maskEmail(cleanEmail),
   };
 }
@@ -543,23 +557,37 @@ export function verifyPasswordResetCode(params: {
   const cleanEmail = email.trim().toLowerCase();
   const cleanCode = code.trim();
 
-  const record = global.__dss_school_reset_codes?.[cleanEmail];
-  if (!record) {
+  let record = global.__dss_school_reset_codes?.[cleanEmail];
+  let lic = record ? getLicenseById(record.licenseId) : undefined;
+
+  if (!record || !lic) {
+    const licenses = loadLicenses();
+    lic = licenses.find(l => 
+      l.activeResetCode && 
+      (l.activeResetCode.email === cleanEmail || 
+       (l.recoveryEmail && l.recoveryEmail.trim().toLowerCase() === cleanEmail) ||
+       (l.contactEmail && l.contactEmail.trim().toLowerCase() === cleanEmail))
+    );
+    if (lic && lic.activeResetCode) {
+      record = lic.activeResetCode;
+    }
+  }
+
+  if (!record || !lic) {
     return { ok: false, error: 'No active recovery code found for this email. Please request a new code.' };
   }
 
   if (Date.now() > record.expiresAt) {
-    delete global.__dss_school_reset_codes![cleanEmail];
+    if (global.__dss_school_reset_codes) {
+      delete global.__dss_school_reset_codes[cleanEmail];
+    }
+    delete lic.activeResetCode;
+    saveLicenses(loadLicenses());
     return { ok: false, error: 'Recovery verification code has expired. Please request a new code.' };
   }
 
   if (record.code !== cleanCode) {
     return { ok: false, error: 'Incorrect 6-digit verification code. Please check your Gmail and try again.' };
-  }
-
-  const lic = getLicenseById(record.licenseId);
-  if (!lic) {
-    return { ok: false, error: 'School license record not found.' };
   }
 
   // Update password if newPassword provided
@@ -568,7 +596,11 @@ export function verifyPasswordResetCode(params: {
   }
 
   // Clear code
-  delete global.__dss_school_reset_codes![cleanEmail];
+  delete lic.activeResetCode;
+  saveLicenses(loadLicenses());
+  if (global.__dss_school_reset_codes) {
+    delete global.__dss_school_reset_codes[cleanEmail];
+  }
 
   return {
     ok: true,
@@ -647,11 +679,16 @@ export async function sendCredentialsToSchoolEmail(id: string): Promise<{ ok: bo
   });
   saveLicenses(loadLicenses());
 
+  if (!ok) {
+    return {
+      ok: false,
+      error: `Failed delivering credentials email to ${targetEmail}. Please check that the email address is valid.`
+    };
+  }
+
   return {
     ok: true,
-    message: ok 
-      ? `Credentials sent successfully to ${targetEmail}!` 
-      : `Credentials dispatch initiated for ${targetEmail}. (Check server logs if using Gmail SMTP)`
+    message: `Credentials sent successfully to ${targetEmail}! Check inbox or spam folder.`
   };
 }
 
