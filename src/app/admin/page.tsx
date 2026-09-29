@@ -9,6 +9,7 @@ import { InquiriesManager } from '../../components/admin/InquiriesManager';
 import { VisitorAnalyticsView } from '../../components/admin/VisitorAnalyticsView';
 import { AdminSettings } from '../../components/admin/AdminSettings';
 import { GoogleSearchConsoleView } from '../../components/admin/GoogleSearchConsoleView';
+import { SchoolMisManager } from '../../components/admin/SchoolMisManager';
 import { 
   adminStore, 
   Appointment, 
@@ -105,6 +106,10 @@ export default function AdminDashboardPage() {
 
         {activeTab === 'seo' && (
           <GoogleSearchConsoleView />
+        )}
+
+        {activeTab === 'school_mis' && (
+          <SchoolMisManager />
         )}
 
         {activeTab === 'appointments' && (
