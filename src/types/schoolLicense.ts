@@ -20,6 +20,9 @@ export interface SchoolLicense {
   notes: string;
   contactPhone?: string;
   contactEmail?: string;
+  username: string; // School login username (default: 'admin')
+  password: string; // School login password (default: 'admin123')
+  recoveryEmail?: string; // Registered Gmail for OTP password recovery
   createdAt: string;
   activatedAt: string | null;
   machineId: string | null;
@@ -28,6 +31,13 @@ export interface SchoolLicense {
   pings: number;
   appVersion?: string;
   activityLog: SchoolLicenseActivity[];
+}
+
+export interface PasswordResetCodeRecord {
+  code: string;
+  licenseId: string;
+  email: string;
+  expiresAt: number;
 }
 
 export interface SchoolLicenseStats {

@@ -8,7 +8,8 @@ import {
   resetMachineBinding, 
   extendLicenseExpiry,
   checkRailwayServerStatus,
-  getUpdatesConfig 
+  getUpdatesConfig,
+  sendCredentialsToSchoolEmail 
 } from '../../../../lib/schoolLicenseStore';
 
 export const dynamic = 'force-dynamic';
@@ -44,7 +45,7 @@ export async function POST(req: NextRequest) {
     const ip = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || 'Admin Dashboard';
 
     if (action === 'create') {
-      const { schoolName, plan, expiresAt, notes, features, contactPhone, contactEmail, customKey } = body;
+      const { schoolName, plan, expiresAt, notes, features, contactPhone, contactEmail, customKey, username, password, recoveryEmail } = body;
       if (!schoolName) {
         return NextResponse.json({ ok: false, error: 'School name is required' }, { status: 400 });
       }
@@ -58,6 +59,9 @@ export async function POST(req: NextRequest) {
         contactPhone,
         contactEmail,
         customKey,
+        username,
+        password,
+        recoveryEmail,
         ip,
       });
 
@@ -112,6 +116,36 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({
         ok: deleted,
         message: deleted ? 'License deleted permanently' : 'License not found',
+      });
+    }
+
+    if (action === 'send_credentials_email') {
+      const { id } = body;
+      if (!id) return NextResponse.json({ ok: false, error: 'License ID required' }, { status: 400 });
+      const res = await sendCredentialsToSchoolEmail(id);
+      if (!res.ok) {
+        return NextResponse.json({ ok: false, error: res.error }, { status: 400 });
+      }
+      return NextResponse.json({
+        ok: true,
+        message: res.message || 'Credentials sent to school email successfully!',
+      });
+    }
+
+    if (action === 'update_credentials') {
+      const { id, username, password, recoveryEmail } = body;
+      if (!id) return NextResponse.json({ ok: false, error: 'License ID required' }, { status: 400 });
+      const updates: any = {};
+      if (username !== undefined && username.trim()) updates.username = username.trim();
+      if (password !== undefined && password.trim()) updates.password = password.trim();
+      if (recoveryEmail !== undefined) updates.recoveryEmail = recoveryEmail.trim();
+
+      const updated = updateLicense(id, updates, ip);
+      if (!updated) return NextResponse.json({ ok: false, error: 'License not found' }, { status: 404 });
+      return NextResponse.json({
+        ok: true,
+        message: `Credentials updated for ${updated.schoolName}`,
+        license: updated,
       });
     }
 

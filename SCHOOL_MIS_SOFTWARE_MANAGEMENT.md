@@ -114,3 +114,29 @@ To give the software to a new school:
    - **Username**: `admin`
    - **Password**: `admin123`
    *(They can change their password anytime inside the app under Settings).*
+
+---
+
+## 7. School Credentials & Gmail OTP Password Recovery System
+
+To ensure seamless school onboarding and zero locked-out schools, SchoolMIS supports both **Direct Admin Password Dispatch** and **Self-Service Gmail OTP Recovery**:
+
+### 1. Centralized Admin Credential Management:
+- In [digitalsimplesolution.online/admin](https://www.digitalsimplesolution.online/admin) under **School MIS & Licenses**:
+  - Each school license displays its **Username** and **Password** (with 1-click eye toggle to reveal and 1-click copy).
+  - Each school displays its **Registered Recovery Gmail** (e.g. `mhkr038@gmail.com`).
+  - **1-Click WhatsApp Share**: Sends formatted credentials (Username, Password, Recovery Email, and License Key) directly to the principal's WhatsApp.
+  - **1-Click Send via Gmail**: Dispatches official login credentials directly to the school's registered Gmail with a single click.
+  - **Edit Credentials**: Admin can modify or reset the school's username, password, or recovery Gmail at any time.
+
+### 2. Self-Service Desktop Password Recovery via Gmail OTP:
+- When a school opens `SchoolMIS.exe` and clicks **"Forgot password? Reset via Gmail"**:
+  1. **Gmail Validation**: The school enters their recovery Gmail.
+  2. **Server Check**: The desktop software calls `POST /api/license/forgot-password/send-code`. The server verifies that the entered Gmail matches the registered recovery email for that school license on the server.
+  3. **6-Digit OTP Dispatched**: If verified, a 6-digit verification code is generated (valid for 10 minutes) and dispatched to their Gmail via nodemailer.
+  4. **Code Verification & Password Reset**: The school enters the 6-digit code and chooses a new password. The software calls `POST /api/license/forgot-password/verify-code`.
+  5. **Auto-Login**: Once verified, the password is encrypted and updated on the server and synced in local `school_data.json`, and the user is automatically logged in!
+
+### 3. Direct Support Alternative:
+- If a school cannot access their Gmail or has network difficulty, they can contact DSS Admin directly (+91 85006 99708).
+- The Admin can view their password in the Admin Portal, reset it manually, or dispatch it via WhatsApp or Gmail.

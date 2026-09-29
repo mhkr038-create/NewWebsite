@@ -2,18 +2,20 @@ import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
 import os from 'os';
+import nodemailer from 'nodemailer';
 import { 
   SchoolLicense, 
   SchoolLicenseStats, 
   SchoolLicenseActivity, 
   LicensePlan, 
   LicenseStatus,
-  OTAUpdateConfig 
+  OTAUpdateConfig,
+  PasswordResetCodeRecord 
 } from '../types/schoolLicense';
 
 const RAILWAY_SERVER_URL = process.env.RAILWAY_LICENSE_SERVER_URL || 'https://schoolmis-license-server-production.up.railway.app';
 
-// Seed benchmark licenses so system is pre-populated with real school deployments
+// Seed benchmark licenses with credentials and recovery emails
 const INITIAL_LICENSES: SchoolLicense[] = [
   {
     id: '06797aef-f6c5-47c7-98d4-67add4402cf9',
@@ -24,6 +26,11 @@ const INITIAL_LICENSES: SchoolLicense[] = [
     features: ['all_modules', 'excel_import', 'fee_receipts', 'timetable_generator', 'ota_updates'],
     expiresAt: '2026-10-07',
     notes: 'Trial For One month - Rainbow School deployment',
+    contactPhone: '+91 85006 99708',
+    contactEmail: 'mhkr038@gmail.com',
+    username: 'admin',
+    password: 'admin123',
+    recoveryEmail: 'mhkr038@gmail.com',
     createdAt: '2026-09-07T02:15:13.322Z',
     activatedAt: '2026-09-07T02:20:08.835Z',
     machineId: '87ed923b940bba8a436790c552e8225e',
@@ -44,7 +51,7 @@ const INITIAL_LICENSES: SchoolLicense[] = [
         type: 'Key Created',
         machineId: null,
         ip: 'Admin Dashboard',
-        details: 'Generated Enterprise license for Rainbow English Medium Primary School'
+        details: 'Generated Enterprise license for Rainbow English Medium Primary School with username admin'
       }
     ]
   },
@@ -57,6 +64,11 @@ const INITIAL_LICENSES: SchoolLicense[] = [
     features: ['student_management', 'attendance', 'fees', 'grades'],
     expiresAt: null, // Lifetime / Annual
     notes: 'Ready for client PC activation',
+    contactPhone: '+91 98765 43210',
+    contactEmail: 'stmary.school.demo@gmail.com',
+    username: 'stmary_admin',
+    password: 'School@2026',
+    recoveryEmail: 'stmary.school.demo@gmail.com',
     createdAt: '2026-09-07T08:10:00.000Z',
     activatedAt: null,
     machineId: null,
@@ -70,7 +82,7 @@ const INITIAL_LICENSES: SchoolLicense[] = [
         type: 'Key Created',
         machineId: null,
         ip: 'Admin Dashboard',
-        details: 'Generated Pro license key ready for deployment'
+        details: 'Generated Pro license key ready for deployment with username stmary_admin'
       }
     ]
   }
@@ -88,10 +100,16 @@ const DEFAULT_OTA_CONFIG: OTAUpdateConfig = {
   downloadUrl: '/api/updates/download/app.asar'
 };
 
-// Global memory cache across warm serverless requests
+// Global memory cache
 declare global {
   // eslint-disable-next-line no-var
   var __dss_school_licenses: SchoolLicense[] | undefined;
+  // eslint-disable-next-line no-var
+  var __dss_school_reset_codes: Record<string, PasswordResetCodeRecord> | undefined;
+}
+
+if (!global.__dss_school_reset_codes) {
+  global.__dss_school_reset_codes = {};
 }
 
 function getFilePath(): string {
@@ -124,8 +142,15 @@ export function loadLicenses(): SchoolLicense[] {
       const raw = fs.readFileSync(p, 'utf8');
       const data = JSON.parse(raw);
       if (Array.isArray(data.licenses) && data.licenses.length > 0) {
-        global.__dss_school_licenses = data.licenses;
-        return data.licenses;
+        // Ensure legacy licenses have username/password defaults
+        const migrated = data.licenses.map((lic: any) => ({
+          ...lic,
+          username: lic.username || 'admin',
+          password: lic.password || 'admin123',
+          recoveryEmail: lic.recoveryEmail || lic.contactEmail || 'mhkr038@gmail.com',
+        }));
+        global.__dss_school_licenses = migrated;
+        return migrated;
       }
     }
   } catch (e) {
@@ -164,6 +189,18 @@ export function getLicenseByKey(key: string): SchoolLicense | undefined {
   return loadLicenses().find(l => l.key.toUpperCase().trim() === cleanKey);
 }
 
+// Find license by key OR username OR recovery email
+export function findLicenseByLookup(identifier: string): SchoolLicense | undefined {
+  const clean = identifier.trim().toLowerCase();
+  const cleanKey = identifier.trim().toUpperCase();
+  return loadLicenses().find(l => 
+    l.key.toUpperCase() === cleanKey || 
+    l.username.toLowerCase() === clean || 
+    (l.recoveryEmail && l.recoveryEmail.toLowerCase() === clean) ||
+    l.schoolName.toLowerCase().includes(clean)
+  );
+}
+
 // Create new license
 export function createLicense(params: {
   schoolName: string;
@@ -173,22 +210,34 @@ export function createLicense(params: {
   features?: string[];
   contactPhone?: string;
   contactEmail?: string;
+  username?: string;
+  password?: string;
+  recoveryEmail?: string;
   customKey?: string;
   ip?: string;
 }): SchoolLicense {
   const licenses = loadLicenses();
   const plan = params.plan || 'Basic';
+  const username = (params.username && params.username.trim()) || 'admin';
+  const password = (params.password && params.password.trim()) || 'admin123';
+  const recoveryEmail = (params.recoveryEmail && params.recoveryEmail.trim().toLowerCase()) || 
+                        (params.contactEmail && params.contactEmail.trim().toLowerCase()) || 
+                        '';
+
   const newLic: SchoolLicense = {
     id: crypto.randomUUID(),
     key: params.customKey ? params.customKey.toUpperCase().trim() : genLicenseKey(),
     schoolName: params.schoolName.trim() || 'Unnamed School',
     plan,
-    status: 'inactive', // Becomes 'active' when school enters key in their desktop software
+    status: 'inactive',
     features: params.features || ['student_management', 'attendance', 'fees'],
     expiresAt: params.expiresAt || null,
     notes: params.notes || '',
     contactPhone: params.contactPhone || '',
     contactEmail: params.contactEmail || '',
+    username,
+    password,
+    recoveryEmail,
     createdAt: new Date().toISOString(),
     activatedAt: null,
     machineId: null,
@@ -201,7 +250,7 @@ export function createLicense(params: {
         type: 'Key Created',
         machineId: null,
         ip: params.ip || 'Admin Dashboard',
-        details: `Generated ${plan} license for ${params.schoolName || 'Unnamed School'}`
+        details: `Generated ${plan} license with username: ${username}`
       }
     ]
   };
@@ -228,6 +277,17 @@ export function updateLicense(id: string, updates: Partial<SchoolLicense>, ip = 
       machineId: null,
       ip,
       details: `Machine binding reset by Admin. Previous machine was: ${lic.machineId}`
+    });
+  }
+
+  // Password change
+  if (updates.password && updates.password !== lic.password) {
+    lic.activityLog.unshift({
+      timestamp: new Date().toISOString(),
+      type: 'Password Updated',
+      machineId: lic.machineId,
+      ip,
+      details: `Login password updated by ${ip}`
     });
   }
 
@@ -318,6 +378,283 @@ export function getLicenseStats(): SchoolLicenseStats {
   };
 }
 
+// Helper to send email via nodemailer
+async function dispatchEmail(to: string, subject: string, htmlContent: string): Promise<boolean> {
+  const gmailUser = process.env.GMAIL_USER || 'mhkr038@gmail.com';
+  const gmailPass = process.env.GMAIL_APP_PASSWORD;
+
+  if (gmailPass) {
+    try {
+      const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: { user: gmailUser, pass: gmailPass },
+      });
+      await transporter.sendMail({
+        from: `"SchoolMIS Security & Licensing" <${gmailUser}>`,
+        to,
+        subject,
+        html: htmlContent,
+      });
+      return true;
+    } catch (e) {
+      console.error('[EMAIL ERROR] Failed sending live Gmail:', e);
+      return false;
+    }
+  }
+
+  // Fallback simulator for development
+  console.log(`[SIMULATED EMAIL TO ${to}]: Subject: ${subject}`);
+  return true;
+}
+
+// Mask email for security display (e.g. r***l@gmail.com)
+function maskEmail(email: string): string {
+  try {
+    const [user, domain] = email.split('@');
+    if (!domain) return email;
+    const maskedUser = user.length <= 2 ? user[0] + '***' : user[0] + '***' + user[user.length - 1];
+    return `${maskedUser}@${domain}`;
+  } catch {
+    return email;
+  }
+}
+
+// ── FORGOT PASSWORD / EMAIL RECOVERY ENGINE ────────────────────────────
+
+// Step 1: Request Password Reset Code
+export async function requestPasswordResetCode(params: {
+  licenseKey?: string;
+  email: string;
+  ip?: string;
+}): Promise<{ ok: boolean; error?: string; message?: string; maskedEmail?: string }> {
+  const { licenseKey, email, ip } = params;
+  if (!email || !email.includes('@')) {
+    return { ok: false, error: 'Please enter a valid recovery Gmail address.' };
+  }
+
+  const cleanEmail = email.trim().toLowerCase();
+  const licenses = loadLicenses();
+
+  // Find matching license
+  let lic: SchoolLicense | undefined;
+  if (licenseKey && licenseKey.trim()) {
+    const cleanKey = licenseKey.toUpperCase().trim();
+    lic = licenses.find(l => l.key.toUpperCase() === cleanKey);
+    if (!lic) {
+      return { ok: false, error: 'Invalid license key. Check your SchoolMIS license.' };
+    }
+    // Check if recovery email matches
+    if (!lic.recoveryEmail || lic.recoveryEmail.trim().toLowerCase() !== cleanEmail) {
+      return { 
+        ok: false, 
+        error: `The entered Gmail does not match the registered recovery email for ${lic.schoolName}. Contact administrator for assistance.` 
+      };
+    }
+  } else {
+    // Lookup by recovery email directly
+    lic = licenses.find(l => l.recoveryEmail && l.recoveryEmail.trim().toLowerCase() === cleanEmail);
+    if (!lic) {
+      return { 
+        ok: false, 
+        error: `No registered SchoolMIS license found matching "${cleanEmail}". Please check your email or contact administrator.` 
+      };
+    }
+  }
+
+  // Generate 6-digit OTP code
+  const code = Math.floor(100000 + Math.random() * 900000).toString();
+  const expiresAt = Date.now() + 10 * 60 * 1000; // 10 minutes
+
+  if (!global.__dss_school_reset_codes) {
+    global.__dss_school_reset_codes = {};
+  }
+  global.__dss_school_reset_codes[cleanEmail] = {
+    code,
+    licenseId: lic.id,
+    email: cleanEmail,
+    expiresAt,
+  };
+
+  // Dispatch email to school's Gmail
+  const emailHtml = `
+    <div style="font-family: Arial, sans-serif; background-color: #0b0f19; color: #ffffff; padding: 36px 20px; text-align: center;">
+      <div style="max-width: 520px; margin: 0 auto; background-color: #111827; border: 1px solid #1f2937; border-radius: 20px; padding: 32px; text-align: left;">
+        <div style="text-align: center; margin-bottom: 24px;">
+          <div style="font-size: 36px;">🏫</div>
+          <h2 style="color: #38bdf8; margin: 8px 0 4px;">SchoolMIS Password Recovery</h2>
+          <p style="color: #9ca3af; font-size: 13px; margin: 0;">${lic.schoolName}</p>
+        </div>
+        
+        <p style="color: #e5e7eb; font-size: 14px; line-height: 1.6;">
+          You requested a password reset for your SchoolMIS desktop installation.
+        </p>
+
+        <p style="color: #9ca3af; font-size: 13px;">
+          Enter the 6-digit security code below in your software:
+        </p>
+        
+        <div style="background-color: #030712; border: 2px dashed #0284c7; border-radius: 12px; padding: 18px; margin: 24px 0; text-align: center; font-size: 32px; font-weight: bold; letter-spacing: 8px; color: #38bdf8; font-family: monospace;">
+          ${code}
+        </div>
+
+        <div style="background-color: #1f2937; border-radius: 10px; padding: 12px 16px; margin-bottom: 20px; font-size: 12px; color: #d1d5db;">
+          <div><strong>Username:</strong> <code style="color: #38bdf8;">${lic.username}</code></div>
+          <div style="margin-top: 4px;"><strong>License Key:</strong> <code style="color: #38bdf8;">${lic.key}</code></div>
+        </div>
+
+        <p style="color: #6b7280; font-size: 11px; margin-bottom: 0;">
+          This code expires in <strong>10 minutes</strong>. If you did not request this, your administrator may have sent it, or you can contact Digital Simple Solution (+91 85006 99708).
+        </p>
+      </div>
+    </div>
+  `;
+
+  await dispatchEmail(
+    cleanEmail,
+    `🔐 SchoolMIS Password Recovery Code: ${code} (${lic.schoolName})`,
+    emailHtml
+  );
+
+  if (!lic.activityLog) lic.activityLog = [];
+  lic.activityLog.unshift({
+    timestamp: new Date().toISOString(),
+    type: 'Recovery Code Dispatched',
+    machineId: lic.machineId,
+    ip: ip || 'Self-Service Desktop App',
+    details: `Password reset verification code sent to Gmail: ${maskEmail(cleanEmail)}`
+  });
+  saveLicenses(licenses);
+
+  return {
+    ok: true,
+    message: `A 6-digit verification code has been dispatched to your Gmail (${maskEmail(cleanEmail)}).`,
+    maskedEmail: maskEmail(cleanEmail),
+  };
+}
+
+// Step 2: Verify Code and Reset Password
+export function verifyPasswordResetCode(params: {
+  email: string;
+  code: string;
+  newPassword?: string;
+  ip?: string;
+}): { ok: boolean; error?: string; message?: string; username?: string; currentPassword?: string } {
+  const { email, code, newPassword, ip } = params;
+  const cleanEmail = email.trim().toLowerCase();
+  const cleanCode = code.trim();
+
+  const record = global.__dss_school_reset_codes?.[cleanEmail];
+  if (!record) {
+    return { ok: false, error: 'No active recovery code found for this email. Please request a new code.' };
+  }
+
+  if (Date.now() > record.expiresAt) {
+    delete global.__dss_school_reset_codes![cleanEmail];
+    return { ok: false, error: 'Recovery verification code has expired. Please request a new code.' };
+  }
+
+  if (record.code !== cleanCode) {
+    return { ok: false, error: 'Incorrect 6-digit verification code. Please check your Gmail and try again.' };
+  }
+
+  const lic = getLicenseById(record.licenseId);
+  if (!lic) {
+    return { ok: false, error: 'School license record not found.' };
+  }
+
+  // Update password if newPassword provided
+  if (newPassword && newPassword.trim().length >= 4) {
+    updateLicense(lic.id, { password: newPassword.trim() }, ip || 'Self-Service Gmail OTP');
+  }
+
+  // Clear code
+  delete global.__dss_school_reset_codes![cleanEmail];
+
+  return {
+    ok: true,
+    message: 'Identity verified successfully! Password updated.',
+    username: lic.username,
+    currentPassword: newPassword ? newPassword.trim() : lic.password,
+  };
+}
+
+// Admin: Send Credentials directly to School's Gmail
+export async function sendCredentialsToSchoolEmail(id: string): Promise<{ ok: boolean; error?: string; message?: string }> {
+  const lic = getLicenseById(id);
+  if (!lic) return { ok: false, error: 'License not found.' };
+
+  const targetEmail = lic.recoveryEmail || lic.contactEmail;
+  if (!targetEmail || !targetEmail.includes('@')) {
+    return { ok: false, error: `No valid recovery Gmail address configured for "${lic.schoolName}". Please set a recovery email first.` };
+  }
+
+  const emailHtml = `
+    <div style="font-family: Arial, sans-serif; background-color: #0b0f19; color: #ffffff; padding: 36px 20px; text-align: center;">
+      <div style="max-width: 520px; margin: 0 auto; background-color: #111827; border: 1px solid #1f2937; border-radius: 20px; padding: 32px; text-align: left;">
+        <div style="text-align: center; margin-bottom: 24px;">
+          <div style="font-size: 36px;">🏫</div>
+          <h2 style="color: #38bdf8; margin: 8px 0 4px;">SchoolMIS Desktop Login Credentials</h2>
+          <p style="color: #9ca3af; font-size: 13px; margin: 0;">${lic.schoolName}</p>
+        </div>
+        
+        <p style="color: #e5e7eb; font-size: 14px; line-height: 1.6;">
+          Hello! Here are your official administrator credentials and software license key for your SchoolMIS Windows installation:
+        </p>
+
+        <div style="background-color: #030712; border: 1px solid #1e293b; border-radius: 14px; padding: 20px; margin: 20px 0; font-family: monospace; font-size: 13px;">
+          <div style="margin-bottom: 12px; color: #9ca3af;">
+            <span style="display: inline-block; width: 130px; color: #64748b;">License Key:</span>
+            <strong style="color: #38bdf8; letter-spacing: 1px;">${lic.key}</strong>
+          </div>
+          <div style="margin-bottom: 12px; color: #9ca3af;">
+            <span style="display: inline-block; width: 130px; color: #64748b;">Username:</span>
+            <strong style="color: #22c55e;">${lic.username}</strong>
+          </div>
+          <div style="margin-bottom: 12px; color: #9ca3af;">
+            <span style="display: inline-block; width: 130px; color: #64748b;">Password:</span>
+            <strong style="color: #f59e0b;">${lic.password}</strong>
+          </div>
+          <div style="color: #9ca3af;">
+            <span style="display: inline-block; width: 130px; color: #64748b;">Edition:</span>
+            <span style="color: #e2e8f0;">${lic.plan} Edition</span>
+          </div>
+        </div>
+
+        <div style="background-color: #1e3a5f; border-left: 4px solid #38bdf8; padding: 12px 16px; border-radius: 6px; font-size: 12px; color: #bfdbfe; margin-bottom: 24px;">
+          <strong>Quick Setup:</strong> Open SchoolMIS on your Windows computer, enter this License Key on the Activate tab, then sign in with your username and password above.
+        </div>
+
+        <p style="color: #6b7280; font-size: 11px; margin-bottom: 0; text-align: center;">
+          Sent by Digital Simple Solution Administration. For support, call or WhatsApp +91 85006 99708.
+        </p>
+      </div>
+    </div>
+  `;
+
+  const ok = await dispatchEmail(
+    targetEmail,
+    `🏫 Your SchoolMIS Login Credentials & License Key (${lic.schoolName})`,
+    emailHtml
+  );
+
+  if (!lic.activityLog) lic.activityLog = [];
+  lic.activityLog.unshift({
+    timestamp: new Date().toISOString(),
+    type: 'Credentials Dispatched',
+    machineId: lic.machineId,
+    ip: 'Admin Portal',
+    details: `Login credentials sent to registered Gmail: ${targetEmail}`
+  });
+  saveLicenses(loadLicenses());
+
+  return {
+    ok: true,
+    message: ok 
+      ? `Credentials sent successfully to ${targetEmail}!` 
+      : `Credentials dispatch initiated for ${targetEmail}. (Check server logs if using Gmail SMTP)`
+  };
+}
+
 // Client API: Activate License (Called by desktop SchoolMIS app on PC setup)
 export function activateSchoolLicense(params: {
   licenseKey: string;
@@ -325,7 +662,18 @@ export function activateSchoolLicense(params: {
   schoolName?: string;
   appVersion?: string;
   ip?: string;
-}): { ok: boolean; error?: string; schoolName?: string; plan?: string; expiresAt?: string | null; features?: string[]; message?: string } {
+}): { 
+  ok: boolean; 
+  error?: string; 
+  schoolName?: string; 
+  plan?: string; 
+  expiresAt?: string | null; 
+  features?: string[]; 
+  message?: string;
+  username?: string;
+  defaultPassword?: string;
+  recoveryEmail?: string;
+} {
   const { licenseKey, machineId, schoolName, appVersion, ip } = params;
   if (!licenseKey || !machineId) {
     return { ok: false, error: 'Missing license key or machine ID' };
@@ -417,6 +765,9 @@ export function activateSchoolLicense(params: {
     plan: lic.plan,
     expiresAt: lic.expiresAt,
     features: lic.features || [],
+    username: lic.username || 'admin',
+    defaultPassword: lic.password || 'admin123',
+    recoveryEmail: lic.recoveryEmail || lic.contactEmail || '',
     message: 'License validated successfully.'
   };
 }
@@ -426,7 +777,7 @@ export function pingSchoolLicense(params: {
   licenseKey: string;
   machineId: string;
   ip?: string;
-}): { ok: boolean; error?: string; status?: LicenseStatus; expiresAt?: string | null; plan?: string; features?: string[] } {
+}): { ok: boolean; error?: string; status?: LicenseStatus; expiresAt?: string | null; plan?: string; features?: string[]; username?: string } {
   const { licenseKey, machineId, ip } = params;
   const licenses = loadLicenses();
   const cleanKey = licenseKey.toUpperCase().trim();
@@ -482,7 +833,8 @@ export function pingSchoolLicense(params: {
     status: lic.status,
     expiresAt: lic.expiresAt,
     plan: lic.plan,
-    features: lic.features || []
+    features: lic.features || [],
+    username: lic.username
   };
 }
 

@@ -30,7 +30,9 @@ import {
   Send,
   Building,
   Activity,
-  Server
+  Server,
+  Mail,
+  Lock
 } from 'lucide-react';
 import { 
   SchoolLicense, 
@@ -49,13 +51,23 @@ export const SchoolMisManager: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'inactive' | 'expired' | 'revoked'>('all');
   const [planFilter, setPlanFilter] = useState<'all' | 'Basic' | 'Pro' | 'Enterprise'>('all');
   const [unmaskedKeys, setUnmaskedKeys] = useState<Record<string, boolean>>({});
+  const [unmaskedPasswords, setUnmaskedPasswords] = useState<Record<string, boolean>>({});
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [copiedField, setCopiedField] = useState<string | null>(null);
   const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [isSendingEmailId, setIsSendingEmailId] = useState<string | null>(null);
 
   // Modals state
   const [isCreateOpen, setIsCreateOpen] = useState<boolean>(false);
   const [createdLicense, setCreatedLicense] = useState<SchoolLicense | null>(null);
   const [selectedActivityLicense, setSelectedActivityLicense] = useState<SchoolLicense | null>(null);
+
+  // Credentials edit modal state
+  const [editingCredentialsLicense, setEditingCredentialsLicense] = useState<SchoolLicense | null>(null);
+  const [editUsername, setEditUsername] = useState<string>('');
+  const [editPassword, setEditPassword] = useState<string>('');
+  const [editRecoveryEmail, setEditRecoveryEmail] = useState<string>('');
+  const [isSavingCredentials, setIsSavingCredentials] = useState<boolean>(false);
 
   // Create form state
   const [formSchoolName, setFormSchoolName] = useState<string>('');
@@ -65,6 +77,9 @@ export const SchoolMisManager: React.FC = () => {
   const [formNotes, setFormNotes] = useState<string>('');
   const [formContactPhone, setFormContactPhone] = useState<string>('');
   const [formContactEmail, setFormContactEmail] = useState<string>('');
+  const [formUsername, setFormUsername] = useState<string>('admin');
+  const [formPassword, setFormPassword] = useState<string>('admin123');
+  const [formRecoveryEmail, setFormRecoveryEmail] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   // Load data
@@ -113,6 +128,65 @@ export const SchoolMisManager: React.FC = () => {
     setUnmaskedKeys(prev => ({ ...prev, [id]: !prev[id] }));
   };
 
+  const togglePasswordMask = (id: string) => {
+    setUnmaskedPasswords(prev => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  const handleCopyText = (text: string, label: string, fieldId: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedField(fieldId);
+    showNotification(`${label} copied to clipboard!`);
+    setTimeout(() => setCopiedField(null), 3000);
+  };
+
+  const handleSendCredentialsEmail = async (id: string, schoolName: string, email?: string) => {
+    if (!email) {
+      showNotification(`No recovery Gmail configured for "${schoolName}". Please set a recovery email first.`, 'error');
+      return;
+    }
+    setIsSendingEmailId(id);
+    try {
+      const msg = await schoolLicenseService.sendCredentialsEmail(id);
+      showNotification(msg);
+      loadData(true);
+    } catch (e: any) {
+      showNotification(e?.message || 'Failed to dispatch email', 'error');
+    } finally {
+      setIsSendingEmailId(null);
+    }
+  };
+
+  const handleOpenEditCredentials = (lic: SchoolLicense) => {
+    setEditingCredentialsLicense(lic);
+    setEditUsername(lic.username || 'admin');
+    setEditPassword(lic.password || 'admin123');
+    setEditRecoveryEmail(lic.recoveryEmail || lic.contactEmail || '');
+  };
+
+  const handleSaveCredentials = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingCredentialsLicense) return;
+    if (!editUsername.trim() || !editPassword.trim()) {
+      showNotification('Username and Password cannot be empty.', 'error');
+      return;
+    }
+    setIsSavingCredentials(true);
+    try {
+      await schoolLicenseService.updateCredentials(editingCredentialsLicense.id, {
+        username: editUsername.trim(),
+        password: editPassword.trim(),
+        recoveryEmail: editRecoveryEmail.trim(),
+      });
+      showNotification(`Credentials updated successfully for ${editingCredentialsLicense.schoolName}!`);
+      setEditingCredentialsLicense(null);
+      loadData(true);
+    } catch (e: any) {
+      showNotification(e?.message || 'Failed to update credentials', 'error');
+    } finally {
+      setIsSavingCredentials(false);
+    }
+  };
+
   // Generate / Create License
   const handleCreateSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -151,6 +225,9 @@ export const SchoolMisManager: React.FC = () => {
         notes: formNotes.trim(),
         contactPhone: formContactPhone.trim(),
         contactEmail: formContactEmail.trim(),
+        username: formUsername.trim() || 'admin',
+        password: formPassword.trim() || 'admin123',
+        recoveryEmail: formRecoveryEmail.trim(),
       });
 
       setCreatedLicense(newLic);
@@ -163,6 +240,9 @@ export const SchoolMisManager: React.FC = () => {
       setFormContactPhone('');
       setFormContactEmail('');
       setFormCustomDate('');
+      setFormUsername('admin');
+      setFormPassword('admin123');
+      setFormRecoveryEmail('');
     } catch (err: any) {
       showNotification(err?.message || 'Failed to create license', 'error');
     } finally {
@@ -235,6 +315,8 @@ export const SchoolMisManager: React.FC = () => {
       const matchesQuery = !q || 
         l.schoolName.toLowerCase().includes(q) || 
         l.key.toLowerCase().includes(q) || 
+        (l.username && l.username.toLowerCase().includes(q)) ||
+        (l.recoveryEmail && l.recoveryEmail.toLowerCase().includes(q)) ||
         (l.notes && l.notes.toLowerCase().includes(q)) ||
         (l.machineId && l.machineId.toLowerCase().includes(q));
 
@@ -258,16 +340,21 @@ export const SchoolMisManager: React.FC = () => {
   // WhatsApp share link generator
   const getWhatsAppShareUrl = (lic: SchoolLicense) => {
     const expText = lic.expiresAt ? new Date(lic.expiresAt).toLocaleDateString() : 'Permanent Lifetime';
-    const message = `🏫 *SchoolMIS Desktop ERP License Key*\n\n` +
+    const message = `🏫 *SchoolMIS Desktop ERP - Access & Login Credentials*\n\n` +
       `*School Name:* ${lic.schoolName}\n` +
       `*Plan:* ${lic.plan} Edition\n` +
       `*License Key:* \`${lic.key}\`\n` +
       `*Validity:* ${expText}\n\n` +
-      `*How to Activate:*\n` +
+      `🔑 *Software Login Credentials:*\n` +
+      `*Username:* ${lic.username || 'admin'}\n` +
+      `*Password:* ${lic.password || 'admin123'}\n` +
+      `*Recovery Gmail:* ${lic.recoveryEmail || lic.contactEmail || 'Not configured'}\n\n` +
+      `*How to Activate & Sign In:*\n` +
       `1. Open SchoolMIS on your Windows Computer\n` +
       `2. Go to the "Activate" Tab\n` +
       `3. Enter your License Key and School Name\n` +
-      `4. Click "Activate License" to unlock all modules.\n\n` +
+      `4. Switch to "Sign In" and enter your Username & Password above\n` +
+      `*(If you ever forget your password, click "Forgot Password" to receive a 6-digit verification code on your Recovery Gmail)*\n\n` +
       `Support: Digital Simple Solution (+91 85006 99708)`;
 
     return `https://wa.me/${lic.contactPhone ? lic.contactPhone.replace(/[^0-9]/g, '') : ''}?text=${encodeURIComponent(message)}`;
@@ -587,6 +674,7 @@ export const SchoolMisManager: React.FC = () => {
               <tr className="border-b border-slate-800 text-slate-400 uppercase tracking-wider font-mono text-[11px] bg-slate-950/40">
                 <th className="py-3 px-4">School & Notes</th>
                 <th className="py-3 px-4">License Key</th>
+                <th className="py-3 px-4">Login & Recovery</th>
                 <th className="py-3 px-4">Plan</th>
                 <th className="py-3 px-4">Status</th>
                 <th className="py-3 px-4">Hardware PC Lock</th>
@@ -597,7 +685,7 @@ export const SchoolMisManager: React.FC = () => {
             <tbody className="divide-y divide-slate-800/60">
               {filteredLicenses.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="py-12 text-center text-slate-400">
+                  <td colSpan={8} className="py-12 text-center text-slate-400">
                     <KeyRound className="w-8 h-8 mx-auto mb-2 text-slate-500 opacity-50" />
                     <span>No school licenses match your search filters.</span>
                   </td>
@@ -605,6 +693,7 @@ export const SchoolMisManager: React.FC = () => {
               ) : (
                 filteredLicenses.map((lic) => {
                   const isUnmasked = !!unmaskedKeys[lic.id];
+                  const isPassUnmasked = !!unmaskedPasswords[lic.id];
                   const isCopied = copiedId === lic.id;
                   const isExpired = lic.status === 'expired' || (lic.expiresAt ? new Date(lic.expiresAt) < new Date() : false);
 
@@ -650,6 +739,57 @@ export const SchoolMisManager: React.FC = () => {
                           >
                             {isCopied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
                           </button>
+                        </div>
+                      </td>
+
+                      {/* Login & Recovery Credentials */}
+                      <td className="py-3.5 px-4">
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-1.5 font-mono text-[11px]">
+                            <span className="text-slate-400">User:</span>
+                            <span className="text-white font-bold bg-slate-950 px-1.5 py-0.5 rounded border border-slate-800">
+                              {lic.username || 'admin'}
+                            </span>
+                            <button
+                              onClick={() => handleCopyText(lic.username || 'admin', 'Username', `user-${lic.id}`)}
+                              className="text-slate-400 hover:text-cyan-300 p-0.5"
+                              title="Copy Username"
+                            >
+                              {copiedField === `user-${lic.id}` ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                            </button>
+                          </div>
+
+                          <div className="flex items-center gap-1.5 font-mono text-[11px]">
+                            <span className="text-slate-400">Pass:</span>
+                            <span className="text-amber-300 font-bold bg-slate-950 px-1.5 py-0.5 rounded border border-slate-800 select-all">
+                              {isPassUnmasked ? (lic.password || 'admin123') : '••••••'}
+                            </span>
+                            <button
+                              onClick={() => togglePasswordMask(lic.id)}
+                              className="text-slate-400 hover:text-slate-200 p-0.5"
+                              title={isPassUnmasked ? 'Hide Password' : 'Show Password'}
+                            >
+                              {isPassUnmasked ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
+                            </button>
+                            <button
+                              onClick={() => handleCopyText(lic.password || 'admin123', 'Password', `pass-${lic.id}`)}
+                              className="text-slate-400 hover:text-amber-300 p-0.5"
+                              title="Copy Password"
+                            >
+                              {copiedField === `pass-${lic.id}` ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                            </button>
+                          </div>
+
+                          {lic.recoveryEmail ? (
+                            <div className="text-[10px] text-cyan-400 font-mono flex items-center gap-1 truncate max-w-[150px]" title={`Recovery Gmail: ${lic.recoveryEmail}`}>
+                              <Mail className="w-3 h-3 shrink-0" />
+                              <span className="truncate">{lic.recoveryEmail}</span>
+                            </div>
+                          ) : (
+                            <div className="text-[10px] text-slate-500 font-mono italic">
+                              No recovery Gmail
+                            </div>
+                          )}
                         </div>
                       </td>
 
@@ -725,10 +865,29 @@ export const SchoolMisManager: React.FC = () => {
                             target="_blank"
                             rel="noopener noreferrer"
                             className="p-1.5 rounded-lg bg-emerald-950/70 hover:bg-emerald-900/80 text-emerald-400 border border-emerald-800/40 transition-colors"
-                            title="Share License via WhatsApp"
+                            title="Share License & Credentials via WhatsApp"
                           >
                             <Share2 className="w-3.5 h-3.5" />
                           </a>
+
+                          {/* Send Credentials via Gmail */}
+                          <button
+                            onClick={() => handleSendCredentialsEmail(lic.id, lic.schoolName, lic.recoveryEmail || lic.contactEmail)}
+                            disabled={isSendingEmailId === lic.id}
+                            className="p-1.5 rounded-lg bg-blue-950/70 hover:bg-blue-900/80 text-blue-300 border border-blue-800/40 transition-colors cursor-pointer"
+                            title="Send Login Credentials to School Gmail"
+                          >
+                            <Mail className={`w-3.5 h-3.5 ${isSendingEmailId === lic.id ? 'animate-spin' : ''}`} />
+                          </button>
+
+                          {/* Edit Credentials */}
+                          <button
+                            onClick={() => handleOpenEditCredentials(lic)}
+                            className="p-1.5 rounded-lg bg-amber-950/70 hover:bg-amber-900/80 text-amber-300 border border-amber-800/40 transition-colors cursor-pointer"
+                            title="Edit Username, Password & Recovery Gmail"
+                          >
+                            <Lock className="w-3.5 h-3.5" />
+                          </button>
 
                           {/* Activity Log */}
                           <button
@@ -827,14 +986,55 @@ export const SchoolMisManager: React.FC = () => {
                   </p>
                 </div>
 
-                <div className="p-4 rounded-2xl bg-slate-950 border border-cyan-500/40 text-center space-y-2">
-                  <div className="text-[11px] font-mono uppercase text-slate-400">Official License Key</div>
-                  <div className="text-xl sm:text-2xl font-mono font-bold text-cyan-300 tracking-wider select-all">
-                    {createdLicense.key}
+                <div className="p-4 rounded-2xl bg-slate-950 border border-cyan-500/40 space-y-3">
+                  <div className="text-center">
+                    <div className="text-[11px] font-mono uppercase text-slate-400">Official License Key</div>
+                    <div className="text-xl sm:text-2xl font-mono font-bold text-cyan-300 tracking-wider select-all mt-1">
+                      {createdLicense.key}
+                    </div>
+                    <div className="text-xs text-slate-400 mt-1">
+                      Plan: <strong className="text-white">{createdLicense.plan}</strong> • Validity:{' '}
+                      <strong className="text-white">{createdLicense.expiresAt || 'Lifetime'}</strong>
+                    </div>
                   </div>
-                  <div className="text-xs text-slate-400">
-                    Plan: <strong className="text-white">{createdLicense.plan}</strong> • Validity:{' '}
-                    <strong className="text-white">{createdLicense.expiresAt || 'Lifetime'}</strong>
+
+                  <div className="p-3 rounded-xl bg-slate-900 border border-slate-800 text-xs space-y-1.5 font-mono">
+                    <div className="text-[10px] text-cyan-400 font-bold uppercase tracking-wider flex items-center gap-1.5">
+                      <Lock className="w-3 h-3" />
+                      <span>Desktop Login Credentials</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-400">Username:</span>
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-white font-bold">{createdLicense.username}</span>
+                        <button
+                          onClick={() => handleCopyText(createdLicense.username, 'Username', 'created-user')}
+                          className="text-slate-400 hover:text-white p-0.5"
+                          title="Copy Username"
+                        >
+                          {copiedField === 'created-user' ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                        </button>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-400">Password:</span>
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-amber-300 font-bold">{createdLicense.password}</span>
+                        <button
+                          onClick={() => handleCopyText(createdLicense.password, 'Password', 'created-pass')}
+                          className="text-slate-400 hover:text-white p-0.5"
+                          title="Copy Password"
+                        >
+                          {copiedField === 'created-pass' ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                        </button>
+                      </div>
+                    </div>
+                    {createdLicense.recoveryEmail && (
+                      <div className="flex items-center justify-between">
+                        <span className="text-slate-400">Recovery Gmail:</span>
+                        <span className="text-cyan-300">{createdLicense.recoveryEmail}</span>
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -946,6 +1146,48 @@ export const SchoolMisManager: React.FC = () => {
                       value={formContactEmail}
                       onChange={(e) => setFormContactEmail(e.target.value)}
                       className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400"
+                    />
+                  </div>
+                </div>
+
+                {/* Software Credentials & Recovery Email */}
+                <div className="p-3.5 rounded-2xl bg-slate-950 border border-slate-800 space-y-3">
+                  <div className="text-[11px] font-bold text-cyan-400 uppercase tracking-wider flex items-center gap-1.5">
+                    <Lock className="w-3.5 h-3.5" />
+                    <span>School Desktop App Credentials & Recovery</span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1">
+                      <label className="text-[11px] font-semibold text-slate-300 block">Default Username</label>
+                      <input
+                        type="text"
+                        value={formUsername}
+                        onChange={(e) => setFormUsername(e.target.value)}
+                        placeholder="admin"
+                        className="w-full p-2 bg-slate-900 border border-slate-800 rounded-lg text-xs text-white focus:outline-none focus:border-cyan-400"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-[11px] font-semibold text-slate-300 block">Initial Password</label>
+                      <input
+                        type="text"
+                        value={formPassword}
+                        onChange={(e) => setFormPassword(e.target.value)}
+                        placeholder="admin123"
+                        className="w-full p-2 bg-slate-900 border border-slate-800 rounded-lg text-xs text-white focus:outline-none focus:border-cyan-400 font-mono"
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[11px] font-semibold text-slate-300 block">
+                      Recovery Gmail <span className="text-slate-500 font-normal">(For self-service OTP password recovery)</span>
+                    </label>
+                    <input
+                      type="email"
+                      value={formRecoveryEmail}
+                      onChange={(e) => setFormRecoveryEmail(e.target.value)}
+                      placeholder="e.g. principal@gmail.com"
+                      className="w-full p-2 bg-slate-900 border border-slate-800 rounded-lg text-xs text-white focus:outline-none focus:border-cyan-400"
                     />
                   </div>
                 </div>
@@ -1063,6 +1305,98 @@ export const SchoolMisManager: React.FC = () => {
                 Close Log
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit School Credentials Modal */}
+      {editingCredentialsLicense && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in">
+          <div className="bg-slate-900 border border-slate-800 rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl space-y-5">
+            <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
+                  <Lock className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-white font-heading">Edit School Credentials</h3>
+                  <p className="text-xs text-slate-400 truncate max-w-[240px]">{editingCredentialsLicense.schoolName}</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setEditingCredentialsLicense(null)}
+                className="text-slate-400 hover:text-white p-1"
+              >
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveCredentials} className="space-y-4">
+              <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 text-[11px] font-mono text-slate-400 space-y-1">
+                <div>License: <span className="text-cyan-300 font-bold">{editingCredentialsLicense.key}</span></div>
+                <div>School: <span className="text-white font-semibold">{editingCredentialsLicense.schoolName}</span></div>
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-xs font-semibold text-slate-300 block">
+                  Desktop Username <span className="text-rose-400">*</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={editUsername}
+                  onChange={(e) => setEditUsername(e.target.value)}
+                  className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white focus:outline-none focus:border-amber-400"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-xs font-semibold text-slate-300 block">
+                  Desktop Password <span className="text-rose-400">*</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={editPassword}
+                  onChange={(e) => setEditPassword(e.target.value)}
+                  className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white focus:outline-none focus:border-amber-400 font-mono"
+                />
+                <span className="text-[10px] text-slate-500">Reset or set any custom password for the school.</span>
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-xs font-semibold text-slate-300 block">
+                  Registered Recovery Gmail
+                </label>
+                <input
+                  type="email"
+                  value={editRecoveryEmail}
+                  onChange={(e) => setEditRecoveryEmail(e.target.value)}
+                  placeholder="e.g. principal@gmail.com"
+                  className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white focus:outline-none focus:border-cyan-400"
+                />
+                <p className="text-[10px] text-slate-400 leading-relaxed">
+                  Used by the desktop app when the school clicks &quot;Forgot Password&quot;. The server verifies the entered Gmail matches this record before sending the 6-digit OTP code.
+                </p>
+              </div>
+
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-800">
+                <button
+                  type="button"
+                  onClick={() => setEditingCredentialsLicense(null)}
+                  className="px-4 py-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-xs font-semibold text-slate-300 border border-slate-800"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSavingCredentials}
+                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-xs font-bold text-white shadow-lg shadow-amber-500/25 cursor-pointer disabled:opacity-50"
+                >
+                  {isSavingCredentials ? 'Saving...' : 'Update Credentials'}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

@@ -52,6 +52,9 @@ export const schoolLicenseService = {
     contactPhone?: string;
     contactEmail?: string;
     customKey?: string;
+    username?: string;
+    password?: string;
+    recoveryEmail?: string;
   }): Promise<SchoolLicense> {
     const res = await fetch('/api/admin/licenses', {
       method: 'POST',
@@ -123,6 +126,37 @@ export const schoolLicenseService = {
       throw new Error(data.error || 'Failed to delete license');
     }
     return true;
+  },
+
+  async sendCredentialsEmail(id: string): Promise<string> {
+    const res = await fetch('/api/admin/licenses', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'send_credentials_email', id }),
+    });
+
+    const data = await res.json();
+    if (!res.ok || !data.ok) {
+      throw new Error(data.error || 'Failed to dispatch credentials email');
+    }
+    return data.message || 'Credentials dispatched to school email.';
+  },
+
+  async updateCredentials(
+    id: string,
+    credentials: { username?: string; password?: string; recoveryEmail?: string }
+  ): Promise<SchoolLicense> {
+    const res = await fetch('/api/admin/licenses', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'update_credentials', id, ...credentials }),
+    });
+
+    const data = await res.json();
+    if (!res.ok || !data.ok) {
+      throw new Error(data.error || 'Failed to update school credentials');
+    }
+    return data.license;
   },
 
   async checkRailway(): Promise<{ online: boolean; url: string; latencyMs: number }> {
