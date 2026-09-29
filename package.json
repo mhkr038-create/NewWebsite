@@ -10,7 +10,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "pack:schoolmis": "npx asar pack \"D:\\files\\app_source\" \"D:\\files\\win-unpacked\\resources\\app.asar\"",
+    "deploy:schoolmis": "powershell.exe -ExecutionPolicy Bypass -File \"D:\\files\\deploy-to-railway.ps1\""
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.0.0",

@@ -473,6 +473,60 @@ export const SchoolMisManager: React.FC = () => {
         </div>
       </div>
 
+      {/* Local win-unpacked & End-Software Modification Pipeline */}
+      <div className="p-6 rounded-3xl bg-slate-900/80 border border-slate-800 space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-4">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400">
+              <Laptop className="w-4 h-4" />
+            </div>
+            <div>
+              <h3 className="text-base font-bold text-white font-heading">
+                End-Software (win-unpacked) Management & Build Pipeline
+              </h3>
+              <p className="text-xs text-slate-400">
+                Directly modify frontend UI, fee receipt formats, and attendance registers. Sync changes instantly to <code>SchoolMIS.exe</code>
+              </p>
+            </div>
+          </div>
+          <span className="text-[11px] font-mono text-purple-300 bg-purple-950/80 px-2.5 py-1 rounded-full border border-purple-500/30">
+            D:\files\win-unpacked\SchoolMIS.exe
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+          <div className="p-4 rounded-2xl bg-slate-950/70 border border-slate-800 space-y-2">
+            <div className="flex items-center gap-2 text-cyan-400 font-bold">
+              <span className="w-5 h-5 rounded-full bg-cyan-500/20 text-cyan-300 flex items-center justify-center font-mono text-[11px]">1</span>
+              <span>Edit Source Code</span>
+            </div>
+            <p className="text-slate-400 text-[11px] leading-relaxed">
+              Modify HTML, CSS, fee calculation logic, or print designs in <code className="text-cyan-300 font-mono text-[10px]">D:\files\app_source\src\</code>.
+            </p>
+          </div>
+
+          <div className="p-4 rounded-2xl bg-slate-950/70 border border-slate-800 space-y-2">
+            <div className="flex items-center gap-2 text-emerald-400 font-bold">
+              <span className="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-300 flex items-center justify-center font-mono text-[11px]">2</span>
+              <span>1-Second Compile (Asar Pack)</span>
+            </div>
+            <p className="text-slate-400 text-[11px] leading-relaxed">
+              Run <code className="text-emerald-300 font-mono text-[10px]">npm run pack:schoolmis</code>. Replaces <code className="text-emerald-300 font-mono text-[10px]">win-unpacked\resources\app.asar</code> instantly.
+            </p>
+          </div>
+
+          <div className="p-4 rounded-2xl bg-slate-950/70 border border-slate-800 space-y-2">
+            <div className="flex items-center gap-2 text-indigo-400 font-bold">
+              <span className="w-5 h-5 rounded-full bg-indigo-500/20 text-indigo-300 flex items-center justify-center font-mono text-[11px]">3</span>
+              <span>Test or Push OTA Update</span>
+            </div>
+            <p className="text-slate-400 text-[11px] leading-relaxed">
+              Launch <code className="text-indigo-300 font-mono text-[10px]">SchoolMIS.exe</code> to test changes, or deploy OTA updates to all client school PCs automatically!
+            </p>
+          </div>
+        </div>
+      </div>
+
       {/* Interactive Licenses Table */}
       <div className="p-6 sm:p-7 rounded-3xl bg-slate-900/80 border border-slate-800 space-y-6">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-5">
