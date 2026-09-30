@@ -2,32 +2,108 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { ArrowUpRight, ShieldCheck, Zap, Clock, Flame } from 'lucide-react';
+import { ArrowUpRight, ShieldCheck, Zap, Clock, Flame, Sparkles } from 'lucide-react';
 import { useInquiry } from '../context/InquiryContext';
 import { SITE_CONFIG } from '../config/siteConfig';
+import { ImageStreamHero } from '@/components/ui/image-stream-hero';
+
+const HERO_STREAM_IMAGES = [
+  {
+    src: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=80',
+    alt: 'Creative Agency 3D Systems',
+  },
+  {
+    src: 'https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=800&auto=format&fit=crop&q=80',
+    alt: 'Digital Platforms & UI',
+  },
+  {
+    src: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&auto=format&fit=crop&q=80',
+    alt: 'AI Automations & Workflows',
+  },
+  {
+    src: 'https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?w=800&auto=format&fit=crop&q=80',
+    alt: 'Brand Architecture',
+  },
+  {
+    src: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&auto=format&fit=crop&q=80',
+    alt: 'Modern Web Engineering',
+  },
+  {
+    src: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800&auto=format&fit=crop&q=80',
+    alt: 'High-Converting Funnels',
+  },
+  {
+    src: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&auto=format&fit=crop&q=80',
+    alt: 'Global Cloud Architecture',
+  },
+  {
+    src: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800&auto=format&fit=crop&q=80',
+    alt: 'High-Performance Systems',
+  },
+  {
+    src: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=800&auto=format&fit=crop&q=80',
+    alt: 'Data-Driven Marketing',
+  },
+];
 
 export function HomeContent() {
   const { openQuickModal } = useInquiry();
 
   return (
     <div className="w-full bg-black text-white flex flex-col justify-center min-h-[calc(100vh-80px)] pt-32 pb-20 sm:pt-36 sm:pb-24 px-4 sm:px-10 lg:px-16 font-sans overflow-x-hidden">
-      {/* Main Hero Content */}
-      <main className="w-full max-w-5xl mx-auto my-auto flex flex-col items-start text-left">
-        <div className="flex items-center gap-2 sm:gap-3 mb-4 flex-wrap">
-          <span className="text-xs font-mono uppercase tracking-widest text-neutral-500">
-            Digital Studio & Systems
-          </span>
-          <span className="text-neutral-700 hidden sm:inline">•</span>
-          <span className="inline-flex items-center gap-1.5 text-xs font-mono text-neutral-400">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            Available for projects
-          </span>
-        </div>
+      {/* Main Hero with 3D Perspective Corridor */}
+      <main className="w-full max-w-6xl mx-auto my-auto flex flex-col items-start text-left">
+        <ImageStreamHero
+          images={HERO_STREAM_IMAGES}
+          className="w-full rounded-3xl border border-white/10 bg-neutral-950/70 shadow-2xl mb-8 overflow-hidden"
+          speed={20}
+          cards={9}
+          axis={52}
+        >
+          <div className="relative z-10 flex min-h-[460px] sm:min-h-[500px] flex-col justify-between p-6 sm:p-12 bg-gradient-to-b from-black/80 via-black/40 to-black/90">
+            <div>
+              <div className="flex items-center gap-2 sm:gap-3 mb-4 flex-wrap">
+                <span className="text-xs font-mono uppercase tracking-widest text-cyan-400 bg-cyan-950/60 border border-cyan-800/40 px-3 py-1 rounded-full flex items-center gap-1.5">
+                  <Sparkles className="w-3 h-3" />
+                  Digital Studio & Systems
+                </span>
+                <span className="text-neutral-700 hidden sm:inline">•</span>
+                <span className="inline-flex items-center gap-1.5 text-xs font-mono text-neutral-300 bg-neutral-900/80 border border-white/10 px-3 py-1 rounded-full">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                  Available for projects
+                </span>
+              </div>
 
-        {/* Big Bold Statement */}
-        <h1 className="text-2xl sm:text-5xl md:text-6xl font-normal tracking-tight leading-[1.15] sm:leading-[1.1] mb-6 font-heading">
-          We engineer high-converting digital platforms, landing pages & automated marketing systems.
-        </h1>
+              {/* Big Bold Statement */}
+              <h1 className="text-2xl sm:text-5xl md:text-6xl font-normal tracking-tight leading-[1.15] sm:leading-[1.1] mb-6 font-heading max-w-3xl">
+                We engineer high-converting digital platforms, landing pages & automated marketing systems.
+              </h1>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-3 pt-2">
+              <Link
+                href="/intake-form"
+                className="px-6 py-3 rounded-full text-xs font-mono uppercase tracking-wider bg-white text-black font-semibold hover:bg-neutral-200 transition-transform hover:scale-105 cursor-pointer inline-flex items-center gap-2 shadow-lg"
+              >
+                <span>Submit Request</span>
+                <ArrowUpRight className="w-3.5 h-3.5" />
+              </Link>
+              <button
+                onClick={() => openQuickModal()}
+                className="px-6 py-3 rounded-full text-xs font-mono uppercase tracking-wider text-neutral-200 hover:text-white bg-white/5 border border-white/20 hover:border-white/40 transition-colors cursor-pointer backdrop-blur-sm"
+              >
+                Quick Inquire
+              </button>
+              <Link
+                href="/demo-hero"
+                className="inline-flex items-center gap-2 px-5 py-3 rounded-full text-xs font-mono uppercase tracking-wider text-cyan-400 hover:text-cyan-300 bg-cyan-950/40 border border-cyan-500/30 hover:border-cyan-400/50 transition-colors"
+              >
+                <span>Preview 3D Corridor Demo</span>
+                <ArrowUpRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+          </div>
+        </ImageStreamHero>
 
         {/* 3 Core Pillars with Internal Indexing Backlinks */}
         <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6 pt-6 pb-6 border-t border-neutral-900">
