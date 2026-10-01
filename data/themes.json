@@ -1,0 +1,76 @@
+{
+  "activeThemeId": "minimalist-obsidian",
+  "themes": [
+    {
+      "id": "minimalist-obsidian",
+      "name": "Minimalist Obsidian (Linear / Vercel style)",
+      "description": "Elite monochromatic dark layout featuring a 3D perspective corridor, 3 core engineering pillars, clean metric counters, and SchoolMIS ERP showcase banner.",
+      "category": "built_in",
+      "tags": [
+        "Minimalist",
+        "Obsidian",
+        "3D Corridor",
+        "High-Converting",
+        "SaaS"
+      ],
+      "prompt": "Design an ultra-clean, monochromatic luxury dark tech website with 3D perspective corridor, sleek hairline borders, high contrast white typography, and SchoolMIS ERP spotlight banner.",
+      "displayMode": "full_page",
+      "createdAt": "2026-10-01T00:00:00.000Z",
+      "updatedAt": "2026-10-02T00:00:00.000Z",
+      "isPredefined": true
+    },
+    {
+      "id": "cartooneast",
+      "name": "Cartoon East Creative (Horizontal Snap & Dock)",
+      "description": "Award-winning creative portfolio with 3D card stack, video reel crossfade, sound effects, project details modal, and macOS dock navigation.",
+      "category": "built_in",
+      "tags": [
+        "Creative",
+        "macOS Dock",
+        "Video Reel",
+        "Interactive",
+        "Audio FX"
+      ],
+      "prompt": "Replicate cartooneast.in award-winning design with macOS dock, full screen video reels, 3D card stack preview, project details modal, and ambient sounds.",
+      "displayMode": "full_page",
+      "createdAt": "2026-10-01T00:00:00.000Z",
+      "updatedAt": "2026-10-02T00:00:00.000Z",
+      "isPredefined": true
+    },
+    {
+      "id": "modern-saas",
+      "name": "SaaS Enterprise & Growth (Interactive Live Demo)",
+      "description": "High-converting B2B SaaS layout with interactive product showcase, dynamic feature matrix, automated ROI calculator, and customer testimonials.",
+      "category": "built_in",
+      "tags": [
+        "B2B SaaS",
+        "Live Demo",
+        "Enterprise",
+        "ROI Calculator"
+      ],
+      "prompt": "Create a high-converting B2B SaaS website with interactive live playground, ROI calculator, social proof, and enterprise grade CTAs.",
+      "displayMode": "full_page",
+      "createdAt": "2026-10-02T00:00:00.000Z",
+      "updatedAt": "2026-10-02T00:00:00.000Z",
+      "isPredefined": true
+    },
+    {
+      "id": "cyberpunk-neon",
+      "name": "Cyberpunk Terminal & Matrix (High-Tech Neon)",
+      "description": "Futuristic developer terminal aesthetic with glowing matrix particles, animated command prompt, neon borders, and cybernetic UI cards.",
+      "category": "built_in",
+      "tags": [
+        "Cyberpunk",
+        "Developer Terminal",
+        "Neon Glow",
+        "Futuristic"
+      ],
+      "prompt": "Design a cyberpunk terminal website with animated command prompt, neon cyan and purple glows, live system diagnostics, and holographic UI cards.",
+      "displayMode": "full_page",
+      "createdAt": "2026-10-02T00:00:00.000Z",
+      "updatedAt": "2026-10-02T00:00:00.000Z",
+      "isPredefined": true
+    }
+  ],
+  "lastUpdated": "2026-10-01T23:12:09.786Z"
+}

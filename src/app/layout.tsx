@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Script from 'next/script';
 import './globals.css';
 import { AdminAuthProvider } from '../context/AdminAuthContext';
+import { ThemeProvider } from '../context/ThemeContext';
 import { InquiryProvider } from '../context/InquiryContext';
 import { SiteChrome } from '../components/layout/SiteChrome';
 import { SITE_CONFIG } from '../config/siteConfig';
@@ -195,9 +196,11 @@ export default function RootLayout({
 
         <AnalyticsTracker />
         <AdminAuthProvider>
-          <InquiryProvider>
-            <SiteChrome>{children}</SiteChrome>
-          </InquiryProvider>
+          <ThemeProvider>
+            <InquiryProvider>
+              <SiteChrome>{children}</SiteChrome>
+            </InquiryProvider>
+          </ThemeProvider>
         </AdminAuthProvider>
       </body>
     </html>

@@ -10,6 +10,7 @@ import { VisitorAnalyticsView } from '../../components/admin/VisitorAnalyticsVie
 import { AdminSettings } from '../../components/admin/AdminSettings';
 import { GoogleSearchConsoleView } from '../../components/admin/GoogleSearchConsoleView';
 import { SchoolMisManager } from '../../components/admin/SchoolMisManager';
+import { ThemeManager } from '../../components/admin/ThemeManager';
 import { 
   adminStore, 
   Appointment, 
@@ -102,6 +103,10 @@ export default function AdminDashboardPage() {
 
         {activeTab === 'visitors' && (
           <VisitorAnalyticsView />
+        )}
+
+        {activeTab === 'themes' && (
+          <ThemeManager />
         )}
 
         {activeTab === 'seo' && (

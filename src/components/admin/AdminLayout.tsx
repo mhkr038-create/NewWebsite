@@ -17,11 +17,12 @@ import {
   Sparkles,
   MousePointerClick,
   Globe,
-  GraduationCap
+  GraduationCap,
+  Palette
 } from 'lucide-react';
 import { SITE_CONFIG } from '../../config/siteConfig';
 
-export type AdminTab = 'analytics' | 'visitors' | 'seo' | 'school_mis' | 'appointments' | 'inquiries' | 'settings';
+export type AdminTab = 'analytics' | 'visitors' | 'themes' | 'seo' | 'school_mis' | 'appointments' | 'inquiries' | 'settings';
 
 interface AdminLayoutProps {
   activeTab: AdminTab;
@@ -49,6 +50,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
   const navItems: { id: AdminTab; label: string; icon: React.FC<{ className?: string }>; badge?: number }[] = [
     { id: 'analytics', label: 'Analytics & Funnel', icon: BarChart3 },
     { id: 'visitors', label: 'Visitors & Clicks', icon: MousePointerClick },
+    { id: 'themes', label: 'Themes & Front Page', icon: Palette },
     { id: 'seo', label: 'Google Search & SEO', icon: Globe },
     { id: 'school_mis', label: 'School MIS & Licenses', icon: GraduationCap },
     { id: 'appointments', label: 'Appointments', icon: CalendarDays, badge: pendingAppointmentsCount },
