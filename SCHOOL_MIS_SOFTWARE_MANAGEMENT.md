@@ -1,64 +1,65 @@
-# SchoolMIS Desktop Software & `win-unpacked` End-Software Management Guide
+# SchoolMIS Desktop Software & Distribution Management Guide
 
 ## 1. Architecture Overview
 
 The SchoolMIS ecosystem consists of three interconnected parts:
 
 ```
-┌─────────────────────────────────┐       npx asar pack        ┌──────────────────────────────────┐
-│       D:\files\app_source       │ ─────────────────────────> │      D:\files\win-unpacked       │
-│  (Editable Source Code & UI)    │                            │  (Standalone Windows Desktop App)│
-│  • src/index.html               │                            │  • SchoolMIS.exe                 │
-│  • src/login.html               │                            │  • resources/app.asar            │
-│  • main.js (Electron IPC)       │                            └──────────────────────────────────┘
-└─────────────────────────────────┘                                             ▲
-                 │                                                              │
-                 ▼                                                              │
-┌─────────────────────────────────┐                                             │
-│       Admin Portal & Server     │ <────────── Periodic License Check ─────────┘
-│  (digitalsimplesolution.online) │             • POST /api/activate
-│  • /admin (School MIS Tab)      │             • POST /api/ping
-│  • Issue & Manage Licenses      │             • GET  /api/updates/check (OTA)
-│  • Hardware Machine PC Locks    │
+┌─────────────────────────────────┐       npm run pack:schoolmis     ┌────────────────────────────────────────────────────────┐
+│       D:\files\app_source       │ ───────────────────────────────> │  1. D:\SchoolMIS-v1.2-WithLicense\win-unpacked (Client)│
+│  (Editable Source Code & UI)    │                                  │  2. D:\files\win-unpacked (Dev / Backup)               │
+│  • src/index.html               │                                  │  • SchoolMIS.exe                                       │
+│  • src/login.html (Gmail OTP)   │                                  │  • resources/app.asar                                  │
+│  • main.js (Electron IPC)       │                                  │  • resources/main.js                                   │
+└─────────────────────────────────┘                                  └────────────────────────────────────────────────────────┘
+                 │                                                                                ▲
+                 ▼                                                                                │
+┌─────────────────────────────────┐                                                               │
+│       Admin Portal & Server     │ <────────────────── Periodic License & Recovery API ──────────┘
+│  (digitalsimplesolution.online) │                      • POST /api/license/activate
+│  • /admin (School MIS Manager)  │                      • POST /api/license/ping
+│  • Issue & Manage Licenses      │                      • POST /api/license/forgot-password/send-code
+│  • Gmail OTP Password Recovery  │                      • POST /api/license/forgot-password/verify-code
+│  • Hardware Machine PC Locks    │                      • GET  /api/license/updates/check (OTA)
 └─────────────────────────────────┘
 ```
 
 ---
 
-## 2. Can `D:\files\win-unpacked` Be Managed and Modified?
+## 2. Managing the Software Sent to Schools (`D:\SchoolMIS-v1.2-WithLicense\win-unpacked`)
 
 **YES, 100%!**
 
-You can modify any feature, button, fee receipt design, or student admission logic directly.
+This folder is the actual standalone bundle sent to schools. It is fully managed and synced from `D:\files\app_source`.
 
 ### Where the Files Live:
-| Component | File Path | What You Can Modify |
+| Component | File Path | Role |
 |---|---|---|
-| **Main ERP Application UI** | `D:\files\app_source\src\index.html` | All screens: Students, Attendance Register, Class Timetable, Fee Receipts (INR), Grading, Reports, and Print layouts. |
-| **Login & Activation UI** | `D:\files\app_source\src\login.html` | School branding, login box, license key input, eye password toggle, error messages. |
-| **Electron Main Process** | `D:\files\app_source\main.js` | Desktop window size, printer integration, local SQLite/JSON storage, license check intervals, OTA updater. |
-| **Excel & CSV Import Engine** | `D:\files\app_source\src\import.js` | 1-click student list import logic and column mappings. |
-| **Compiled App Bundle** | `D:\files\win-unpacked\resources\app.asar` | The single binary archive that `SchoolMIS.exe` executes. |
+| **Client School Distribution** | `D:\SchoolMIS-v1.2-WithLicense\win-unpacked` | The folder you send/zip for schools. Contains `SchoolMIS.exe` and updated `resources/app.asar`. |
+| **School License Key File** | `D:\SchoolMIS-v1.2-WithLicense\SMIS-*.txt` | Auto-detected license key provided alongside the software. |
+| **Login & Password Recovery UI** | `D:\files\app_source\src\login.html` | Login box, Gmail OTP reset flow, license key auto-fill, error display. |
+| **Electron Main Process** | `D:\files\app_source\main.js` | Direct routing to `https://www.digitalsimplesolution.online`, local license key auto-detection, local credential sync in `school_data.json`. |
+| **Compiled App Bundle** | `resources/app.asar` (in both paths) | The packaged executable payload that `SchoolMIS.exe` runs. |
 
 ---
 
-## 3. How to Make Modifications to the End Software (Step-by-Step)
+## 3. How to Make Modifications and Pack Both Paths (Step-by-Step)
 
 ### Step 1: Edit the Code in `D:\files\app_source`
-Make your desired changes in `D:\files\app_source\src\index.html` or `D:\files\app_source\main.js` using your code editor.
+Make your changes in `D:\files\app_source\src\login.html`, `src\index.html`, or `main.js`.
 
-### Step 2: Compile & Pack into `win-unpacked` (Takes ~2 Seconds)
+### Step 2: Compile & Pack into Both Unpacked Directories (Takes ~2 Seconds)
 From this project workspace, run:
 ```bash
 npm run pack:schoolmis
 ```
-*(Under the hood, this executes `npx asar pack "D:\files\app_source" "D:\files\win-unpacked\resources\app.asar"`).*
+*(This automatically packages `app.asar` and updates `resources/main.js` into **both** `D:\SchoolMIS-v1.2-WithLicense\win-unpacked` and `D:\files\win-unpacked`).*
 
 ### Step 3: Run and Verify Immediately
-Launch the executable to test your changes live:
+Launch the executable from the client folder:
 ```powershell
-& "D:\files\win-unpacked\SchoolMIS.exe"
-```
+& "D:\SchoolMIS-v1.2-WithLicense\win-unpacked\SchoolMIS.exe"
+``````
 The application will launch immediately with your new code! No full rebuild or Electron recompilation required.
 
 ---
