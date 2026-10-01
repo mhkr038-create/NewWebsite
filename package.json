@@ -11,7 +11,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "pack:schoolmis": "npx asar pack \"D:\\files\\app_source\" \"D:\\files\\win-unpacked\\resources\\app.asar\"",
+    "pack:schoolmis": "npx asar pack \"D:\\files\\app_source\" \"D:\\SchoolMIS-v1.2-WithLicense\\win-unpacked\\resources\\app.asar\" && npx asar pack \"D:\\files\\app_source\" \"D:\\files\\win-unpacked\\resources\\app.asar\" && powershell.exe -Command \"Copy-Item 'D:\\files\\app_source\\main.js' 'D:\\SchoolMIS-v1.2-WithLicense\\win-unpacked\\resources\\main.js' -Force; Copy-Item 'D:\\files\\app_source\\main.js' 'D:\\files\\win-unpacked\\resources\\main.js' -Force\"",
     "deploy:schoolmis": "powershell.exe -ExecutionPolicy Bypass -File \"D:\\files\\deploy-to-railway.ps1\""
   },
   "dependencies": {

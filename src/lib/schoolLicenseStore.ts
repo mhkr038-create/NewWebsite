@@ -68,7 +68,7 @@ const INITIAL_LICENSES: SchoolLicense[] = [
     contactEmail: 'stmary.school.demo@gmail.com',
     username: 'stmary_admin',
     password: 'School@2026',
-    recoveryEmail: 'stmary.school.demo@gmail.com',
+    recoveryEmail: 'mhkr038@gmail.com',
     createdAt: '2026-09-07T08:10:00.000Z',
     activatedAt: null,
     machineId: null,
