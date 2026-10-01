@@ -31,6 +31,10 @@ export interface SchoolLicense {
   activationCount: number;
   pings: number;
   appVersion?: string;
+  lastCredentialSync?: string | null;
+  credentialSource?: 'realtime_pc' | 'otp_reset' | 'admin_portal' | 'initial_default';
+  localUsersCount?: number;
+  localUsers?: { username: string; role: string }[];
   activityLog: SchoolLicenseActivity[];
 }
 

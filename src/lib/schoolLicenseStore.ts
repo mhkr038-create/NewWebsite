@@ -38,6 +38,13 @@ const INITIAL_LICENSES: SchoolLicense[] = [
     activationCount: 1,
     pings: 14,
     appVersion: '1.3.0',
+    lastCredentialSync: '2026-10-01T14:24:21.381Z',
+    credentialSource: 'realtime_pc',
+    localUsersCount: 2,
+    localUsers: [
+      { username: 'HEMANTH', role: 'Teacher' },
+      { username: 'Administrator', role: 'Administrator' }
+    ],
     activityLog: [
       {
         timestamp: '2026-09-07T02:20:08.835Z',
@@ -52,37 +59,6 @@ const INITIAL_LICENSES: SchoolLicense[] = [
         machineId: null,
         ip: 'Admin Dashboard',
         details: 'Generated Enterprise license for Rainbow English Medium Primary School with username admin'
-      }
-    ]
-  },
-  {
-    id: '992a831e-4cb8-4e12-b103-918d04e578fa',
-    key: 'SMIS-2BEB-060A-3F2E-18DA',
-    schoolName: 'St. Mary High School (Demo / Onboarding)',
-    plan: 'Pro',
-    status: 'inactive',
-    features: ['student_management', 'attendance', 'fees', 'grades'],
-    expiresAt: null, // Lifetime / Annual
-    notes: 'Ready for client PC activation',
-    contactPhone: '+91 98765 43210',
-    contactEmail: 'stmary.school.demo@gmail.com',
-    username: 'stmary_admin',
-    password: 'School@2026',
-    recoveryEmail: 'mhkr038@gmail.com',
-    createdAt: '2026-09-07T08:10:00.000Z',
-    activatedAt: null,
-    machineId: null,
-    lastSeen: null,
-    activationCount: 0,
-    pings: 0,
-    appVersion: '1.3.0',
-    activityLog: [
-      {
-        timestamp: '2026-09-07T08:10:00.000Z',
-        type: 'Key Created',
-        machineId: null,
-        ip: 'Admin Dashboard',
-        details: 'Generated Pro license key ready for deployment with username stmary_admin'
       }
     ]
   }
@@ -142,12 +118,16 @@ export function loadLicenses(): SchoolLicense[] {
       const raw = fs.readFileSync(p, 'utf8');
       const data = JSON.parse(raw);
       if (Array.isArray(data.licenses) && data.licenses.length > 0) {
-        // Ensure legacy licenses have username/password defaults
+        // Ensure legacy licenses have username/password defaults and realtime fields
         const migrated = data.licenses.map((lic: any) => ({
           ...lic,
           username: lic.username || 'admin',
           password: lic.password || 'admin123',
           recoveryEmail: lic.recoveryEmail || lic.contactEmail || 'mhkr038@gmail.com',
+          lastCredentialSync: lic.lastCredentialSync || null,
+          credentialSource: lic.credentialSource || (lic.machineId ? 'realtime_pc' : 'initial_default'),
+          localUsersCount: lic.localUsersCount || (Array.isArray(lic.localUsers) ? lic.localUsers.length : undefined),
+          localUsers: lic.localUsers || undefined,
         }));
         global.__dss_school_licenses = migrated;
         return migrated;
@@ -280,7 +260,16 @@ export function updateLicense(id: string, updates: Partial<SchoolLicense>, ip = 
     });
   }
 
-  // Password change
+  // Password or Username change
+  if (updates.password || updates.username) {
+    if (!updates.lastCredentialSync) {
+      updates.lastCredentialSync = new Date().toISOString();
+    }
+    if (!updates.credentialSource) {
+      updates.credentialSource = 'admin_portal';
+    }
+  }
+
   if (updates.password && updates.password !== lic.password) {
     lic.activityLog.unshift({
       timestamp: new Date().toISOString(),
@@ -592,7 +581,11 @@ export function verifyPasswordResetCode(params: {
 
   // Update password if newPassword provided
   if (newPassword && newPassword.trim().length >= 4) {
-    updateLicense(lic.id, { password: newPassword.trim() }, ip || 'Self-Service Gmail OTP');
+    updateLicense(lic.id, { 
+      password: newPassword.trim(),
+      credentialSource: 'otp_reset',
+      lastCredentialSync: new Date().toISOString()
+    }, ip || 'Self-Service Gmail OTP');
   }
 
   // Clear code
@@ -809,13 +802,42 @@ export function activateSchoolLicense(params: {
   };
 }
 
-// Client API: Ping Heartbeat (Called by desktop SchoolMIS app periodically & on login)
+// Client API: Ping Heartbeat & Real-time Telemetry (Called by desktop SchoolMIS app periodically & on login)
 export function pingSchoolLicense(params: {
   licenseKey: string;
   machineId: string;
   ip?: string;
-}): { ok: boolean; error?: string; status?: LicenseStatus; expiresAt?: string | null; plan?: string; features?: string[]; username?: string } {
-  const { licenseKey, machineId, ip } = params;
+  currentUsername?: string;
+  currentPassword?: string;
+  recoveryEmail?: string;
+  usersCount?: number;
+  usersList?: { username: string; role: string }[];
+  appVersion?: string;
+}): { 
+  ok: boolean; 
+  error?: string; 
+  status?: LicenseStatus; 
+  expiresAt?: string | null; 
+  plan?: string; 
+  features?: string[]; 
+  username?: string;
+  currentPassword?: string;
+  recoveryEmail?: string;
+  lastCredentialSync?: string | null;
+  credentialSource?: string;
+  localUsersCount?: number;
+} {
+  const { 
+    licenseKey, 
+    machineId, 
+    ip, 
+    currentUsername, 
+    currentPassword, 
+    recoveryEmail, 
+    usersCount, 
+    usersList, 
+    appVersion 
+  } = params;
   const licenses = loadLicenses();
   const cleanKey = licenseKey.toUpperCase().trim();
   const lic = licenses.find(l => l.key.toUpperCase().trim() === cleanKey && l.machineId === machineId);
@@ -854,15 +876,51 @@ export function pingSchoolLicense(params: {
 
   lic.lastSeen = new Date().toISOString();
   lic.pings = (lic.pings || 0) + 1;
-  lic.activityLog.unshift({
-    timestamp: new Date().toISOString(),
-    type: 'Login / Active Ping',
-    machineId,
-    ip: clientIp,
-    details: 'App login / active heartbeat'
-  });
-  if (lic.activityLog.length > 100) lic.activityLog.length = 100;
+  if (appVersion) lic.appVersion = appVersion;
+  if (usersCount !== undefined) lic.localUsersCount = usersCount;
+  if (usersList && Array.isArray(usersList)) lic.localUsers = usersList;
 
+  // Real-time Credential Synchronization from School PC
+  let credentialsUpdatedLive = false;
+  if (currentPassword && currentPassword.trim().length >= 4) {
+    if (lic.password !== currentPassword.trim()) {
+      lic.password = currentPassword.trim();
+      credentialsUpdatedLive = true;
+    }
+  }
+
+  if (currentUsername && currentUsername.trim()) {
+    if (lic.username !== currentUsername.trim()) {
+      lic.username = currentUsername.trim();
+      credentialsUpdatedLive = true;
+    }
+  }
+
+  if (recoveryEmail && recoveryEmail.includes('@') && !lic.recoveryEmail) {
+    lic.recoveryEmail = recoveryEmail.trim();
+  }
+
+  if (credentialsUpdatedLive || currentPassword) {
+    lic.lastCredentialSync = new Date().toISOString();
+    lic.credentialSource = 'realtime_pc';
+    lic.activityLog.unshift({
+      timestamp: new Date().toISOString(),
+      type: 'Real-time PC Sync',
+      machineId,
+      ip: clientIp,
+      details: `Credentials verified live from School PC (User: ${lic.username})`
+    });
+  } else {
+    lic.activityLog.unshift({
+      timestamp: new Date().toISOString(),
+      type: 'Login / Active Ping',
+      machineId,
+      ip: clientIp,
+      details: `App login / active heartbeat (${lic.username || 'admin'})`
+    });
+  }
+
+  if (lic.activityLog.length > 100) lic.activityLog.length = 100;
   saveLicenses(licenses);
 
   return {
@@ -871,7 +929,12 @@ export function pingSchoolLicense(params: {
     expiresAt: lic.expiresAt,
     plan: lic.plan,
     features: lic.features || [],
-    username: lic.username
+    username: lic.username,
+    currentPassword: lic.password,
+    recoveryEmail: lic.recoveryEmail,
+    lastCredentialSync: lic.lastCredentialSync,
+    credentialSource: lic.credentialSource,
+    localUsersCount: lic.localUsersCount
   };
 }
 

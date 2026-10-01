@@ -629,6 +629,16 @@ export const SchoolMisManager: React.FC = () => {
 
           {/* Search & Filter Bar */}
           <div className="flex items-center gap-3 flex-wrap">
+            <button
+              onClick={() => { loadData(); showNotification('Synchronizing live school telemetry...'); }}
+              disabled={isRefreshing}
+              className="flex items-center gap-1.5 px-3 py-2 bg-slate-950 hover:bg-slate-800 border border-slate-800 rounded-xl text-xs text-cyan-300 transition-colors"
+              title="Refresh real-time school telemetry & credentials"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin text-cyan-400' : ''}`} />
+              <span className="hidden sm:inline">Sync Telemetry</span>
+            </button>
+
             <div className="relative">
               <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
               <input
@@ -744,7 +754,50 @@ export const SchoolMisManager: React.FC = () => {
 
                       {/* Login & Recovery Credentials */}
                       <td className="py-3.5 px-4">
-                        <div className="space-y-1">
+                        <div className="space-y-1.5 min-w-[170px]">
+                          {/* Real-time Telemetry Status Badge */}
+                          <div className="flex items-center justify-between gap-1.5">
+                            {lic.credentialSource === 'realtime_pc' ? (
+                              <span 
+                                className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-mono font-semibold bg-emerald-950/80 text-emerald-300 border border-emerald-500/40" 
+                                title={`Real-time verified & synced from School PC • ${lic.lastCredentialSync ? new Date(lic.lastCredentialSync).toLocaleString() : 'Active'}`}
+                              >
+                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                                <span>Realtime Synced</span>
+                              </span>
+                            ) : lic.credentialSource === 'otp_reset' ? (
+                              <span 
+                                className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-mono font-semibold bg-amber-950/80 text-amber-300 border border-amber-500/40" 
+                                title="Reset via Gmail OTP verification"
+                              >
+                                <span>⚡ OTP Reset</span>
+                              </span>
+                            ) : lic.credentialSource === 'admin_portal' ? (
+                              <span 
+                                className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-mono font-semibold bg-cyan-950/80 text-cyan-300 border border-cyan-500/40" 
+                                title="Updated via Admin Dashboard"
+                              >
+                                <span>⚙️ Admin Set</span>
+                              </span>
+                            ) : (
+                              <span 
+                                className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-mono font-semibold bg-slate-950 text-slate-400 border border-slate-700" 
+                                title="Default initial credentials. Awaiting school PC sign-in."
+                              >
+                                <span className="w-1.5 h-1.5 rounded-full bg-slate-500" />
+                                <span>Default Initial</span>
+                              </span>
+                            )}
+
+                            <button
+                              onClick={() => handleOpenEditCredentials(lic)}
+                              className="text-slate-400 hover:text-amber-300 p-0.5 ml-auto"
+                              title="Edit Credentials (Password / Username / Recovery Gmail)"
+                            >
+                              <Lock className="w-3 h-3" />
+                            </button>
+                          </div>
+
                           <div className="flex items-center gap-1.5 font-mono text-[11px]">
                             <span className="text-slate-400">User:</span>
                             <span className="text-white font-bold bg-slate-950 px-1.5 py-0.5 rounded border border-slate-800">
@@ -781,13 +834,25 @@ export const SchoolMisManager: React.FC = () => {
                           </div>
 
                           {lic.recoveryEmail ? (
-                            <div className="text-[10px] text-cyan-400 font-mono flex items-center gap-1 truncate max-w-[150px]" title={`Recovery Gmail: ${lic.recoveryEmail}`}>
+                            <div className="text-[10px] text-cyan-400 font-mono flex items-center gap-1 truncate max-w-[170px]" title={`Recovery Gmail: ${lic.recoveryEmail}`}>
                               <Mail className="w-3 h-3 shrink-0" />
                               <span className="truncate">{lic.recoveryEmail}</span>
                             </div>
                           ) : (
                             <div className="text-[10px] text-slate-500 font-mono italic">
                               No recovery Gmail
+                            </div>
+                          )}
+
+                          {lic.localUsers && lic.localUsers.length > 0 && (
+                            <div 
+                              className="text-[10px] font-mono text-cyan-300/90 flex items-center gap-1 bg-cyan-950/40 px-1.5 py-0.5 rounded border border-cyan-800/40" 
+                              title={lic.localUsers.map(u => `${u.username} (${u.role})`).join(', ')}
+                            >
+                              <span className="text-cyan-400 font-semibold">👥 PC Users ({lic.localUsers.length}):</span>
+                              <span className="text-slate-300 truncate max-w-[90px]">
+                                {lic.localUsers.map(u => u.username).join(', ')}
+                              </span>
                             </div>
                           )}
                         </div>
