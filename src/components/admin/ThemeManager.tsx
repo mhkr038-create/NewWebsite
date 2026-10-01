@@ -144,6 +144,100 @@ if (canvas) {
   animate();
 }`,
   },
+  {
+    name: 'Liquid Glass Button Hero Showcase',
+    html: `<div class="w-full min-h-[90vh] bg-black text-white flex flex-col justify-center items-center text-center px-4 py-20 relative overflow-hidden">
+  <!-- Dotted background -->
+  <svg xmlns="http://www.w3.org/2000/svg" height="100%" width="100%" class="pointer-events-none absolute inset-0 z-0">
+    <defs>
+      <pattern patternUnits="userSpaceOnUse" height="30" width="30" id="dottedGrid">
+        <circle fill="rgba(255, 255, 255, 0.15)" r="1" cy="2" cx="2"></circle>
+      </pattern>
+    </defs>
+    <rect fill="url(#dottedGrid)" height="100%" width="100%"></rect>
+  </svg>
+
+  <div class="max-w-3xl mx-auto space-y-6 relative z-10">
+    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-900 border border-zinc-800 text-xs font-mono uppercase tracking-wider text-zinc-400">
+      ⚡ Specular Liquid Glass UI
+    </div>
+
+    <h1 class="text-4xl sm:text-7xl font-bold tracking-tight text-white">
+      Reflective Glassmorphism Experience
+    </h1>
+
+    <p class="text-base sm:text-lg text-zinc-400 max-w-xl mx-auto font-light leading-relaxed">
+      Crafted with conic angle rotations, dynamic OKLCH color spaces, and tactile 3D perspective feedback.
+    </p>
+
+    <div class="flex flex-wrap items-center justify-center gap-6 pt-6">
+      <div class="glass-button-wrap cursor-pointer rounded-full">
+        <button class="glass-button relative isolate cursor-pointer rounded-full transition-all">
+          <span class="glass-button-text relative block select-none tracking-tighter px-8 py-4 text-base font-semibold">
+            Explore Growth Systems →
+          </span>
+        </button>
+        <div class="glass-button-shadow rounded-full"></div>
+      </div>
+
+      <div class="glass-button-wrap cursor-pointer rounded-full">
+        <a href="/intake-form" class="glass-button relative isolate cursor-pointer rounded-full transition-all inline-block">
+          <span class="glass-button-text relative block select-none tracking-tighter px-6 py-3.5 text-sm font-semibold">
+            Submit Intake
+          </span>
+        </a>
+        <div class="glass-button-shadow rounded-full"></div>
+      </div>
+    </div>
+  </div>
+</div>`,
+    css: `@property --angle-1 { syntax: "<angle>"; inherits: false; initial-value: -75deg; }
+@property --angle-2 { syntax: "<angle>"; inherits: false; initial-value: -45deg; }
+.glass-button-wrap {
+  --anim-time:.4s;
+  --anim-ease:cubic-bezier(.25,1,.5,1);
+  --border-width:clamp(1px,.0625em,4px);
+  z-index:2;
+  transform-style:preserve-3d;
+  transition:transform var(--anim-time)var(--anim-ease);
+  position:relative;
+}
+.glass-button-wrap:has(.glass-button:active) { transform:rotateX(25deg); }
+.glass-button-shadow {
+  --shadow-cutoff-fix:2em;
+  width:calc(100% + var(--shadow-cutoff-fix));
+  height:calc(100% + var(--shadow-cutoff-fix));
+  top:calc(0% - var(--shadow-cutoff-fix)/2);
+  left:calc(0% - var(--shadow-cutoff-fix)/2);
+  filter:blur(clamp(2px,.125em,12px));
+  transition:filter var(--anim-time)var(--anim-ease);
+  pointer-events:none;
+  position:absolute;
+}
+.glass-button-shadow:after {
+  content:"";
+  background:linear-gradient(180deg,rgba(255,255,255,0.2),rgba(255,255,255,0.05));
+  width:calc(100% - var(--shadow-cutoff-fix) - .25em);
+  height:calc(100% - var(--shadow-cutoff-fix) - .25em);
+  top:calc(var(--shadow-cutoff-fix) - .5em);
+  left:calc(var(--shadow-cutoff-fix) - .875em);
+  border-radius:9999px;
+  position:absolute;
+}
+.glass-button {
+  backdrop-filter:blur(clamp(1px,.125em,4px));
+  transition:all var(--anim-time)var(--anim-ease);
+  background:linear-gradient(-75deg,rgba(255,255,255,0.05),rgba(255,255,255,0.15),rgba(255,255,255,0.05));
+  border:1px solid rgba(255,255,255,0.2);
+  box-shadow:inset 0 1px 1px rgba(255,255,255,0.2),0 4px 12px rgba(0,0,0,0.5);
+}
+.glass-button:hover {
+  transform:scale(.98);
+  box-shadow:inset 0 1px 2px rgba(255,255,255,0.3),0 2px 6px rgba(0,0,0,0.6);
+}
+.glass-button-text { color: #ffffff; text-shadow:0 1px 2px rgba(0,0,0,0.5); }`,
+    js: `console.log('Glass button hero template initialized');`,
+  },
 ];
 
 const PRESET_LIBRARIES = [
