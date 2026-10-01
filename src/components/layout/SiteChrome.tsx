@@ -14,9 +14,16 @@ interface SiteChromeProps {
 export const SiteChrome: React.FC<SiteChromeProps> = ({ children }) => {
   const pathname = usePathname();
   const isAdmin = pathname?.startsWith('/admin');
+  const isHomePage = pathname === '/';
 
-  if (isAdmin) {
-    return <div className="flex-1 w-full min-h-screen">{children}</div>;
+  if (isAdmin || isHomePage) {
+    return (
+      <div className="flex-1 w-full min-h-screen">
+        {children}
+        <QuickInquiryModal />
+        <CookieConsent />
+      </div>
+    );
   }
 
   return (
