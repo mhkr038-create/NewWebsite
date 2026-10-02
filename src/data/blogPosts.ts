@@ -6,6 +6,7 @@ export interface BlogPost {
   category: string;
   readTime: string;
   publishDate: string;
+  publishedAt?: string;
   author: {
     name: string;
     role: string;
@@ -33,6 +34,7 @@ export const BLOG_POSTS: BlogPost[] = [
     category: 'Landing Pages & CRO',
     readTime: '6 min read',
     publishDate: 'Aug 2026',
+    publishedAt: '2026-08-10',
     author: {
       name: 'Growth Engineering Team',
       role: 'Conversion Optimization Specialists',
@@ -78,6 +80,7 @@ export const BLOG_POSTS: BlogPost[] = [
     category: 'Paid Advertising',
     readTime: '7 min read',
     publishDate: 'Aug 2026',
+    publishedAt: '2026-08-18',
     author: {
       name: 'Paid Media Strategists',
       role: 'Growth Media Buyers',
@@ -122,6 +125,7 @@ export const BLOG_POSTS: BlogPost[] = [
     category: 'Automation & CRM',
     readTime: '5 min read',
     publishDate: 'Aug 2026',
+    publishedAt: '2026-08-22',
     author: {
       name: 'Automation Architecture Team',
       role: 'Workflow & API Engineers',
@@ -166,6 +170,7 @@ export const BLOG_POSTS: BlogPost[] = [
     category: 'Digital Products',
     readTime: '8 min read',
     publishDate: 'Aug 2026',
+    publishedAt: '2026-08-25',
     author: {
       name: 'Product Strategy Lead',
       role: 'Digital Revenue Architect',
@@ -220,6 +225,7 @@ export const BLOG_POSTS: BlogPost[] = [
     category: 'SEO & Organic Growth',
     readTime: '7 min read',
     publishDate: 'Aug 2026',
+    publishedAt: '2026-08-28',
     author: {
       name: 'Organic Search Lead',
       role: 'SEO & Content Strategist',
@@ -264,6 +270,7 @@ export const BLOG_POSTS: BlogPost[] = [
     category: 'EdTech & ERP',
     readTime: '8 min read',
     publishDate: 'Sep 2026',
+    publishedAt: '2026-09-05',
     author: {
       name: 'Education ERP Solutions Team',
       role: 'School Automation Specialists',

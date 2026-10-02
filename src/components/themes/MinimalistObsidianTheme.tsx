@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { ArrowUpRight, ShieldCheck, Clock, Sparkles, Laptop, LineChart, Cpu } from 'lucide-react';
 import { useInquiry } from '../../context/InquiryContext';
 import { SITE_CONFIG } from '../../config/siteConfig';
@@ -9,39 +10,39 @@ import { ImageStreamHero } from '@/components/ui/image-stream-hero';
 
 const HERO_STREAM_IMAGES = [
   {
-    src: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=80',
+    src: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400&auto=format&fit=crop&q=70',
     alt: 'Digital Platforms & Architecture',
   },
   {
-    src: 'https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=800&auto=format&fit=crop&q=80',
+    src: 'https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=400&auto=format&fit=crop&q=70',
     alt: 'Modern Web Engineering',
   },
   {
-    src: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&auto=format&fit=crop&q=80',
+    src: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&auto=format&fit=crop&q=70',
     alt: 'AI Automations & Workflows',
   },
   {
-    src: 'https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?w=800&auto=format&fit=crop&q=80',
+    src: 'https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?w=400&auto=format&fit=crop&q=70',
     alt: 'Brand Identity & Systems',
   },
   {
-    src: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&auto=format&fit=crop&q=80',
+    src: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&auto=format&fit=crop&q=70',
     alt: 'Enterprise UI Systems',
   },
   {
-    src: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800&auto=format&fit=crop&q=80',
+    src: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=400&auto=format&fit=crop&q=70',
     alt: 'High-Converting Funnels',
   },
   {
-    src: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&auto=format&fit=crop&q=80',
+    src: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400&auto=format&fit=crop&q=70',
     alt: 'Cloud Infrastructure',
   },
   {
-    src: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800&auto=format&fit=crop&q=80',
+    src: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=400&auto=format&fit=crop&q=70',
     alt: 'High-Performance Computing',
   },
   {
-    src: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=800&auto=format&fit=crop&q=80',
+    src: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=400&auto=format&fit=crop&q=70',
     alt: 'Data-Driven Growth',
   },
 ];
@@ -252,10 +253,14 @@ export function MinimalistObsidianTheme() {
                 href="/free-school-management-software" 
                 className="block relative rounded-2xl overflow-hidden border border-zinc-800 bg-zinc-900/40 p-1.5 shadow-2xl group/img hover:border-zinc-600 transition-all"
               >
-                <img
-                  src="/images/free-school-management-software.jpg"
+                <Image
+                  src="/images/free-school-management-software.webp"
                   alt="SchoolMIS Cloud Management ERP Interface"
+                  width={600}
+                  height={338}
+                  sizes="(max-width: 768px) 100vw, 500px"
                   className="w-full h-auto object-cover rounded-xl transition-transform duration-500 group-hover/img:scale-[1.01]"
+                  loading="lazy"
                 />
               </Link>
             </div>

@@ -40,7 +40,7 @@ export async function generateMetadata({
       title: post.title,
       description: post.excerpt,
       type: 'article',
-      publishedTime: '2026-08-01',
+      publishedTime: post.publishedAt || '2026-08-01',
       authors: [post.author.name],
     },
     twitter: {

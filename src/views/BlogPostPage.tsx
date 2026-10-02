@@ -26,7 +26,7 @@ export const BlogPostPage: React.FC<{ slug: string }> = ({ slug }) => {
     '@type': 'Article',
     headline: post.title,
     description: post.excerpt,
-    datePublished: '2026-08-01',
+    datePublished: post.publishedAt || '2026-08-01',
     author: {
       '@type': 'Person',
       name: post.author.name,

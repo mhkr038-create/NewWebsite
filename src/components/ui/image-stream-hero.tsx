@@ -169,11 +169,11 @@ export function ImageStreamHero({
 
   const css = React.useMemo(
     () =>
-      `${keyframes(1, right, p)}${keyframes(-1, left, p)}` +
-      // Pausing rather than disabling keeps the corridor whole: every card is
-      // already dropped mid-flight by its negative delay, so it freezes as a
-      // finished still instead of collapsing onto the axis.
-      `@media(prefers-reduced-motion:reduce){.${card}{animation-play-state:paused}}`,
+      `@media (min-width: 640px) {
+        ${keyframes(1, right, p)}
+        ${keyframes(-1, left, p)}
+      }
+      @media(prefers-reduced-motion:reduce){.${card}{animation-play-state:paused}}`,
     [right, left, card, p],
   );
 
@@ -185,9 +185,10 @@ export function ImageStreamHero({
     >
       <style>{css}</style>
 
+      {/* 3D Perspective Corridor - Active on sm and above (tablet/desktop) */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0"
+        className="pointer-events-none absolute inset-0 hidden sm:block"
         style={{
           perspective: `${p.perspective}cqw`,
           perspectiveOrigin: `50% ${axis}%`,
@@ -236,6 +237,16 @@ export function ImageStreamHero({
             }),
           )}
         </div>
+      </div>
+
+      {/* Mobile Ambient Glow - Ultra-lightweight CSS backdrop for mobile screens */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 sm:hidden overflow-hidden"
+      >
+        <div className="absolute -top-12 -left-12 w-64 h-64 bg-indigo-500/15 rounded-full blur-3xl pointer-events-none animate-pulse-glow" />
+        <div className="absolute top-1/3 -right-16 w-60 h-60 bg-cyan-500/15 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-12 left-1/3 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
       </div>
 
       {children}

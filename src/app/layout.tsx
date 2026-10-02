@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Script from 'next/script';
+import { Plus_Jakarta_Sans, Outfit, Space_Grotesk, Cinzel, Quicksand } from 'next/font/google';
 import './globals.css';
 import { AdminAuthProvider } from '../context/AdminAuthContext';
 import { ThemeProvider } from '../context/ThemeContext';
@@ -7,6 +8,41 @@ import { InquiryProvider } from '../context/InquiryContext';
 import { SiteChrome } from '../components/layout/SiteChrome';
 import { SITE_CONFIG } from '../config/siteConfig';
 import { AnalyticsTracker } from '../components/analytics/AnalyticsTracker';
+
+const plusJakartaSans = Plus_Jakarta_Sans({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-sans',
+  weight: ['400', '500', '600', '700'],
+});
+
+const outfit = Outfit({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-heading',
+  weight: ['400', '500', '600', '700'],
+});
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-mono',
+  weight: ['400', '500', '600'],
+});
+
+const cinzel = Cinzel({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-serif',
+  weight: ['600', '700'],
+});
+
+const quicksand = Quicksand({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-quicksand',
+  weight: ['500', '600', '700'],
+});
 
 
 export const metadata: Metadata = {
@@ -118,16 +154,11 @@ export default function RootLayout({
   ];
 
   return (
-    <html lang="en" className="dark">
+    <html
+      lang="en"
+      className={`dark ${plusJakartaSans.variable} ${outfit.variable} ${spaceGrotesk.variable} ${cinzel.variable} ${quicksand.variable}`}
+    >
       <head>
-        {/* Google Fonts Preconnect & Stylesheets */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Quicksand:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
-          rel="stylesheet"
-        />
-
         {/* Global Structured Data JSON-LD */}
         <script
           type="application/ld+json"
@@ -140,9 +171,9 @@ export default function RootLayout({
           <>
             <Script
               src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}`}
-              strategy="afterInteractive"
+              strategy="lazyOnload"
             />
-            <Script id="google-analytics-init" strategy="afterInteractive">
+            <Script id="google-analytics-init" strategy="lazyOnload">
               {`
                 window.dataLayer = window.dataLayer || [];
                 function gtag(){dataLayer.push(arguments);}
@@ -159,7 +190,7 @@ export default function RootLayout({
         {process.env.NEXT_PUBLIC_GTM_ID && (
           <Script
             id="google-tag-manager"
-            strategy="afterInteractive"
+            strategy="lazyOnload"
             dangerouslySetInnerHTML={{
               __html: `
                 (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -176,7 +207,7 @@ export default function RootLayout({
         {process.env.NEXT_PUBLIC_META_PIXEL_ID && (
           <Script
             id="meta-pixel"
-            strategy="afterInteractive"
+            strategy="lazyOnload"
             dangerouslySetInnerHTML={{
               __html: `
                 !function(f,b,e,v,n,t,s)

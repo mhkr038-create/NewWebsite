@@ -4,6 +4,37 @@ import { SOLUTIONS_DATA } from '../data/solutions';
 import { DEMO_REGISTRY } from '../data/demos';
 import { SITE_CONFIG } from '../config/siteConfig';
 
+/**
+ * Validates and converts any date representation (ISO string, Date, or Month Year)
+ * to a strict W3C Datetime format (YYYY-MM-DD) required by Google Search Console.
+ */
+function formatIsoDate(dateVal?: string | Date): string {
+  if (!dateVal) {
+    return new Date().toISOString().split('T')[0];
+  }
+  if (dateVal instanceof Date) {
+    return isNaN(dateVal.getTime())
+      ? new Date().toISOString().split('T')[0]
+      : dateVal.toISOString().split('T')[0];
+  }
+  const trimmed = dateVal.trim();
+  if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) {
+    return trimmed;
+  }
+  const parsed = new Date(trimmed);
+  if (!isNaN(parsed.getTime())) {
+    return parsed.toISOString().split('T')[0];
+  }
+  const monthYearMatch = trimmed.match(/^([A-Za-z]+)\s+(\d{4})$/);
+  if (monthYearMatch) {
+    const monthParsed = new Date(`${monthYearMatch[1]} 1, ${monthYearMatch[2]}`);
+    if (!isNaN(monthParsed.getTime())) {
+      return monthParsed.toISOString().split('T')[0];
+    }
+  }
+  return new Date().toISOString().split('T')[0];
+}
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = SITE_CONFIG.siteUrl || 'https://www.digitalsimplesolution.online';
   const currentDate = new Date().toISOString().split('T')[0];
@@ -157,7 +188,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // Dynamic Blog Posts
   const blogRoutes: MetadataRoute.Sitemap = BLOG_POSTS.map((post) => ({
     url: `${baseUrl}/blog/${post.slug}`,
-    lastModified: post.publishDate || currentDate,
+    lastModified: formatIsoDate(post.publishedAt || post.publishDate),
     changeFrequency: 'monthly',
     priority: 0.8,
   }));
