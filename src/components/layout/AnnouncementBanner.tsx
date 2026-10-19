@@ -16,8 +16,8 @@ export const AnnouncementBanner: React.FC = () => {
         {/* Mobile View */}
         <div className="flex sm:hidden flex-1 items-center justify-between gap-2 text-left">
           <div className="flex items-center gap-2 min-w-0">
-            <span className="inline-flex items-center gap-1.5 bg-zinc-900 text-zinc-300 border border-zinc-800 px-2 py-0.5 rounded-full text-[9px] font-mono uppercase tracking-wider shrink-0">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+            <span className="inline-flex items-center gap-1.5 bg-zinc-900 text-zinc-300 border border-zinc-800 px-2 py-0.5 text-[9px] font-mono uppercase tracking-wider shrink-0">
+              <span className="w-1.5 h-1.5 bg-emerald-400" />
               <span>ERP Free Tier</span>
             </span>
             <span className="text-zinc-300 text-[11px] truncate">
@@ -26,7 +26,7 @@ export const AnnouncementBanner: React.FC = () => {
           </div>
           <Link
             href="/free-school-management-software#enquiry-form"
-            className="inline-flex items-center gap-1 font-medium text-zinc-200 hover:text-white bg-zinc-800/90 hover:bg-zinc-700 border border-zinc-700/80 px-2.5 py-0.5 rounded-full text-[10px] transition-colors shrink-0"
+            className="inline-flex items-center gap-1 font-mono text-[10px] uppercase tracking-wider text-zinc-200 hover:text-white bg-zinc-900 hover:bg-zinc-800 border border-zinc-750 px-2.5 py-0.5 transition-colors shrink-0"
           >
             <span>Claim</span>
             <ArrowRight className="w-3 h-3 text-zinc-400" />
@@ -35,12 +35,12 @@ export const AnnouncementBanner: React.FC = () => {
 
         {/* Desktop View */}
         <div className="hidden sm:flex flex-1 items-center justify-center gap-2.5 text-center flex-wrap">
-          <span className="inline-flex items-center gap-1.5 bg-zinc-900 text-zinc-300 border border-zinc-800 px-2.5 py-0.5 rounded-full text-[10px] font-mono uppercase tracking-wider">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+          <span className="inline-flex items-center gap-1.5 bg-zinc-900 text-zinc-300 border border-zinc-800 px-2.5 py-0.5 text-[10px] font-mono uppercase tracking-wider">
+            <span className="w-1.5 h-1.5 bg-emerald-400 animate-pulse" />
             <span>Enterprise ERP Free Tier</span>
           </span>
 
-          <span className="inline-flex items-center gap-1 bg-zinc-900/60 text-zinc-400 border border-zinc-800 px-2 py-0.5 rounded-full text-[10px] font-mono uppercase tracking-wider">
+          <span className="inline-flex items-center gap-1 bg-zinc-900/60 text-zinc-400 border border-zinc-800 px-2.5 py-0.5 text-[10px] font-mono uppercase tracking-wider">
             <Clock className="w-3 h-3 text-zinc-400" />
             <span>Limited Deployment Slots</span>
           </span>
@@ -51,7 +51,7 @@ export const AnnouncementBanner: React.FC = () => {
 
           <Link
             href="/free-school-management-software#enquiry-form"
-            className="inline-flex items-center gap-1 font-medium text-zinc-200 hover:text-white bg-zinc-800/90 hover:bg-zinc-700 border border-zinc-700/80 px-3 py-0.5 rounded-full text-[10px] font-mono uppercase tracking-wider transition-colors cursor-pointer"
+            className="inline-flex items-center gap-1 font-mono text-[10px] uppercase tracking-wider text-zinc-200 hover:text-white bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 px-3 py-0.5 transition-colors cursor-pointer"
           >
             <span>Claim License</span>
             <ArrowRight className="w-3 h-3 text-zinc-400" />

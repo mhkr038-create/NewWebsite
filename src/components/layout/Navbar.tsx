@@ -129,8 +129,8 @@ export const Navbar: React.FC = () => {
             </div>
           </Link>
 
-          {/* Desktop Navigation Links */}
-          <nav className="hidden lg:flex items-center gap-0.5 xl:gap-1 bg-zinc-900/90 px-2.5 py-1.5 rounded-full border border-zinc-800 backdrop-blur-md shadow-xl shrink-0">
+          {/* Desktop Navigation Links - Architectural Bar */}
+          <nav className="hidden lg:flex items-center gap-0.5 xl:gap-1 bg-zinc-950/90 px-2 py-1.5 rounded-sm border border-zinc-800 backdrop-blur-md shadow-xl shrink-0 font-mono">
             {navLinks.filter((l) => !l.hideOnDesktop).map((link) => (
               <div
                 key={link.path}
@@ -147,20 +147,20 @@ export const Navbar: React.FC = () => {
                 <Link
                   href={link.path}
                   onClick={(e) => handleNavClick(link.path, e)}
-                  className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-200 flex items-center gap-1.5 whitespace-nowrap ${
+                  className={`px-3 py-1.5 rounded-sm text-xs font-medium transition-all duration-200 flex items-center gap-1.5 whitespace-nowrap ${
                     link.isFlash
-                      ? 'bg-zinc-800 text-zinc-100 border border-zinc-700 hover:border-zinc-500 shadow-sm font-medium'
+                      ? 'bg-zinc-900 text-zinc-100 border border-zinc-700 hover:border-zinc-500 shadow-sm font-medium'
                       : isActive(link.path)
-                      ? 'bg-zinc-800 text-white shadow-sm font-semibold'
-                      : 'text-zinc-400 hover:text-white hover:bg-zinc-800/50'
+                      ? 'bg-zinc-900 text-white border border-zinc-700 shadow-sm font-semibold'
+                      : 'text-zinc-400 hover:text-white hover:bg-zinc-900/60'
                   }`}
                 >
                   {link.isFlash && (
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shrink-0" />
+                    <span className="w-1.5 h-1.5 bg-emerald-400 animate-pulse shrink-0" />
                   )}
                   <span>{link.shortName || link.name}</span>
                   {link.isFlash && (
-                    <span className="px-1.5 py-0.5 bg-zinc-700 text-zinc-200 text-[9px] font-semibold rounded-full font-mono uppercase tracking-wider shrink-0">
+                    <span className="px-1.5 py-0.5 bg-zinc-800 text-zinc-300 text-[9px] font-semibold border border-zinc-700 font-mono uppercase tracking-wider shrink-0">
                       FREE
                     </span>
                   )}
@@ -169,8 +169,8 @@ export const Navbar: React.FC = () => {
                       className={`w-3.5 h-3.5 transition-transform duration-200 ${
                         (link.hasDropdown === 'services' && servicesDropdownOpen) ||
                         (link.hasDropdown === 'solutions' && solutionsDropdownOpen)
-                          ? 'rotate-180 text-cyan-300'
-                          : 'text-slate-400'
+                          ? 'rotate-180 text-zinc-200'
+                          : 'text-zinc-400'
                       }`}
                     />
                   )}
@@ -254,13 +254,13 @@ export const Navbar: React.FC = () => {
             ))}
           </nav>
 
-          {/* Action CTAs */}
-          <div className="hidden sm:flex items-center gap-2 shrink-0">
+          {/* Action CTAs - Architectural Geometry */}
+          <div className="hidden sm:flex items-center gap-2.5 shrink-0">
             {/* Admin Portal link */}
             <Link
               href="/admin"
               title="Admin Portal"
-              className="p-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white border border-zinc-800 hover:border-zinc-700 transition-all flex items-center justify-center cursor-pointer group shrink-0"
+              className="p-2.5 rounded-sm bg-zinc-950 hover:bg-zinc-900 text-zinc-400 hover:text-white border border-zinc-800 hover:border-zinc-700 transition-all flex items-center justify-center cursor-pointer group shrink-0"
             >
               <ShieldCheck className="w-4 h-4 group-hover:scale-105 transition-transform text-zinc-400 group-hover:text-white" />
               <span className="sr-only">Admin Portal</span>
@@ -269,7 +269,7 @@ export const Navbar: React.FC = () => {
             {/* CTA 1: Get Started */}
             <button
               onClick={() => openQuickModal()}
-              className="hidden 2xl:flex px-4 py-2 rounded-full bg-zinc-900 hover:bg-zinc-800 text-zinc-200 text-xs font-mono uppercase tracking-wider border border-zinc-800 transition-all hover:border-zinc-700 items-center gap-1.5 cursor-pointer shrink-0"
+              className="hidden 2xl:flex px-4 py-2.5 rounded-sm bg-zinc-950 hover:bg-zinc-900 text-zinc-200 text-xs font-mono uppercase tracking-wider border border-zinc-800 transition-all hover:border-zinc-700 items-center gap-1.5 cursor-pointer shrink-0"
             >
               <Zap className="w-3.5 h-3.5 text-zinc-400" />
               <span>Get Started</span>
@@ -278,7 +278,7 @@ export const Navbar: React.FC = () => {
             {/* CTA 2: Schedule a Meeting */}
             <Link
               href="/schedule-meeting"
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-mono uppercase tracking-wider font-semibold bg-white hover:bg-zinc-200 text-black transition-all shadow-sm shrink-0"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-sm text-xs font-mono uppercase tracking-wider font-bold bg-white hover:bg-zinc-200 text-black border border-white transition-all shadow-sm shrink-0"
             >
               <Calendar className="w-3.5 h-3.5 text-black" />
               <span className="whitespace-nowrap">Book Meeting</span>
@@ -288,7 +288,7 @@ export const Navbar: React.FC = () => {
           {/* Mobile menu toggle */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-2 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white cursor-pointer"
+            className="lg:hidden p-2 rounded-sm bg-zinc-950 border border-zinc-800 text-zinc-300 hover:text-white cursor-pointer"
             aria-label="Toggle navigation"
           >
             {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -308,9 +308,9 @@ export const Navbar: React.FC = () => {
                   setMobileMenuOpen(false);
                   handleNavClick(link.path, e);
                 }}
-                className={`px-3.5 py-2.5 rounded-xl text-sm font-medium flex items-center justify-between transition-colors ${
+                className={`px-3.5 py-2.5 rounded-sm text-sm font-medium flex items-center justify-between transition-colors ${
                   link.isFlash
-                    ? 'bg-zinc-900 text-zinc-100 border border-zinc-800 font-medium'
+                    ? 'bg-zinc-900 text-zinc-100 border border-zinc-850 font-medium'
                     : isActive(link.path)
                     ? 'bg-zinc-900 text-white border border-zinc-700'
                     : 'text-zinc-400 hover:bg-zinc-900 hover:text-white'
@@ -318,16 +318,16 @@ export const Navbar: React.FC = () => {
               >
                 <span className="flex items-center gap-2 min-w-0">
                   {link.isFlash && (
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0" />
+                    <span className="w-1.5 h-1.5 bg-emerald-400 shrink-0" />
                   )}
                   <span className="truncate">{link.name}</span>
                   {link.isFlash && (
-                    <span className="px-2 py-0.5 bg-zinc-800 text-zinc-300 text-[9px] font-semibold rounded-full font-mono uppercase tracking-wider shrink-0">
+                    <span className="px-2 py-0.5 bg-zinc-800 text-zinc-300 text-[9px] font-semibold border border-zinc-700 font-mono uppercase tracking-wider shrink-0">
                       FREE TIER
                     </span>
                   )}
                 </span>
-                {isActive(link.path) && <div className="w-1.5 h-1.5 rounded-full bg-white shrink-0" />}
+                {isActive(link.path) && <div className="w-1.5 h-1.5 bg-white shrink-0" />}
               </Link>
             ))}
           </div>
@@ -338,7 +338,7 @@ export const Navbar: React.FC = () => {
                 setMobileMenuOpen(false);
                 openQuickModal();
               }}
-              className="w-full py-2.5 bg-zinc-900 hover:bg-zinc-850 text-zinc-200 text-center rounded-xl font-mono uppercase tracking-wider text-xs border border-zinc-800 flex items-center justify-center gap-2 cursor-pointer transition-colors"
+              className="w-full py-3 bg-zinc-900 hover:bg-zinc-850 text-zinc-200 text-center rounded-sm font-mono uppercase tracking-wider text-xs border border-zinc-800 flex items-center justify-center gap-2 cursor-pointer transition-colors"
             >
               <Zap className="w-4 h-4 text-zinc-400" />
               <span>Get Started</span>
@@ -346,7 +346,7 @@ export const Navbar: React.FC = () => {
             <Link
               href="/schedule-meeting"
               onClick={() => setMobileMenuOpen(false)}
-              className="w-full py-2.5 bg-white hover:bg-zinc-200 text-black text-center rounded-xl font-mono uppercase tracking-wider font-semibold text-xs flex items-center justify-center gap-2 transition-colors"
+              className="w-full py-3 bg-white hover:bg-zinc-200 text-black text-center rounded-sm font-mono uppercase tracking-wider font-bold text-xs flex items-center justify-center gap-2 transition-colors border border-white"
             >
               <Calendar className="w-4 h-4 text-black" />
               <span>Book Consultation</span>
@@ -354,7 +354,7 @@ export const Navbar: React.FC = () => {
             <Link
               href="/admin"
               onClick={() => setMobileMenuOpen(false)}
-              className="w-full py-2 text-zinc-400 hover:text-zinc-200 text-center rounded-xl font-mono uppercase tracking-wider text-xs flex items-center justify-center gap-1.5 transition-colors"
+              className="w-full py-2.5 text-zinc-400 hover:text-zinc-200 text-center rounded-sm font-mono uppercase tracking-wider text-xs flex items-center justify-center gap-1.5 transition-colors"
             >
               <ShieldCheck className="w-3.5 h-3.5 text-zinc-400" />
               <span>Admin Management Dashboard</span>
