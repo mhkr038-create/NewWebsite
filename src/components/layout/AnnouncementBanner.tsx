@@ -26,10 +26,10 @@ export const AnnouncementBanner: React.FC = () => {
           </div>
           <Link
             href="/free-school-management-software#enquiry-form"
-            className="inline-flex items-center gap-1 font-semibold text-black bg-white hover:bg-zinc-200 px-2.5 py-0.5 rounded-full text-[10px] transition-colors shrink-0"
+            className="inline-flex items-center gap-1 font-medium text-zinc-200 hover:text-white bg-zinc-800/90 hover:bg-zinc-700 border border-zinc-700/80 px-2.5 py-0.5 rounded-full text-[10px] transition-colors shrink-0"
           >
             <span>Claim</span>
-            <ArrowRight className="w-3 h-3 text-black" />
+            <ArrowRight className="w-3 h-3 text-zinc-400" />
           </Link>
         </div>
 
@@ -51,10 +51,10 @@ export const AnnouncementBanner: React.FC = () => {
 
           <Link
             href="/free-school-management-software#enquiry-form"
-            className="inline-flex items-center gap-1 font-semibold text-black bg-white hover:bg-zinc-200 px-3 py-0.5 rounded-full text-[10px] font-mono uppercase tracking-wider transition-colors cursor-pointer"
+            className="inline-flex items-center gap-1 font-medium text-zinc-200 hover:text-white bg-zinc-800/90 hover:bg-zinc-700 border border-zinc-700/80 px-3 py-0.5 rounded-full text-[10px] font-mono uppercase tracking-wider transition-colors cursor-pointer"
           >
             <span>Claim License</span>
-            <ArrowRight className="w-3 h-3 text-black" />
+            <ArrowRight className="w-3 h-3 text-zinc-400" />
           </Link>
         </div>
 
