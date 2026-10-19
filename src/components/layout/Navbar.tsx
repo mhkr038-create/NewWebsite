@@ -17,9 +17,12 @@ import {
   Search,
   FileText,
   MessageSquare,
-  ShieldCheck
+  ShieldCheck,
+  CloudSun,
+  Calculator as CalcIcon
 } from 'lucide-react';
 import { useInquiry } from '../../context/InquiryContext';
+import { useUtility } from '../../context/UtilityContext';
 import { GROWTH_SERVICES } from '../../data/growthServices';
 import { SOLUTIONS_DATA } from '../../data/solutions';
 import { SITE_CONFIG } from '../../config/siteConfig';
@@ -37,6 +40,7 @@ const SERVICE_ICONS: Record<string, React.ElementType> = {
 export const Navbar: React.FC = () => {
   const pathname = usePathname();
   const { openQuickModal } = useInquiry();
+  const { openTool } = useUtility();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [servicesDropdownOpen, setServicesDropdownOpen] = useState(false);
@@ -73,6 +77,7 @@ export const Navbar: React.FC = () => {
     { name: 'Free School Software', shortName: 'Free School ERP', path: '/free-school-management-software', isFlash: true },
     { name: 'Demos', path: '/demos' },
     { name: 'Products', path: '/digital-products' },
+    { name: 'Tools', path: '/tools' },
     { name: 'Submit Request', path: '/intake-form', hideOnDesktop: true },
     { name: 'Blog', path: '/blog' },
     { name: 'Contact', path: '/contact' },
@@ -254,6 +259,16 @@ export const Navbar: React.FC = () => {
 
           {/* Action CTAs - Architectural Geometry */}
           <div className="hidden sm:flex items-center gap-2.5 shrink-0">
+            {/* Search & Utilities trigger */}
+            <button
+              onClick={() => openTool('search')}
+              title="Google Search & Engineering Utilities (⌘K)"
+              className="p-2.5 rounded-sm bg-zinc-950 hover:bg-zinc-900 text-zinc-400 hover:text-white border border-zinc-800 hover:border-zinc-700 transition-all flex items-center justify-center cursor-pointer group shrink-0"
+            >
+              <Search className="w-4 h-4 group-hover:scale-105 transition-transform text-zinc-400 group-hover:text-white" />
+              <span className="sr-only">Search &amp; Utilities (⌘K)</span>
+            </button>
+
             {/* Admin Portal link */}
             <Link
               href="/admin"
@@ -330,7 +345,55 @@ export const Navbar: React.FC = () => {
             ))}
           </div>
 
-          <div className="pt-3 border-t border-zinc-800 flex flex-col gap-2.5">
+          {/* Quick Free Apps & Utilities Grid */}
+          <div className="p-3 bg-zinc-900/60 border border-zinc-800 rounded-sm font-mono text-xs space-y-2">
+            <div className="flex items-center justify-between text-[10px] text-zinc-400 uppercase tracking-wider">
+              <span>⚡ Free Utility Apps</span>
+              <Link 
+                href="/tools" 
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-emerald-400 hover:underline"
+              >
+                All Tools ↗
+              </Link>
+            </div>
+            <div className="grid grid-cols-2 gap-1.5 text-[11px]">
+              <button
+                type="button"
+                onClick={() => { setMobileMenuOpen(false); openTool('weather'); }}
+                className="min-h-[44px] p-2 bg-zinc-950 border border-zinc-850 hover:border-zinc-700 text-left text-zinc-300 hover:text-white flex items-center gap-2 transition-colors cursor-pointer"
+              >
+                <CloudSun className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                <span className="truncate">Live Weather</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => { setMobileMenuOpen(false); openTool('search'); }}
+                className="min-h-[44px] p-2 bg-zinc-950 border border-zinc-850 hover:border-zinc-700 text-left text-zinc-300 hover:text-white flex items-center gap-2 transition-colors cursor-pointer"
+              >
+                <Search className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                <span className="truncate">Google Search</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => { setMobileMenuOpen(false); openTool('calculator'); }}
+                className="min-h-[44px] p-2 bg-zinc-950 border border-zinc-850 hover:border-zinc-700 text-left text-zinc-300 hover:text-white flex items-center gap-2 transition-colors cursor-pointer"
+              >
+                <CalcIcon className="w-3.5 h-3.5 text-sky-400 shrink-0" />
+                <span className="truncate">Calculator</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => { setMobileMenuOpen(false); openTool('calendar'); }}
+                className="min-h-[44px] p-2 bg-zinc-950 border border-zinc-850 hover:border-zinc-700 text-left text-zinc-300 hover:text-white flex items-center gap-2 transition-colors cursor-pointer"
+              >
+                <Calendar className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
+                <span className="truncate">Calendar</span>
+              </button>
+            </div>
+          </div>
+
+          <div className="pt-2 border-t border-zinc-800 flex flex-col gap-2.5">
             {/* One Dominant Primary CTA */}
             <Link
               href="/intake-form"

@@ -7,6 +7,8 @@ import { Navbar } from './Navbar';
 import { Footer } from './Footer';
 import { QuickInquiryModal } from './QuickInquiryModal';
 import { CookieConsent } from './CookieConsent';
+import { UtilityModal } from '../tools/UtilityModal';
+import { UtilityDock } from '../tools/UtilityDock';
 
 interface SiteChromeProps {
   children: React.ReactNode;
@@ -24,6 +26,7 @@ export const SiteChrome: React.FC<SiteChromeProps> = ({ children }) => {
         {children}
         <QuickInquiryModal />
         <CookieConsent />
+        <UtilityModal />
       </div>
     );
   }
@@ -35,6 +38,8 @@ export const SiteChrome: React.FC<SiteChromeProps> = ({ children }) => {
       <Footer />
       <QuickInquiryModal />
       <CookieConsent />
+      <UtilityModal />
+      <UtilityDock />
     </>
   );
 };

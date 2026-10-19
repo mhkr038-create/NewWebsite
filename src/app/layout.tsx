@@ -5,6 +5,7 @@ import './globals.css';
 import { AdminAuthProvider } from '../context/AdminAuthContext';
 import { ThemeProvider } from '../context/ThemeContext';
 import { InquiryProvider } from '../context/InquiryContext';
+import { UtilityProvider } from '../context/UtilityContext';
 import { SiteChrome } from '../components/layout/SiteChrome';
 import { SITE_CONFIG } from '../config/siteConfig';
 import { AnalyticsTracker } from '../components/analytics/AnalyticsTracker';
@@ -236,7 +237,9 @@ export default function RootLayout({
         <AdminAuthProvider>
           <ThemeProvider>
             <InquiryProvider>
-              <SiteChrome>{children}</SiteChrome>
+              <UtilityProvider>
+                <SiteChrome>{children}</SiteChrome>
+              </UtilityProvider>
             </InquiryProvider>
           </ThemeProvider>
         </AdminAuthProvider>

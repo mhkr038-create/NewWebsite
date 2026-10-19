@@ -136,6 +136,11 @@ export const Footer: React.FC = () => {
                 </Link>
               </li>
               <li>
+                <Link href="/tools" className="text-zinc-300 hover:text-white transition-colors flex items-center min-h-[40px]">
+                  Free Engineering Tools [4]
+                </Link>
+              </li>
+              <li>
                 <Link href="/admin" className="text-zinc-400 hover:text-white transition-colors flex items-center gap-1.5 min-h-[40px]">
                   <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
                   <span>Admin Terminal</span>

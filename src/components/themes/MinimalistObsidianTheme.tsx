@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { ArrowUpRight, ArrowRight, ShieldCheck, Check } from 'lucide-react';
 import { useInquiry } from '../../context/InquiryContext';
 import { SITE_CONFIG } from '../../config/siteConfig';
+import { WeatherBadge } from '../tools/WeatherBadge';
 
 export function MinimalistObsidianTheme() {
   const { openQuickModal } = useInquiry();
@@ -29,12 +30,13 @@ export function MinimalistObsidianTheme() {
                 {SITE_CONFIG.brandName} // ARCHITECTURE
               </span>
             </div>
-            <div className="flex items-center gap-2 text-zinc-400 text-[10px] sm:text-[11px] overflow-hidden">
+            <div className="flex items-center gap-2 text-zinc-400 text-[10px] sm:text-[11px] overflow-hidden flex-wrap">
               <span>INDIA // GLOBAL</span>
               <span className="text-zinc-700">|</span>
               <span>V3.2-PROD</span>
               <span className="text-zinc-700">|</span>
               <span className="text-emerald-400 font-medium">Q4 ACTIVE</span>
+              <WeatherBadge />
             </div>
           </div>
 
