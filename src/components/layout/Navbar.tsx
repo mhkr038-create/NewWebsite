@@ -112,19 +112,17 @@ export const Navbar: React.FC = () => {
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 mt-1.5 sm:mt-2">
         <div className="flex items-center justify-between gap-3 xl:gap-6 w-full">
           
-          {/* Brand Logo */}
-          <Link href="/" className="flex items-center gap-2 sm:gap-3 group shrink-0">
-            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-zinc-900 border border-zinc-700/80 p-[1.5px] shadow-sm group-hover:border-zinc-500 transition-all duration-300 shrink-0">
-              <div className="w-full h-full bg-zinc-950 rounded-[10px] flex items-center justify-center">
-                <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-zinc-200 group-hover:rotate-12 transition-transform duration-300" />
-              </div>
+          {/* Brand Logo - 375px Safe */}
+          <Link href="/" className="flex items-center gap-2 group min-w-0 shrink max-w-[210px] xs:max-w-none">
+            <div className="w-8 h-8 rounded-sm bg-zinc-900 border border-zinc-750 p-1 flex items-center justify-center shrink-0">
+              <Sparkles className="w-4 h-4 text-zinc-200" />
             </div>
-            <div className="flex flex-col text-left shrink-0">
-              <span className="font-extrabold text-sm sm:text-base xl:text-lg tracking-tight text-white flex items-center gap-1 font-heading whitespace-nowrap">
+            <div className="flex flex-col text-left min-w-0">
+              <span className="font-extrabold text-sm sm:text-base tracking-tight text-white font-heading truncate">
                 {SITE_CONFIG.brandName}
               </span>
-              <span className="text-[9px] sm:text-[10px] text-zinc-400 tracking-wider font-mono uppercase -mt-0.5 font-medium whitespace-nowrap">
-                Digital Growth &amp; Automation
+              <span className="text-[9px] sm:text-[10px] text-zinc-400 font-mono uppercase tracking-wider truncate hidden xs:block">
+                Architecture &amp; Automation
               </span>
             </div>
           </Link>
@@ -285,10 +283,10 @@ export const Navbar: React.FC = () => {
             </Link>
           </div>
 
-          {/* Mobile menu toggle */}
+          {/* Mobile menu toggle with generous 48px tap target */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-2 rounded-sm bg-zinc-950 border border-zinc-800 text-zinc-300 hover:text-white cursor-pointer"
+            className="lg:hidden min-w-[48px] min-h-[48px] p-2.5 rounded-sm bg-zinc-900 hover:bg-zinc-800 border border-zinc-750 text-zinc-200 hover:text-white flex items-center justify-center cursor-pointer active:scale-95 transition-all shrink-0 ml-auto"
             aria-label="Toggle navigation"
           >
             {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -296,7 +294,7 @@ export const Navbar: React.FC = () => {
         </div>
       </div>
 
-      {/* Mobile Drawer Menu */}
+      {/* Mobile Drawer Menu - Mobile-First Single Column & 48px Tap Targets */}
       {mobileMenuOpen && (
         <div className="lg:hidden bg-zinc-950/98 border-b border-zinc-800 px-4 pt-3 pb-8 space-y-3 animate-in fade-in duration-200 text-left max-h-[calc(100dvh-4.5rem)] overflow-y-auto overscroll-contain shadow-2xl">
           <div className="grid grid-cols-1 gap-1">
@@ -308,9 +306,9 @@ export const Navbar: React.FC = () => {
                   setMobileMenuOpen(false);
                   handleNavClick(link.path, e);
                 }}
-                className={`px-3.5 py-2.5 rounded-sm text-sm font-medium flex items-center justify-between transition-colors ${
+                className={`min-h-[48px] px-4 py-3 rounded-sm text-sm font-medium flex items-center justify-between transition-colors ${
                   link.isFlash
-                    ? 'bg-zinc-900 text-zinc-100 border border-zinc-850 font-medium'
+                    ? 'bg-zinc-900 text-zinc-100 border border-zinc-800 font-medium'
                     : isActive(link.path)
                     ? 'bg-zinc-900 text-white border border-zinc-700'
                     : 'text-zinc-400 hover:bg-zinc-900 hover:text-white'
@@ -332,32 +330,32 @@ export const Navbar: React.FC = () => {
             ))}
           </div>
 
-          <div className="pt-3 border-t border-zinc-800 flex flex-col gap-2">
+          <div className="pt-3 border-t border-zinc-800 flex flex-col gap-2.5">
+            {/* One Dominant Primary CTA */}
+            <Link
+              href="/intake-form"
+              onClick={() => setMobileMenuOpen(false)}
+              className="w-full min-h-[50px] py-3.5 bg-white hover:bg-zinc-200 text-black text-center rounded-sm font-mono uppercase tracking-wider font-extrabold text-xs flex items-center justify-center gap-2 transition-colors border border-white"
+            >
+              <span>Initiate Project Scope ↗</span>
+            </Link>
             <button
               onClick={() => {
                 setMobileMenuOpen(false);
                 openQuickModal();
               }}
-              className="w-full py-3 bg-zinc-900 hover:bg-zinc-850 text-zinc-200 text-center rounded-sm font-mono uppercase tracking-wider text-xs border border-zinc-800 flex items-center justify-center gap-2 cursor-pointer transition-colors"
+              className="w-full min-h-[48px] py-3 bg-zinc-900 hover:bg-zinc-850 text-zinc-200 text-center rounded-sm font-mono uppercase tracking-wider text-xs border border-zinc-800 flex items-center justify-center gap-2 cursor-pointer transition-colors"
             >
               <Zap className="w-4 h-4 text-zinc-400" />
-              <span>Get Started</span>
+              <span>30s Quick Inquire</span>
             </button>
-            <Link
-              href="/schedule-meeting"
-              onClick={() => setMobileMenuOpen(false)}
-              className="w-full py-3 bg-white hover:bg-zinc-200 text-black text-center rounded-sm font-mono uppercase tracking-wider font-bold text-xs flex items-center justify-center gap-2 transition-colors border border-white"
-            >
-              <Calendar className="w-4 h-4 text-black" />
-              <span>Book Consultation</span>
-            </Link>
             <Link
               href="/admin"
               onClick={() => setMobileMenuOpen(false)}
-              className="w-full py-2.5 text-zinc-400 hover:text-zinc-200 text-center rounded-sm font-mono uppercase tracking-wider text-xs flex items-center justify-center gap-1.5 transition-colors"
+              className="w-full min-h-[44px] py-2.5 text-zinc-400 hover:text-zinc-200 text-center rounded-sm font-mono uppercase tracking-wider text-xs flex items-center justify-center gap-1.5 transition-colors"
             >
               <ShieldCheck className="w-3.5 h-3.5 text-zinc-400" />
-              <span>Admin Management Dashboard</span>
+              <span>Admin Management Portal</span>
             </Link>
           </div>
         </div>

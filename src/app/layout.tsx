@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import Script from 'next/script';
 import { Plus_Jakarta_Sans, Outfit, Space_Grotesk, Cinzel, Quicksand } from 'next/font/google';
 import './globals.css';
@@ -8,6 +8,13 @@ import { InquiryProvider } from '../context/InquiryContext';
 import { SiteChrome } from '../components/layout/SiteChrome';
 import { SITE_CONFIG } from '../config/siteConfig';
 import { AnalyticsTracker } from '../components/analytics/AnalyticsTracker';
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: '#070709',
+};
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ['latin'],
@@ -165,7 +172,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdSchema) }}
         />
       </head>
-      <body className="min-h-screen flex flex-col bg-black text-white selection:bg-white selection:text-black antialiased">
+      <body className="min-h-screen flex flex-col bg-black text-white selection:bg-white selection:text-black antialiased overflow-x-hidden">
         {/* Google Analytics 4 Script (Conditional via NEXT_PUBLIC_GA_MEASUREMENT_ID) */}
         {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
           <>
