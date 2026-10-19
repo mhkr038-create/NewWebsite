@@ -41,106 +41,145 @@ export function MinimalistObsidianTheme() {
           {/* Asymmetric Studio Grid */}
           <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
             
-            {/* Left 8 Cols: Monumental Typographic Statement */}
+            {/* Left 8 Cols: Monumental Typographic Statement & 4-Pillar Architecture */}
             <div className="lg:col-span-8 space-y-6">
               <span className="font-mono text-[11px] text-zinc-400 uppercase tracking-widest block">
-                [ 00 // CORE THESIS ]
+                [ 01 // WHAT IT IS ] DIGITAL ENGINEERING &amp; ENTERPRISE AUTOMATION
               </span>
               
-              <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-[5.25rem] font-black tracking-tight leading-[0.94] text-white font-heading uppercase">
-                ENGINEERED <br />
-                <span className="text-zinc-500 hover:text-zinc-400 transition-colors">FOR REVENUE.</span> <br />
-                BUILT TO SCALE.
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-[4.75rem] font-black tracking-tight leading-[0.95] text-white font-heading uppercase">
+                HIGH-PERFORMANCE <br />
+                <span className="text-zinc-500 hover:text-zinc-400 transition-colors">WEB SYSTEMS.</span> <br />
+                ZERO-LICENSE ERPS.
               </h1>
               
               <p className="text-base sm:text-lg text-zinc-300 font-light max-w-2xl leading-relaxed">
-                We eliminate slow websites, leaked advertising budgets, and manual lead decay. Purpose-built Next.js software platforms, conversion landing pages, and autonomous 24/7 WhatsApp AI systems.
+                We engineer bespoke Next.js 15 platforms, high-converting acquisition funnels, and autonomous 24/7 WhatsApp AI pipelines. Built from scratch with sub-second speeds, zero bloated page-builders, and zero recurring software licenses.
               </p>
 
-              {/* Tactile Architectural Action Group */}
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 pt-4">
-                <Link
-                  href="/intake-form"
-                  className="group relative inline-flex items-center justify-between gap-6 px-7 py-4 bg-white text-black font-mono text-xs uppercase tracking-widest font-bold hover:bg-zinc-200 transition-all border border-white"
-                >
-                  <span>Initiate Project</span>
-                  <ArrowUpRight className="w-4 h-4 stroke-[2.5] transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                </Link>
-
-                <button
-                  onClick={() => openQuickModal()}
-                  className="group relative inline-flex items-center justify-between gap-6 px-7 py-4 bg-zinc-950 text-zinc-300 font-mono text-xs uppercase tracking-widest border border-zinc-800 hover:border-zinc-500 hover:text-white transition-all cursor-pointer"
-                >
-                  <span>Quick Inquire [30s]</span>
-                  <ArrowRight className="w-4 h-4 text-zinc-400 group-hover:text-white transition-colors" />
-                </button>
-
-                <Link
-                  href="/demos"
-                  className="inline-flex items-center justify-center gap-2 px-5 py-4 font-mono text-xs uppercase tracking-widest text-zinc-400 hover:text-white transition-colors border-b border-transparent hover:border-zinc-400"
-                >
-                  <span>Live Work Archive [8]</span>
-                  <span className="text-zinc-400">↗</span>
-                </Link>
+              {/* [ 02 // WHO IT IS FOR ] - Explicit Audience Registry */}
+              <div className="border border-zinc-800 bg-zinc-950/80 p-4 font-mono text-xs space-y-3">
+                <div className="flex items-center justify-between text-[10px] uppercase tracking-widest text-emerald-400 font-bold border-b border-zinc-850 pb-2">
+                  <span>[ 02 // WHO IT IS FOR ]</span>
+                  <span className="text-zinc-500 font-normal">TARGET RECIPIENTS</span>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 font-sans text-xs">
+                  <div className="border-l border-zinc-800 pl-2.5 space-y-0.5">
+                    <span className="font-mono text-white text-[11px] block font-semibold uppercase">Founders &amp; Brands</span>
+                    <span className="text-zinc-400 font-light text-[11px] leading-tight block">Outgrowing slow WordPress sites that leak ad spend &amp; bounce mobile visitors.</span>
+                  </div>
+                  <div className="border-l border-zinc-800 pl-2.5 space-y-0.5">
+                    <span className="font-mono text-white text-[11px] block font-semibold uppercase">Schools &amp; Institutes</span>
+                    <span className="text-zinc-400 font-light text-[11px] leading-tight block">Institutions tired of paying ₹30k–₹1.5L/yr for bloated legacy software vendors.</span>
+                  </div>
+                  <div className="border-l border-zinc-800 pl-2.5 space-y-0.5">
+                    <span className="font-mono text-white text-[11px] block font-semibold uppercase">Growth &amp; Sales Teams</span>
+                    <span className="text-zinc-400 font-light text-[11px] leading-tight block">Businesses losing qualified inbound inquiries due to slow, manual follow-ups.</span>
+                  </div>
+                </div>
               </div>
 
-              {/* Direct Trust Metadata */}
-              <div className="flex flex-wrap items-center gap-x-6 gap-y-2 pt-6 font-mono text-[11px] text-zinc-400 border-t border-zinc-850">
-                <span className="flex items-center gap-1.5 text-zinc-300">
-                  <Check className="w-3.5 h-3.5 text-emerald-400" /> &lt;48-Hour Rapid Deployments
+              {/* [ 03 // WHY IT MATTERS ] - Direct Quantifiable Impact */}
+              <div className="flex flex-wrap items-center gap-x-6 gap-y-2 pt-2 font-mono text-[11px] text-zinc-400 border-t border-zinc-850">
+                <span className="text-[10px] text-zinc-500 uppercase tracking-widest block w-full sm:w-auto font-bold">
+                  [ 03 // WHY IT MATTERS ]:
                 </span>
                 <span className="flex items-center gap-1.5 text-zinc-300">
-                  <Check className="w-3.5 h-3.5 text-emerald-400" /> 99.98% Cloud SLA
+                  <Check className="w-3.5 h-3.5 text-emerald-400" /> &lt;1.2s Load Speeds (2x Mobile Conversion)
                 </span>
                 <span className="flex items-center gap-1.5 text-zinc-300">
-                  <Check className="w-3.5 h-3.5 text-emerald-400" /> ₹0 License School ERP
+                  <Check className="w-3.5 h-3.5 text-emerald-400" /> ₹0 Recurring License (Save ₹30k-1.5L/yr)
                 </span>
+                <span className="flex items-center gap-1.5 text-zinc-300">
+                  <Check className="w-3.5 h-3.5 text-emerald-400" /> &lt;15s WhatsApp AI Lead Capture
+                </span>
+              </div>
+
+              {/* [ 04 // WHAT TO DO NEXT ] - Tactile Action Group */}
+              <div className="space-y-2 pt-2">
+                <span className="font-mono text-[10px] text-emerald-400 uppercase tracking-widest font-bold block">
+                  [ 04 // WHAT TO DO NEXT ]
+                </span>
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5">
+                  <Link
+                    href="/intake-form"
+                    className="group relative inline-flex items-center justify-between gap-6 px-7 py-4 bg-white text-black font-mono text-xs uppercase tracking-widest font-bold hover:bg-zinc-200 transition-all border border-white"
+                  >
+                    <span>1. Initiate Project Scope</span>
+                    <ArrowUpRight className="w-4 h-4 stroke-[2.5] transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                  </Link>
+
+                  <button
+                    onClick={() => openQuickModal()}
+                    className="group relative inline-flex items-center justify-between gap-6 px-7 py-4 bg-zinc-950 text-zinc-300 font-mono text-xs uppercase tracking-widest border border-zinc-800 hover:border-zinc-500 hover:text-white transition-all cursor-pointer"
+                  >
+                    <span>2. Quick Inquire [30s Callback]</span>
+                    <ArrowRight className="w-4 h-4 text-zinc-400 group-hover:text-white transition-colors" />
+                  </button>
+
+                  <Link
+                    href="/free-school-management-software"
+                    className="inline-flex items-center justify-center gap-2 px-5 py-4 font-mono text-xs uppercase tracking-widest text-zinc-400 hover:text-white transition-colors border-b border-transparent hover:border-zinc-400"
+                  >
+                    <span>3. Test ₹0 School ERP ↗</span>
+                  </Link>
+                </div>
               </div>
             </div>
 
-            {/* Right 4 Cols: Live Architectural Spec Sheet */}
+            {/* Right 4 Cols: Live Architectural Spec Sheet & Core Rubric */}
             <div className="lg:col-span-4 border-t lg:border-t-0 lg:border-l border-zinc-850 pt-8 lg:pt-0 lg:pl-10 space-y-6">
               <div className="border border-zinc-800 bg-zinc-950 p-5">
                 <div className="flex items-center justify-between border-b border-zinc-850 pb-3 mb-4 font-mono text-[11px] uppercase tracking-wider text-zinc-400">
-                  <span>SPECIFICATION</span>
-                  <span className="text-zinc-300 font-semibold">PRODUCTION STANDARDS</span>
+                  <span>EXECUTIVE SUMMARY</span>
+                  <span className="text-emerald-400 font-semibold">ABOVE-THE-FOLD</span>
                 </div>
                 
-                <div className="space-y-3 font-mono text-xs">
-                  <div className="flex justify-between py-1 border-b border-zinc-900">
-                    <span className="text-zinc-400">FRAMEWORK</span>
-                    <span className="text-white font-medium">NEXT.JS 15 (APP ROUTER)</span>
+                <div className="space-y-4 font-mono text-xs">
+                  <div>
+                    <div className="text-[10px] text-zinc-500 uppercase tracking-widest">[ 01 // WHAT IT IS ]</div>
+                    <div className="text-white font-medium text-xs mt-0.5">High-Speed Next.js Platforms &amp; ₹0-License Cloud ERPs</div>
                   </div>
-                  <div className="flex justify-between py-1 border-b border-zinc-900">
-                    <span className="text-zinc-400">CORE WEB VITALS</span>
-                    <span className="text-white font-medium">95+ GREEN BENCHMARK</span>
+                  <div>
+                    <div className="text-[10px] text-zinc-500 uppercase tracking-widest">[ 02 // WHO IT IS FOR ]</div>
+                    <div className="text-zinc-300 font-medium text-xs mt-0.5">Founders, Commercial Enterprises &amp; Educational Institutes</div>
                   </div>
-                  <div className="flex justify-between py-1 border-b border-zinc-900">
-                    <span className="text-zinc-400">MOBILE SPEED</span>
-                    <span className="text-white font-medium">&lt; 1.2S FCP GUARANTEE</span>
+                  <div>
+                    <div className="text-[10px] text-zinc-500 uppercase tracking-widest">[ 03 // WHY IT MATTERS ]</div>
+                    <div className="text-zinc-300 font-medium text-xs mt-0.5">&lt;1.2s Load Speed • ₹0 Software Fees • &lt;15s WhatsApp AI</div>
                   </div>
-                  <div className="flex justify-between py-1 border-b border-zinc-900">
-                    <span className="text-zinc-400">AUTOMATION</span>
-                    <span className="text-white font-medium">WHATSAPP CLOUD API</span>
-                  </div>
-                  <div className="flex justify-between py-1 border-b border-zinc-900">
-                    <span className="text-zinc-400">EDTECH ERP</span>
-                    <span className="text-emerald-400 font-bold">₹0 RECURRING LICENSE</span>
-                  </div>
-                  <div className="flex justify-between py-1">
-                    <span className="text-zinc-400">DEPLOYMENT SLA</span>
-                    <span className="text-white font-medium">&lt; 48 HOURS TURNAROUND</span>
+                  <div className="pt-2 border-t border-zinc-900">
+                    <div className="text-[10px] text-emerald-400 uppercase tracking-widest font-bold">[ 04 // WHAT TO DO NEXT ]</div>
+                    <div className="text-white font-semibold text-xs mt-0.5">Submit Project Scope (12h Quote) or 30s Callback</div>
                   </div>
                 </div>
               </div>
 
-              <div className="p-4 bg-zinc-950 border border-zinc-850 font-mono text-[11px] text-zinc-400 space-y-2">
-                <div className="flex items-center gap-2 text-zinc-300 font-semibold">
-                  <span className="text-emerald-400">■</span> RIGOROUS CRAFT
+              <div className="border border-zinc-850 bg-zinc-950 p-5 space-y-3 font-mono text-xs">
+                <div className="text-[11px] uppercase tracking-wider text-zinc-400 pb-2 border-b border-zinc-900 flex justify-between">
+                  <span>PRODUCTION BENCHMARKS</span>
+                  <span className="text-zinc-200">VERIFIED</span>
                 </div>
-                <p className="font-sans text-xs text-zinc-400 leading-relaxed font-light">
-                  No drag-and-drop page builders. Every platform is custom coded with strict semantic HTML, JSON-LD Schema markup, and conversion psychology.
-                </p>
+                <div className="flex justify-between py-1 border-b border-zinc-900">
+                  <span className="text-zinc-400">MOBILE SPEED</span>
+                  <span className="text-white font-medium">&lt; 1.2S FCP GUARANTEE</span>
+                </div>
+                <div className="flex justify-between py-1 border-b border-zinc-900">
+                  <span className="text-zinc-400">CORE WEB VITALS</span>
+                  <span className="text-white font-medium">95+ GREEN BENCHMARK</span>
+                </div>
+                <div className="flex justify-between py-1 border-b border-zinc-900">
+                  <span className="text-zinc-400">EDTECH ERP</span>
+                  <span className="text-emerald-400 font-bold">₹0 RECURRING LICENSE</span>
+                </div>
+                <div className="flex justify-between py-1 border-b border-zinc-900">
+                  <span className="text-zinc-400">AUTOMATION</span>
+                  <span className="text-white font-medium">&lt; 15S WHATSAPP RESPONSE</span>
+                </div>
+                <div className="flex justify-between py-1">
+                  <span className="text-zinc-400">TURNAROUND</span>
+                  <span className="text-white font-medium">&lt; 48 HOURS DISPATCH</span>
+                </div>
               </div>
             </div>
 
